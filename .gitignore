@@ -1,0 +1,26 @@
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Vercel
+.vercel/
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Logs
+*.log
+
+# Local env
+.env
+.env.local
+.env.*.local

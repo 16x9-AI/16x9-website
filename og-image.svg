@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0a0a0c"/>
+      <stop offset="100%" stop-color="#1d1d1f"/>
+    </linearGradient>
+    <radialGradient id="glow1" cx="20%" cy="20%" r="55%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow2" cx="85%" cy="90%" r="55%">
+      <stop offset="0%" stop-color="#f500b4" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="#f500b4" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow3" cx="60%" cy="30%" r="50%">
+      <stop offset="0%" stop-color="#dfe74f" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#dfe74f" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#glow1)"/>
+  <rect width="1200" height="630" fill="url(#glow2)"/>
+  <rect width="1200" height="630" fill="url(#glow3)"/>
+
+  <!-- 16x9 wordmark big -->
+  <g transform="translate(80, 200)">
+    <text x="0" y="0"
+          font-family="'SF Pro Display', Inter, system-ui, sans-serif"
+          font-weight="700" font-size="200" letter-spacing="-10"
+          fill="#ffffff">16</text>
+    <text x="240" y="0"
+          font-family="'SF Pro Display', Inter, system-ui, sans-serif"
+          font-weight="300" font-size="200" letter-spacing="-10"
+          fill="rgba(255,255,255,0.45)">×</text>
+    <text x="380" y="0"
+          font-family="'SF Pro Display', Inter, system-ui, sans-serif"
+          font-weight="700" font-size="200" letter-spacing="-10"
+          fill="#ffffff">9</text>
+  </g>
+
+  <!-- Tagline -->
+  <text x="80" y="380"
+        font-family="'SF Pro Display', Inter, system-ui, sans-serif"
+        font-weight="600" font-size="48" letter-spacing="-1"
+        fill="#ffffff">Systematic venture creation,</text>
+  <text x="80" y="436"
+        font-family="'SF Pro Display', Inter, system-ui, sans-serif"
+        font-weight="600" font-size="48" letter-spacing="-1"
+        fill="#707070">not venture gambling.</text>
+
+  <!-- Sub-tagline -->
+  <text x="80" y="510"
+        font-family="'SF Pro Text', Inter, system-ui, sans-serif"
+        font-weight="400" font-size="24" letter-spacing="-0.4"
+        fill="rgba(255,255,255,0.72)">AI-native venture studio · Co-founding · Enterprise AI · Shared infrastructure</text>
+
+  <!-- Bottom-right brand label -->
+  <g transform="translate(1040, 555)">
+    <rect x="-10" y="-30" width="100" height="50" rx="25" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.18)"/>
+    <text x="40" y="3" text-anchor="middle"
+          font-family="'SF Pro Text', Inter, system-ui, sans-serif"
+          font-weight="500" font-size="18" letter-spacing="0.5"
+          fill="#ffffff">16x9.ai</text>
+  </g>
+</svg>

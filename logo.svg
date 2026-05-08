@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 240" fill="currentColor" aria-label="16X9">
+  <!--
+    16X9 logo: four rounded chevron-arrows converging at center.
+    Each arrow has a notched square tail at the outer edge and a pointed inner tip.
+  -->
+
+  <!-- TOP arrow -->
+  <path d="
+    M 56 26
+    h 30
+    a 8 8 0 0 1 6 3
+    L 100 50
+    L 108 29
+    a 8 8 0 0 1 6 -3
+    h 30
+    a 6 6 0 0 1 5 9
+    L 124 78
+    a 10 10 0 0 1 -8 5
+    h -32
+    a 10 10 0 0 1 -8 -5
+    L 51 35
+    a 6 6 0 0 1 5 -9
+    Z
+  "/>
+
+  <!-- BOTTOM arrow -->
+  <path d="
+    M 56 214
+    h 30
+    a 8 8 0 0 0 6 -3
+    L 100 190
+    L 108 211
+    a 8 8 0 0 0 6 3
+    h 30
+    a 6 6 0 0 0 5 -9
+    L 124 162
+    a 10 10 0 0 0 -8 -5
+    h -32
+    a 10 10 0 0 0 -8 5
+    L 51 205
+    a 6 6 0 0 0 5 9
+    Z
+  "/>
+
+  <!-- LEFT arrow -->
+  <path d="
+    M 26 56
+    v 30
+    a 8 8 0 0 0 3 6
+    L 50 100
+    L 29 108
+    a 8 8 0 0 0 -3 6
+    v 30
+    a 6 6 0 0 0 9 5
+    L 78 124
+    a 10 10 0 0 0 5 -8
+    v -32
+    a 10 10 0 0 0 -5 -8
+    L 35 51
+    a 6 6 0 0 0 -9 5
+    Z
+  "/>
+
+  <!-- RIGHT arrow -->
+  <path d="
+    M 174 56
+    v 30
+    a 8 8 0 0 1 -3 6
+    L 150 100
+    L 171 108
+    a 8 8 0 0 1 3 6
+    v 30
+    a 6 6 0 0 1 -9 5
+    L 122 124
+    a 10 10 0 0 1 -5 -8
+    v -32
+    a 10 10 0 0 1 5 -8
+    L 165 51
+    a 6 6 0 0 1 9 5
+    Z
+  "/>
+
+  <!-- 16X9 wordmark -->
+  <text x="100" y="232" text-anchor="middle"
+        font-family="'Arial Black', 'Helvetica Neue', Inter, system-ui, sans-serif"
+        font-weight="900" font-size="34" letter-spacing="0">16X9</text>
+</svg>

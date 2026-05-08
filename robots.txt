@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Block common low-value paths if added later
+Disallow: /admin
+Disallow: /api/
+
+# Sitemap
+Sitemap: https://16x9.ai/sitemap.xml
