@@ -484,9 +484,23 @@
     });
   }
 
+  function loadIdentify(pid, cid) {
+    if (!pid || !cid) return;
+    const scr = document.createElement('script');
+    scr.type = 'text/javascript';
+    scr.src = 'https://a.usbrowserspeed.com/cs?pid=' + pid + '&puid=' + encodeURIComponent(JSON.stringify({
+      visited: window.location.href,
+      client: 'identify',
+      cid: cid,
+      deviceType: /Mobi|Android/i.test(navigator.userAgent) ? 'mobile' : 'web'
+    }));
+    document.head.appendChild(scr);
+  }
+
   function activateAnalytics() {
     loadClarity(cfg.clarityId);
     loadGA4(cfg.ga4Id);
+    loadIdentify(cfg.identifyPid, cfg.identifyCid);
   }
 
   function showBanner() {
