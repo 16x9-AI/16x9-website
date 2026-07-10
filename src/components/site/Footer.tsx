@@ -9,7 +9,7 @@ const linkColumns = [
 
 export function Footer() {
   return (
-    <footer className="border-t border-snow/20 bg-obsidian text-snow">
+    <footer className="bg-obsidian text-snow">
       <div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-10 px-6 py-16 md:grid-cols-[1.4fr_1fr] md:px-10 md:py-20">
         <div>
           <Link

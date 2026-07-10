@@ -197,7 +197,7 @@ function Index() {
         {/* Mycel note */}
         <section
           id="mycel-note"
-          className="border-b border-snow/20 bg-obsidian px-6 py-20 text-snow md:px-10"
+          className="bg-obsidian px-6 py-20 text-snow md:px-10"
         >
           <div className="mx-auto max-w-[1400px]">
             <div className="grid grid-cols-1 items-stretch gap-14 md:grid-cols-[0.42fr_0.58fr] md:gap-16">
