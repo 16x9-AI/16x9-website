@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { LegalPage, legalH2, legalLink, legalP, legalUl, toConfirm } from "@/components/site/LegalPage";
+import { LegalPage, legalH2, legalLink, legalP, legalUl } from "@/components/site/LegalPage";
 
 export const Route = createFileRoute("/privacy")({
   component: PrivacyPage,
@@ -9,93 +9,198 @@ function PrivacyPage() {
   return (
     <LegalPage eyebrow="Legal" title="Privacy policy">
       <p className={legalP}>
-        This policy describes what information 16x9 collects through this website and through
-        Mycel, 16x9's internal platform for agent memory, orchestration, and business data, how
-        that information is used, and what choices you have. It applies to visitors of 16x9.ai and
-        to users who sign in to Mycel with a Google account.
+        This Privacy Policy explains how 16x9 Inc. ("16x9," "we," "us," or "our"), operator of the
+        Mycel platform, collects, uses, discloses, retains, and protects information when you
+        visit 16x9.ai, contact us, or sign in to any product or service we operate (together, the
+        "Services"). By using the Services you agree to this Policy.
       </p>
 
-      <h2 className={legalH2}>What data we access</h2>
+      <h2 className={legalH2}>Who we are</h2>
       <p className={legalP}>
-        When you sign in to Mycel with Google, we request the following OAuth scopes, and no
-        others:
+        16x9 Inc. is the data controller for personal information processed through the Services.
+        For privacy questions, contact us at{" "}
+        <a className={legalLink} href="mailto:info@16x9.ai">
+          info@16x9.ai
+        </a>
+        .
       </p>
+
+      <h2 className={legalH2}>Information we collect</h2>
+      <p className={legalP}>We collect the following categories of information:</p>
       <ul className={legalUl}>
         <li>
-          <span className="font-mono text-[13px] text-ink">openid</span>,{" "}
-          <span className="font-mono text-[13px] text-ink">userinfo.email</span>,{" "}
-          <span className="font-mono text-[13px] text-ink">userinfo.profile</span>: confirms who
-          you are and gives us your name, email address, and profile photo so we can create your
-          account and sign you in.
+          <span className="font-semibold text-ink">Contact and form data.</span> Name, work email,
+          company, role, phone (optional), and the message or context you submit through contact,
+          audit, or newsletter forms.
         </li>
         <li>
-          <span className="font-mono text-[13px] text-ink">admin.directory.user.readonly</span>:
-          read-only access to the basic user records in your Google Workspace directory, for
-          example the names and email addresses of coworkers in your organization. This lets an
-          agent reference who is on a team without you having to type it in manually.
+          <span className="font-semibold text-ink">Google sign-in data.</span> If you sign in with
+          Google, we receive your name, email address, Google account ID, profile picture URL, and
+          language/locale from your Google profile. We do not receive your Google password. This
+          applies to Mycel, 16x9's deal-making platform, which uses Google Sign-In for
+          authentication.
         </li>
         <li>
-          <span className="font-mono text-[13px] text-ink">
-            admin.directory.customer.readonly
-          </span>
-          : read-only access to basic information about your Google Workspace customer account,
-          such as your organization's primary domain.
+          <span className="font-semibold text-ink">
+            Google Workspace directory information (read-only).
+          </span>{" "}
+          For organizations that connect Google Workspace, Mycel may access read-only user and
+          customer directory information (such as teammates' names and email addresses) to help
+          administrators manage workspace membership. Mycel does not modify directory data and
+          does not access Gmail, Google Calendar, Google Drive, or Google Chat.
+        </li>
+        <li>
+          <span className="font-semibold text-ink">Connection data.</span> When you connect Google
+          or other supported services, we store encrypted access and refresh tokens to maintain
+          your connection.
+        </li>
+        <li>
+          <span className="font-semibold text-ink">Usage data.</span> IP address, browser type,
+          device type, operating system, referring URL, pages viewed, and timestamps, collected
+          through cookies and server logs.
+        </li>
+        <li>
+          <span className="font-semibold text-ink">Campaign data.</span> UTM parameters and
+          referrer data captured when you arrive from a campaign.
+        </li>
+      </ul>
+
+      <h2 className={legalH2}>How we use Google sign-in data</h2>
+      <p className={legalP}>
+        When you sign in with Google, we use the profile information Google returns solely to:
+      </p>
+      <ul className={legalUl}>
+        <li>Display your name and profile picture inside the product interface.</li>
+        <li>
+          Send transactional communications related to your account (for example, security
+          notices or requested audit materials).
+        </li>
+        <li>
+          Read Google Workspace directory information (read-only) to help administrators manage
+          workspace membership and suggest colleagues to invite.
         </li>
       </ul>
       <p className={legalP}>
-        We do not request or use scopes for Gmail, Google Calendar, or Google Drive. We do not
-        read, send, or delete email. We do not read or write calendar events. We do not read,
-        upload, or modify files in Drive.
+        16x9.ai's use of information received from Google APIs adheres to the{" "}
+        <a
+          className={legalLink}
+          href="https://developers.google.com/terms/api-services-user-data-policy"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Google API Services User Data Policy
+        </a>
+        , including the Limited Use requirements. We do not use Google user data to serve
+        advertising, we do not sell it, we do not transfer it to third parties except as necessary
+        to provide or improve the Services, to comply with applicable law, or as part of a merger,
+        acquisition, or sale of assets with notice to affected users, and we do not allow humans to
+        read it unless we have your affirmative agreement, it is required for security purposes,
+        to comply with law, or the data is aggregated and used for internal operations in
+        accordance with applicable rules.
       </p>
 
-      <h2 className={legalH2}>How it is accessed</h2>
+      <h2 className={legalH2}>General uses of information</h2>
+      <p className={legalP}>We also use information to:</p>
+      <ul className={legalUl}>
+        <li>Provide, operate, secure, and improve the Services.</li>
+        <li>Respond to inquiries and schedule audits or meetings.</li>
+        <li>
+          Send transactional messages and, with your consent, marketing communications you can
+          unsubscribe from at any time.
+        </li>
+        <li>Measure site and campaign performance using analytics tools you have consented to.</li>
+      </ul>
+
+      <h2 className={legalH2}>Cookies</h2>
       <p className={legalP}>
-        Access happens through Google's standard OAuth sign-in flow. You are shown Google's own
-        consent screen, listing the scopes above, before anything is granted. You can revoke this
-        access at any time from your Google Account security settings.
+        We use essential cookies to run the site and optional analytics, advertising-measurement,
+        and personalization cookies that only load with your consent. You can change your choice
+        at any time using the cookie preferences available on this site.
       </p>
 
-      <h2 className={legalH2}>How it is used</h2>
-      <p className={legalP}>
-        Identity data is used to authenticate you and associate your activity with the correct
-        organization inside Mycel. Directory data, where granted, is used to let agents reference
-        basic organizational facts, such as team membership, when a task calls for it.{" "}
-        <span className={toConfirm}>[TO CONFIRM]</span> the exact list of internal Mycel features
-        that consume directory data as the product evolves.
-      </p>
-
-      <h2 className={legalH2}>How it is stored</h2>
-      <p className={legalP}>
-        Data obtained through Google sign-in is stored in Mycel's own database, separate from
-        Google's systems, behind access controls scoped to your organization.{" "}
-        <span className={toConfirm}>[TO CONFIRM]</span> hosting region, encryption-at-rest detail,
-        and backup policy for publication here.
-      </p>
-
-      <h2 className={legalH2}>How it is shared</h2>
-      <p className={legalP}>
-        We do not sell personal data. Data is visible to authorized members of your own
-        organization inside Mycel and to the 16x9 team operating the platform.{" "}
-        <span className={toConfirm}>[TO CONFIRM]</span> the full list of third-party
-        infrastructure or processing vendors (for example hosting or logging providers) that may
-        process this data on our behalf, to be named here by category and purpose.
-      </p>
+      <h2 className={legalH2}>How we share information</h2>
+      <p className={legalP}>We share information with:</p>
+      <ul className={legalUl}>
+        <li>
+          <span className="font-semibold text-ink">Service providers</span> that host our
+          infrastructure, send email, process forms, schedule meetings, and provide analytics,
+          under contracts that restrict their use of the data.
+        </li>
+        <li>
+          <span className="font-semibold text-ink">Identity providers</span> such as Google, to
+          complete sign-in when you choose that option.
+        </li>
+        <li>
+          <span className="font-semibold text-ink">Authorities</span> when we reasonably believe
+          disclosure is required by law or necessary to protect rights, safety, or the integrity of
+          the Services.
+        </li>
+        <li>
+          <span className="font-semibold text-ink">Successors</span> in a merger, acquisition, or
+          sale of assets, with notice to affected users.
+        </li>
+      </ul>
+      <p className={legalP}>We do not sell personal data.</p>
 
       <h2 className={legalH2}>Data retention</h2>
       <p className={legalP}>
-        We retain identity and directory data for as long as your account is active. If you or
-        your organization disconnect Google sign-in, or request deletion, we remove the associated
-        data within a bounded period. <span className={toConfirm}>[TO CONFIRM]</span> the exact
-        retention window and deletion timeline to publish here.
+        We retain personal information only for as long as necessary to provide the Services, meet
+        the purposes described in this Policy, and comply with our legal obligations.
+        Contact-form submissions are retained for up to 24 months unless you request earlier
+        deletion. Account data tied to Google sign-in is retained while your account is active and
+        deleted within 30 days of account deletion, except where longer retention is required by
+        law. Upon a deletion request emailed to{" "}
+        <a className={legalLink} href="mailto:info@16x9.ai">
+          info@16x9.ai
+        </a>
+        , we remove your account data, including stored OAuth tokens and cached third-party data,
+        within 30 days, except where longer retention is required by law.
+      </p>
+
+      <h2 className={legalH2}>Security</h2>
+      <p className={legalP}>
+        We use administrative, technical, and physical safeguards designed to protect personal
+        information, including encryption in transit, restricted access, and audit logging. No
+        system is perfectly secure; we cannot guarantee absolute security.
       </p>
 
       <h2 className={legalH2}>Your rights</h2>
       <p className={legalP}>
-        You can ask us what data we hold about you, ask us to correct it, ask us to delete it, and
-        revoke Google's access grant at any time from your Google Account settings. To make any of
-        these requests, use the contact details below.{" "}
-        <span className={toConfirm}>[TO CONFIRM]</span> jurisdiction-specific rights language
-        (for example under applicable data protection law) once the operating region is finalized.
+        Depending on your location, you may have the right to access, correct, delete, port, or
+        restrict processing of your personal information, and to object to processing or withdraw
+        consent. To exercise any of these rights, including revoking access previously granted to
+        Google sign-in, email{" "}
+        <a className={legalLink} href="mailto:info@16x9.ai">
+          info@16x9.ai
+        </a>
+        . You can also revoke 16x9.ai's access to your Google account at any time at{" "}
+        <a
+          className={legalLink}
+          href="https://myaccount.google.com/permissions"
+          target="_blank"
+          rel="noreferrer"
+        >
+          myaccount.google.com/permissions
+        </a>
+        .
+      </p>
+
+      <h2 className={legalH2}>International transfers</h2>
+      <p className={legalP}>
+        We and our service providers may process personal information in countries other than your
+        own. Where required, we use appropriate safeguards such as standard contractual clauses.
+      </p>
+
+      <h2 className={legalH2}>Children's privacy</h2>
+      <p className={legalP}>
+        The Services are not directed to children under 16, and we do not knowingly collect
+        personal information from them.
+      </p>
+
+      <h2 className={legalH2}>Changes to this policy</h2>
+      <p className={legalP}>
+        We may update this Policy from time to time. Material changes will be posted on this page
+        with a new effective date.
       </p>
 
       <h2 className={legalH2}>Contact</h2>
@@ -106,8 +211,6 @@ function PrivacyPage() {
         </a>
         .
       </p>
-
-      <p className={legalP}>Last updated: placeholder date, pending final review.</p>
     </LegalPage>
   );
 }
