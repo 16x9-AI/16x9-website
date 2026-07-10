@@ -1,0 +1,151 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+@import "@fontsource-variable/geist";
+@import "@fontsource-variable/geist-mono";
+@import "@fontsource/instrument-serif";
+@import "@fontsource/instrument-serif/400-italic.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-ui-hover: var(--ui-hover);
+  --color-ui-hover-foreground: var(--ui-hover-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Brand */
+  --color-ink: var(--ink);
+  --color-graphite: var(--graphite);
+  --color-slate-brand: var(--slate-brand);
+  --color-ash: var(--ash);
+  --color-fog: var(--fog);
+  --color-snow: var(--snow);
+  --color-obsidian: var(--obsidian);
+  --color-silver-mist: var(--silver-mist);
+  /* Brand accent. Unused/equal to black in v1 - flipping to a real brand color later is a one-line change. */
+  --color-accent: var(--accent);
+
+  /* Display face: Instrument Serif, used huge and uppercase (see h1-h4 below). */
+  --font-editorial: "Instrument Serif", "Times New Roman", serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --font-display: var(--font-editorial);
+  --font-sans: "Geist Variable", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+:root {
+  --radius: 0rem;
+
+  /* Pure black / white / gray scale, no hue */
+  --ink: oklch(0.12 0 0);
+  --graphite: oklch(0.55 0 0);
+  --slate-brand: oklch(0.4 0 0);
+  --ash: oklch(0.3 0 0);
+  --fog: oklch(0.97 0 0);
+  --snow: oklch(0.99 0 0);
+  --obsidian: oklch(0.08 0 0);
+  --silver-mist: oklch(0.88 0 0);
+  /* Brand accent. Unused/equal to black in v1 - flipping to a real brand color later is a one-line change. */
+  --accent: oklch(0 0 0);
+
+  --background: var(--fog);
+  --foreground: var(--ink);
+  --card: var(--snow);
+  --card-foreground: var(--ink);
+  --popover: var(--snow);
+  --popover-foreground: var(--ink);
+  --primary: var(--ink);
+  --primary-foreground: var(--snow);
+  --secondary: var(--silver-mist);
+  --secondary-foreground: var(--ink);
+  --muted: var(--fog);
+  --muted-foreground: var(--graphite);
+  --ui-hover: var(--silver-mist);
+  --ui-hover-foreground: var(--ink);
+  --destructive: oklch(0.55 0.22 27);
+  --destructive-foreground: var(--snow);
+  --border: var(--silver-mist);
+  --input: var(--silver-mist);
+  --ring: var(--ink);
+
+  /* Neutralized, no color gradients allowed. Solid grayscale stops only. */
+  --gradient-citrus: linear-gradient(184deg, rgb(8,8,8) 0%, rgb(120,120,120) 50%, rgb(230,230,230) 100%);
+  --gradient-indigo: linear-gradient(184deg, rgb(8,8,8) 0%, rgb(120,120,120) 50%, rgb(230,230,230) 100%);
+  --gradient-blush:  linear-gradient(184deg, rgb(8,8,8) 0%, rgb(120,120,120) 50%, rgb(230,230,230) 100%);
+}
+
+@layer base {
+  * { border-color: var(--color-border); }
+  /* No `scroll-behavior: smooth` here - Lenis (SmoothScroll) owns smooth
+     scrolling on the html element. The two fight if both are active. Native
+     `auto` scroll-behavior is the correct fallback when Lenis is not
+     initialized (prefers-reduced-motion, or before hydration). */
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 400; letter-spacing: 0; }
+  /* Keep anchor targets clear of the fixed nav */
+  :where(section[id], div[id]) { scroll-margin-top: 80px; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+  .text-pretty { text-wrap: pretty; }
+  .marquee-mask {
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
+            mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
+  }
+  .gradient-indigo { background-image: var(--gradient-indigo); }
+  .gradient-citrus { background-image: var(--gradient-citrus); }
+  .gradient-blush  { background-image: var(--gradient-blush); }
+
+  /* Poster grid artwork lives on the dark Experiments plate: it ships
+     inverted (white-on-black) by default and un-inverts to black-on-white
+     on cell hover, keeping the original hover effect alive in reverse. */
+  .art-invert { filter: invert(1); transition: filter 180ms cubic-bezier(0.23, 1, 0.32, 1); }
+  .group:hover .art-invert { filter: invert(0); }
+
+  /* Quiet idle life on the Mycel brain's hub nodes - a slow, barely-there
+     breathing pulse. Disabled globally under prefers-reduced-motion via the
+     universal animation-duration override above. */
+  @keyframes mycel-pulse {
+    0%, 100% { opacity: 0.85; }
+    50% { opacity: 1; }
+  }
+  .animate-mycel-pulse { animation: mycel-pulse 6s ease-in-out infinite; }
+}

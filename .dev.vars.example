@@ -1,0 +1,15 @@
+# Copy to .dev.vars (gitignored) for local development.
+# Required by the "Join the Frame" application form (src/lib/joinApplication.ts)
+# to send submissions to info@16x9.ai via Resend (https://resend.com).
+#
+# Setup:
+#   1. Create a Resend account.
+#   2. Verify the 16x9.ai sending domain in Resend (Domains > Add Domain),
+#      following their DNS instructions (SPF/DKIM records).
+#   3. Create an API key in Resend and set it here for local dev, and as a
+#      Cloudflare Worker secret for production:
+#        wrangler secret put RESEND_API_KEY
+#
+# Without this key set, the form still renders and validates client-side;
+# submissions fail gracefully with "Applications are not open yet."
+RESEND_API_KEY=
