@@ -159,7 +159,7 @@ function Index() {
         {/* Experiments */}
         <section
           id="experiments"
-          className="border-y border-snow/20 bg-obsidian px-6 py-24 text-snow md:px-10"
+          className="border-t border-snow/20 bg-obsidian px-6 py-24 text-snow md:px-10"
         >
           <div className="mx-auto max-w-[1400px]">
             <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-snow/60">
