@@ -9,24 +9,24 @@ const linkColumns = [
 
 export function Footer() {
   return (
-    <footer className="border-t border-ink/80">
+    <footer className="border-t border-snow/20 bg-obsidian text-snow">
       <div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-10 px-6 py-16 md:grid-cols-[1.4fr_1fr] md:px-10 md:py-20">
         <div>
           <Link
             to="/"
-            className="inline-block font-editorial text-[13vw] leading-[0.85] tracking-tight text-ink transition-colors hover:text-graphite sm:text-[9vw] md:text-[5.5vw]"
+            className="inline-block font-editorial text-[13vw] leading-[0.85] tracking-tight text-snow transition-colors hover:text-snow/70 sm:text-[9vw] md:text-[5.5vw]"
           >
             16X9
           </Link>
-          <p className="mt-6 max-w-sm font-mono text-[11px] uppercase leading-relaxed tracking-[0.08em] text-graphite">
+          <p className="mt-6 max-w-sm font-mono text-[11px] uppercase leading-relaxed tracking-[0.08em] text-snow/60">
             A collective of framers who would be building this anyway.
           </p>
         </div>
         <div className="flex flex-col justify-between gap-10 md:items-end md:text-right">
-          <ul className="flex flex-col gap-3 font-mono text-[12px] uppercase tracking-[0.1em] text-ink md:items-end">
+          <ul className="flex flex-col gap-3 font-mono text-[12px] uppercase tracking-[0.1em] text-snow md:items-end">
             {linkColumns.map((link) => (
               <li key={link.to}>
-                <Link to={link.to} className="transition-colors hover:text-graphite">
+                <Link to={link.to} className="transition-colors hover:text-snow/70">
                   {link.label}
                 </Link>
               </li>
@@ -34,16 +34,16 @@ export function Footer() {
           </ul>
         </div>
       </div>
-      <div className="border-t border-ink/30">
+      <div className="border-t border-snow/20">
         <img
           src={footerHorizon}
           alt=""
           aria-hidden
-          className="h-16 w-full object-cover opacity-70 md:h-20"
+          className="h-16 w-full object-cover opacity-70 invert md:h-20"
         />
       </div>
-      <div className="border-t border-ink/80 px-6 py-4 md:px-10">
-        <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-graphite">
+      <div className="border-t border-snow/20 px-6 py-4 md:px-10">
+        <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-snow/60">
           © 2026 16X9. Still in the wide shot.
         </p>
       </div>

@@ -195,42 +195,47 @@ function Index() {
         </section>
 
         {/* Mycel note */}
-        <section id="mycel-note" className="border-y border-ink/80 px-6 py-20 md:px-10">
+        <section
+          id="mycel-note"
+          className="border-b border-snow/20 bg-obsidian px-6 py-20 text-snow md:px-10"
+        >
           <div className="mx-auto max-w-[1400px]">
             <div className="grid grid-cols-1 items-stretch gap-14 md:grid-cols-[0.42fr_0.58fr] md:gap-16">
-              <Reveal className="aspect-[16/9] w-full overflow-hidden border border-ink/30 md:aspect-auto md:h-full md:w-auto">
-                <MycelBrain />
+              <Reveal className="aspect-[16/9] w-full overflow-hidden border border-snow/20 md:aspect-auto md:h-full md:w-auto">
+                <div className="h-full w-full invert">
+                  <MycelBrain />
+                </div>
               </Reveal>
               <Reveal delay={0.06}>
-                <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-graphite">
+                <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-snow/60">
                   #4 Mycel / A technical note
                 </p>
-                <h2 className="mt-7 font-editorial text-[clamp(2.25rem,6vw,3.75rem)] uppercase leading-[0.95] tracking-tight text-ink">
+                <h2 className="mt-7 font-editorial text-[clamp(2.25rem,6vw,3.75rem)] uppercase leading-[0.95] tracking-tight text-snow">
                   Mycel
                 </h2>
-                <p className="mt-6 max-w-[46ch] text-[15px] leading-relaxed text-ink md:text-[16px]">
+                <p className="mt-6 max-w-[46ch] text-[15px] leading-relaxed text-snow/80 md:text-[16px]">
                   Mycel connects to Google on your behalf for sign-in and basic Workspace directory
                   information only, not Gmail, Calendar, or Drive content.
                 </p>
-                <dl className="mt-10 divide-y divide-ink/30 border-t border-ink/80">
+                <dl className="mt-10 divide-y divide-snow/20 border-t border-snow/20">
                   {mycelSpecs.map((row) => (
                     <div key={row.label} className="flex items-baseline justify-between gap-6 py-7">
-                      <dt className="font-mono text-[11px] uppercase tracking-[0.14em] text-graphite">
+                      <dt className="font-mono text-[11px] uppercase tracking-[0.14em] text-snow/60">
                         {row.label}
                       </dt>
-                      <dd className="max-w-[26ch] text-right font-mono text-[12px] uppercase tracking-[0.06em] text-ink">
+                      <dd className="max-w-[26ch] text-right font-mono text-[12px] uppercase tracking-[0.06em] text-snow">
                         {row.value}
                       </dd>
                     </div>
                   ))}
                   <div className="flex items-baseline justify-between gap-6 py-7">
-                    <dt className="font-mono text-[11px] uppercase tracking-[0.14em] text-graphite">
+                    <dt className="font-mono text-[11px] uppercase tracking-[0.14em] text-snow/60">
                       Details
                     </dt>
                     <dd>
                       <Link
                         to="/mycel"
-                        className="font-mono text-[12px] uppercase tracking-[0.06em] text-ink underline underline-offset-4 hover:text-graphite"
+                        className="font-mono text-[12px] uppercase tracking-[0.06em] text-snow underline underline-offset-4 hover:text-snow/70"
                       >
                         Read more about Mycel →
                       </Link>
