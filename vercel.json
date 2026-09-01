@@ -1,0 +1,17 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    {
+      "source": "/intel",
+      "destination": "https://16x9-ai-industry-daily-report.vercel.app/"
+    },
+    {
+      "source": "/intel/",
+      "destination": "https://16x9-ai-industry-daily-report.vercel.app/"
+    },
+    {
+      "source": "/intel/:path*",
+      "destination": "https://16x9-ai-industry-daily-report.vercel.app/:path*"
+    }
+  ]
+}
