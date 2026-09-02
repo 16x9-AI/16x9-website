@@ -75,31 +75,31 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "16x9 | The Frame" },
+      { title: "16x9 | AI Studio" },
       {
         name: "description",
         content:
-          "16x9 is a collective of framers building agentic systems in the wide shot. AI is the instrument, not the point.",
+          "16x9 is an AI studio. We build and operate companies that run on agents, on Mycel, the agent platform we built ourselves.",
       },
-      { name: "keywords", content: "16x9, agentic systems, framers, Mycel" },
+      { name: "keywords", content: "16x9, AI studio, agents, Mycel, agent platform" },
       { name: "author", content: "16x9" },
       { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1" },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "16x9" },
-      { property: "og:title", content: "16x9 | The Frame" },
+      { property: "og:title", content: "16x9 | AI Studio" },
       {
         property: "og:description",
         content:
-          "A collective of framers building agentic systems in the wide shot. AI is the instrument, not the point.",
+          "An AI studio. Five companies in operation, one agent platform underneath, built and run by us.",
       },
       { property: "og:image", content: "/og-image.svg" },
       { property: "og:locale", content: "en_US" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "16x9 | The Frame" },
+      { name: "twitter:title", content: "16x9 | AI Studio" },
       {
         name: "twitter:description",
         content:
-          "A collective of framers building agentic systems in the wide shot. AI is the instrument, not the point.",
+          "An AI studio. Five companies in operation, one agent platform underneath, built and run by us.",
       },
     ],
     links: [

@@ -7,10 +7,10 @@ import { Link } from "@tanstack/react-router";
 // /intel prefix, derived from REPORT_BASE_URL on its side — change one, change
 // the other.
 const links = [
-  { href: "/#experiments", label: "Experiments" },
-  { href: "/#the-frame", label: "The Frame" },
+  { href: "/#work", label: "Work" },
+  { href: "/#mycel", label: "Mycel" },
   { href: "/intel", label: "Intel" },
-  { href: "/#join", label: "Join" },
+  { href: "/#contact", label: "Contact" },
 ];
 
 /**

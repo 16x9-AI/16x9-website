@@ -1,4 +1,4 @@
-const ITEM = "PANORAMIC SYNTHESIS ✦ THE WIDE SHOT ✦ FRAMERS AT WORK ✦ THE PATTERN UNDERNEATH";
+const ITEM = "BUILD ✦ OPERATE ✦ RESEARCH ✦ SHIP";
 
 /**
  * Marquee: a quiet letterpress running-head divider — hairline-bounded,

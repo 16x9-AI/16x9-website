@@ -19,11 +19,17 @@ export function Footer() {
             16X9
           </Link>
           <p className="mt-6 max-w-sm font-mono text-[11px] uppercase leading-relaxed tracking-[0.08em] text-snow/60">
-            A collective of framers who would be building this anyway.
+            An AI studio. Companies built and run on agents.
           </p>
         </div>
         <div className="flex flex-col justify-between gap-10 md:items-end md:text-right">
           <ul className="flex flex-col gap-3 font-mono text-[12px] uppercase tracking-[0.1em] text-snow md:items-end">
+            {/* /intel is a vercel.json rewrite onto the report deployment, not a router route. */}
+            <li>
+              <a href="/intel" className="transition-colors hover:text-snow/70">
+                Intel
+              </a>
+            </li>
             {linkColumns.map((link) => (
               <li key={link.to}>
                 <Link to={link.to} className="transition-colors hover:text-snow/70">
@@ -44,7 +50,7 @@ export function Footer() {
       </div>
       <div className="border-t border-snow/20 px-6 py-4 md:px-10">
         <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-snow/60">
-          © 2026 16X9. Still in the wide shot.
+          © 2026 16x9 Inc. Delaware.
         </p>
       </div>
     </footer>

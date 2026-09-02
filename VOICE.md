@@ -1,73 +1,51 @@
 # 16x9 Voice Guide
 
-The canonical copywriting reference for 16x9's public site and any future copy pass. Read this before writing a line.
+The copywriting reference for 16x9.ai. Read this before writing or editing a line of user-facing copy.
+
+Rewritten 2026-09-02. The previous guide positioned 16x9 as a recruiting page for a collective of "framers" and forbade any mention of clients, industries, or what we build for whom. That brief is retired. The site now has to hold up in the room when a principal is meeting a potential partner or client.
+
+## What 16x9 is
+
+16x9 is an AI studio. A small team of builders and operators who build and run companies on agents. We hold stakes in the companies we build, we operate inside them, and every one of them runs on Mycel, the agent platform we built for ourselves. We work across industries on purpose. We keep a standing research allocation and publish daily intelligence on the fields we work in.
 
 ## Who we're talking to
 
-Not buyers. We don't sell services on this site, and 16x9 is not an automation agency. The audience is the top 1% of engineers and polymaths we want to recruit: people who build things nobody asked for, learn on demand, and have spent more hours inside a screen than outside one. Every line has to answer one question: why would someone that good care to build here?
-
-## The brand thesis
-
-16x9 is a community of framers, not a vendor. The site's job is to make the culture visible: how we think, what we value, who fits. If a sentence reads like a services pitch, cut it.
+Someone who could send us revenue or reach: a company that should be running on agents, an entrepreneur with a business worth building, a builder who wants to work at this level, a creator with an audience that wants a product. They are smart, busy, and skeptical of AI marketing. The site's job is to make them believe we are real, competent, and worth a conversation, then hand them an email address.
 
 ## The register
 
-Research publication crossed with hacker culture. Precise, a little dry, never dumbed down. We're speaking to engineers, so specificity reads as respect. The culture we channel (lo-fi builders, headphones on, Discord-and-Reddit-era curiosity, learning things because you can't not) should be felt, not named. Never namecheck the platforms.
+Quiet competence. The teams we respect (research labs, hard-engineering companies, the better open-source projects) do not tell you they are excellent. They show the work, name the numbers, and let the care in the details speak. That is the target. Plain declarative sentences. Specific nouns. No adjectives doing the work a fact should do.
 
-## The mythology
-
-- **The Frame** — a frame is a decision about what to include. Most get drawn too narrow.
-- **The wide shot** — working across domains on purpose, instead of going deep in one silo.
-- **Panoramic synthesis** — the pattern that shows up again once you've solved it somewhere else.
-- **Framers** — what we call the people who work here. Not "specialists," not "employees."
-- **16x9** — the aspect ratio of a wide shot, and the standing promise that nothing here stays boxed in.
-
-Use this vocabulary sparingly and let it recur across sections rather than explaining it every time.
+If a sentence would embarrass an engineer who built the thing, cut it.
 
 ## Do
 
-- Active voice.
-- One idea per sentence.
-- Specific over general. A concrete detail beats an abstract claim every time.
-- Short. If a sentence isn't load-bearing, delete it.
-- Trust the reader. No dumbing down, no explaining the joke.
+- Active voice. Lead with the outcome, then the mechanism.
+- One idea per sentence. Short sentences beat clever ones.
+- Specific over general. A count, a mechanism, a constraint, or a named surface beats any claim.
+- Say what runs today. Say what is not open yet. Both build trust.
+- Trust the reader. No explaining AI, no explaining agents.
 
 ## Don't
 
-**Banned words:** leverage, synergy, seamless, robust, cutting-edge, transformative, unlock, empower, harness, revolutionize.
+**Banned words:** leverage, synergy, seamless, robust, cutting-edge, transformative, unlock, empower, harness, revolutionize, AI-powered, AI-native, next-generation, world-class, best-in-class, innovative, passionate.
 
-**Banned framing:** "real businesses," "solutions," "clients," "services," "delivery," any "we help X do Y" construction, industry or client-vertical mentions (real estate, finance, logistics, "a local services firm," and so on), LinkedIn-poster clichés ("in today's world," "the future of," "game-changer").
+**Banned framing:** "in today's world," "the future of," "game-changer," "we're on a mission," "we believe," rule-of-three padding, negative parallelisms ("not just X, it's Y"), vague attributions ("industry reports"), rhetorical questions in headings.
 
-**Banned constructions:** rule-of-three padding ("innovation, inspiration, and industry insights"), negative parallelisms ("it's not just X, it's Y"), vague attributions ("experts say," "industry reports"), em dashes.
+**Banned punctuation:** em dashes. Use a period or a comma.
 
-16x9 doesn't sell to clients on this site. If a line describes what we did *for* someone, it's off voice. If it describes what we built and what it taught us, it's on.
+**Do not name the portfolio companies on 16x9.ai.** Decision 2026-09-02. Describe the industry and the system, not the brand. A count ("five companies") is fine once.
 
-## Before → after (from this rewrite)
+**Do not name individual people, partners, or vendors** without sign-off.
 
-**Hero support line**
-- Before: "AI is the instrument, not the product. Real experiments, run inside real businesses."
-- After: "We were building before it paid. AI just made the instrument faster."
+## The name
 
-**The Frame, industry example**
-- Before: "A single problem in finance looks different once you have also solved it in logistics, or writing, or music."
-- After: "A pattern solved once in one domain shows up again somewhere unrelated, and recognizing it beats re-learning it from zero."
+16x9 is the aspect ratio of a wide shot. It explains why we work across industries: a pattern solved in one shows up in the next. Use this once on the page, at most, and never as a heading system. "Framers," "the frame," and "panoramic synthesis" are retired as public vocabulary.
 
-**Experiments heading**
-- Before: "Real experiments, run inside real businesses."
-- After: "Six explorations in agentic systems."
+## Mycel
 
-**Experiment caption (Agent Field Services)**
-- Before: "Dispatch, quoting, and follow-up run by agents for a local services firm."
-- After: "Agents that quote, schedule, and follow up before a human even sees the job."
-
-**Mycel lead-in**
-- Before: "The connective tissue every experiment runs on."
-- After: "The substrate the collective builds on."
-
-**Footer tagline**
-- Before: "A collective of builders running real experiments inside real businesses."
-- After: "A collective of framers who would be building this anyway."
+Mycel is presented as built by 16x9. Describe it by what it does and how it is governed: agents composed from versioned building blocks, every run traced, trust earned per block through use, human sign-off on promotion. State clearly that it is internal and not open. Never invent a skill, agent, or tool name. Pull counts from the platform, round them down, and date them in a code comment.
 
 ## What never changes
 
-The Google/Mycel compliance sentence on the homepage and the `/mycel` page is legal copy, not brand copy. It ships verbatim: "Mycel connects to Google on your behalf for sign-in and basic Workspace directory information only, not Gmail, Calendar, or Drive content." Don't touch the wording, ever, without explicit sign-off.
+The Google/Mycel compliance sentence on the homepage and the `/mycel` page is legal copy tied to OAuth verification. It ships verbatim: "Mycel connects to Google on your behalf for sign-in and basic Workspace directory information only, not Gmail, Calendar, or Drive content." Do not touch the wording without explicit sign-off. The scope list on `/mycel` is the same.

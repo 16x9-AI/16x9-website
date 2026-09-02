@@ -5,8 +5,7 @@ import { Reveal } from "@/components/site/Reveal";
 import { Marquee } from "@/components/site/Marquee";
 import { FrameGrid, FrameCell } from "@/components/site/FrameGrid";
 import { MycelBrain } from "@/components/site/MycelBrain";
-import { JoinForm } from "@/components/site/JoinForm";
-import { JoinNotes } from "@/components/site/JoinNotes";
+import { Contact } from "@/components/site/Contact";
 import heroHorizon from "@/assets/art/hero-horizon.svg";
 import philosophyDiagram from "@/assets/art/philosophy-diagram.svg";
 import artAgentField from "@/assets/art/exp-01-agent-field-services.svg";
@@ -20,50 +19,80 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const experiments = [
+// Six systems in operation today. Companies are described by industry, never
+// named (VOICE.md, decision 2026-09-02). Each line is verifiable against the
+// Linear record for that company.
+const work = [
   {
     number: "01",
-    name: "Agents in the Field",
-    outcome: "Running quoting and scheduling through agents taught us where autonomy needs a human watching.",
+    name: "Field operations on agents",
+    outcome:
+      "Dispatch, pricing, payroll, and customer notifications for a services company, moved off spreadsheets and onto agents with an audit trail on every action.",
     art: artAgentField,
   },
   {
     number: "02",
-    name: "The Stretch Point",
-    outcome: "One research pass can carry a week of content before the quality starts slipping.",
+    name: "Autonomous publishing",
+    outcome:
+      "A local-services site that researches, writes, cites, and publishes across 150+ city pages. Quality gates decide what ships. People decide what the gates check.",
     art: artContentDerivatives,
   },
   {
     number: "03",
-    name: "Long Memory",
-    outcome: "Give an agent a universe of deals to remember and the humans start trusting it before they should.",
+    name: "Intelligence desks",
+    outcome:
+      "A portable research desk for boutique advisory firms: evidence from filings and news, confidence scoring, and forecast ledgers recalibrated against what actually happened.",
     art: artDealIntelligence,
   },
   {
     number: "04",
-    name: "Writing Like Someone",
-    outcome: "We taught a system to write like a person, then found exactly where the disguise breaks.",
+    name: "Capital matching",
+    outcome:
+      "A financing marketplace where an agent prequalifies applicants and syncs with the lender network. Nothing publishes without clearing a compliance gate.",
     art: artOutreachSystems,
   },
   {
     number: "05",
-    name: "Let the Data Decide",
-    outcome: "Letting analytics decide what gets written next made us faster and slightly less curious.",
+    name: "Clinical research operations",
+    outcome:
+      "A platform for a sponsored clinical research network: practice onboarding, trial matching against the public registry, and a code-level filter that keeps patient detail out of every answer.",
     art: artNewsletter,
   },
   {
     number: "06",
-    name: "Quarters Into Days",
-    outcome: "Compressing brand to build from quarters to days brought back speed and cost us some judgment.",
+    name: "Daily intelligence",
+    outcome:
+      "Two reports every morning, one on the AI industry and one on clinical research. Researched, written, and published by agents. The first one is public at /intel.",
     art: artWebsiteGen,
   },
 ];
 
+const practice = [
+  {
+    label: "Build",
+    body: "Products and the companies around them. We take a stake, so the work has to hold up past the demo.",
+  },
+  {
+    label: "Operate",
+    body: "Agents run the daily work inside those companies: intake, research, publishing, dispatch, reporting. People own the decisions the agents surface.",
+  },
+  {
+    label: "Research",
+    body: "A standing share of every quarter goes to capability we do not have yet. It is how the platform and the daily reports came to exist.",
+  },
+];
+
+// Counts pulled from the Mycel catalog on 2026-09-02 and rounded down:
+// 649 skills, 1,214 tool integrations, 48 agents, 93 connection environments.
 const mycelSpecs = [
-  { label: "Function", value: "Agent memory, orchestration, structured data" },
-  { label: "Role", value: "The substrate the collective builds on" },
-  { label: "Google access", value: "Sign-in identity and Workspace directory only" },
-  { label: "Not accessed", value: "Gmail, Calendar, Drive content" },
+  { label: "Composition", value: "Agents built from versioned skills, tools, rules, and guardrails" },
+  { label: "Catalog", value: "600+ skills, 1,200+ tool integrations, shared across firms" },
+  { label: "Models", value: "Any provider through one gateway. Pick a policy, not a vendor" },
+  { label: "Memory", value: "Episodic recall, document library, cache. Three privacy tiers" },
+  { label: "Trust", value: "Every block earns a 0 to 9 readiness level from clean runs" },
+  { label: "Learning", value: "Runs are graded. Improvements are proposed. People sign off" },
+  { label: "Access", value: "Web app, MCP server, REST API, editor harness" },
+  { label: "Status", value: "Internal. Runs our companies. Not open yet" },
 ];
 
 function Index() {
@@ -71,19 +100,28 @@ function Index() {
     <>
       <Nav />
       <main>
-        {/* Hero / Manifesto */}
+        {/* Hero */}
         <section className="flex min-h-[calc(100dvh-8rem)] flex-col justify-between px-6 pb-10 pt-14 md:px-10 md:pt-20">
           <div className="mx-auto w-full max-w-[1400px]">
             <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-graphite">
-              #0 A collective of framers
+              16x9 / AI studio
             </p>
             <h1 className="mt-8 font-editorial text-[clamp(2.75rem,10vw,9.5rem)] uppercase leading-[0.92] tracking-tight text-ink">
-              We compose
+              We build companies
               <br />
-              in the wide shot.
+              that run on agents.
             </h1>
-            <p className="mt-8 max-w-xl font-mono text-[12px] uppercase leading-relaxed tracking-[0.08em] text-graphite">
-              We were building before it paid. AI just made the instrument faster.
+            <p className="mt-8 max-w-2xl text-[16px] leading-[1.7] text-ink md:text-[18px]">
+              A small team of builders and operators. Five companies in operation across real
+              estate, capital markets, clinical research, advisory, and field services. One agent
+              platform underneath all of them, built by us, run by us.
+            </p>
+            <p className="mt-6 max-w-xl font-mono text-[12px] uppercase leading-relaxed tracking-[0.08em] text-graphite">
+              Open to partners, operators, and builders.{" "}
+              <a href="#contact" className="text-ink underline underline-offset-4 hover:text-graphite">
+                Write to us
+              </a>
+              .
             </p>
           </div>
           <div className="mx-auto mt-14 w-full max-w-[1400px] border-t border-ink/30">
@@ -98,12 +136,12 @@ function Index() {
 
         <Marquee />
 
-        {/* The Frame (philosophy) */}
-        <section id="the-frame" className="border-b border-ink/80 px-6 py-20 md:px-10">
+        {/* How we work */}
+        <section id="studio" className="border-b border-ink/80 px-6 py-20 md:px-10">
           <div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-16 md:grid-cols-[0.9fr_1.6fr]">
             <div>
               <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-graphite">
-                #1 Philosophy / The Frame
+                #1 The studio
               </p>
               <img
                 src={philosophyDiagram}
@@ -112,61 +150,50 @@ function Index() {
                 className="mt-8 w-full max-w-[340px] md:max-w-[400px]"
               />
               <p className="mt-6 border-t border-ink/30 pt-4 font-mono text-[11px] uppercase tracking-[0.14em] text-graphite">
-                FIG. 01 - THE WIDE SHOT
+                FIG. 01 - 16:9, the aspect ratio of a wide shot
               </p>
             </div>
             <Reveal>
               <div className="max-w-[42em] space-y-6 text-[16px] leading-[1.75] text-ink md:text-[18px]">
                 <p className="font-editorial text-[28px] uppercase leading-[1.05] tracking-tight md:text-[34px]">
-                  A frame is a decision about what to include.
+                  We work across industries on purpose.
                 </p>
                 <p>
-                  Most frames get drawn too narrow. We stay wide, and look for polymaths: range
-                  teaches the shape depth alone misses.
+                  A pattern solved in one company shows up in the next. The publishing engine
+                  built for a cleaning business became the content system for a lender. The
+                  research desk built for advisors became the daily report on clinical trials.
+                  Generalists notice this. Specialists rebuild it.
                 </p>
                 <p>
-                  16x9 is the aspect ratio of that wide shot. It's also the promise that nothing
-                  we build stays boxed in.
+                  The name is the aspect ratio of a wide shot. It is the only metaphor on this
+                  page.
                 </p>
               </div>
+              <dl className="mt-12 grid grid-cols-1 gap-8 border-t border-ink/80 pt-8 sm:grid-cols-3">
+                {practice.map((p) => (
+                  <div key={p.label}>
+                    <dt className="font-mono text-[11px] uppercase tracking-[0.14em] text-graphite">
+                      {p.label}
+                    </dt>
+                    <dd className="mt-3 text-[14.5px] leading-[1.65] text-ink">{p.body}</dd>
+                  </div>
+                ))}
+              </dl>
             </Reveal>
           </div>
         </section>
 
-        {/* Join the Frame */}
-        <section id="join" className="border-b border-ink/80 px-6 py-20 md:px-10">
-          <div className="mx-auto max-w-[1400px]">
-            <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-graphite">
-              #2 Join the Frame
-            </p>
-            <h2 className="mt-8 max-w-[18ch] font-editorial text-[clamp(2.25rem,6vw,3.75rem)] uppercase leading-[0.95] tracking-tight text-ink">
-              Join the frame
-            </h2>
-            <p className="mt-5 max-w-[46ch] text-[15px] leading-relaxed text-ink md:text-[16px]">
-              Framers, not specialists. A handful a year. One good answer is enough.
-            </p>
-            <div className="mt-16 grid grid-cols-1 items-stretch gap-14 md:mt-20 md:grid-cols-[0.42fr_0.58fr] md:gap-16">
-              <Reveal className="flex h-full min-h-0 flex-1 flex-col">
-                <JoinNotes />
-              </Reveal>
-              <Reveal delay={0.06}>
-                <JoinForm />
-              </Reveal>
-            </div>
-          </div>
-        </section>
-
-        {/* Experiments */}
+        {/* Work */}
         <section
-          id="experiments"
+          id="work"
           className="border-t border-snow/20 bg-obsidian px-6 py-24 text-snow md:px-10"
         >
           <div className="mx-auto max-w-[1400px]">
             <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-snow/60">
-              #3 Experiments
+              #2 Work
             </p>
             <h2 className="mt-8 max-w-[18ch] font-editorial text-[clamp(2.5rem,7vw,6rem)] uppercase leading-[0.95] tracking-tight text-snow">
-              Six explorations in agentic systems.
+              Six systems in operation.
             </h2>
             <div className="mt-16 grid grid-cols-1 gap-10 md:mt-20 md:grid-cols-[max-content_1fr]">
               <div className="md:sticky md:top-24 md:self-start md:border-r md:border-snow/20 md:pr-10">
@@ -180,13 +207,13 @@ function Index() {
                   </span>
                 </div>
                 <p className="mt-6 max-w-[22ch] font-mono text-[11px] uppercase leading-relaxed tracking-[0.08em] text-snow/60">
-                  What we built. What it taught us.
+                  Running today, inside companies we hold a stake in. Not pilots.
                 </p>
               </div>
               <div>
                 <FrameGrid>
-                  {experiments.map((exp) => (
-                    <FrameCell key={exp.number} {...exp} />
+                  {work.map((item) => (
+                    <FrameCell key={item.number} {...item} />
                   ))}
                 </FrameGrid>
               </div>
@@ -194,11 +221,8 @@ function Index() {
           </div>
         </section>
 
-        {/* Mycel note */}
-        <section
-          id="mycel-note"
-          className="bg-obsidian px-6 py-20 text-snow md:px-10"
-        >
+        {/* Mycel */}
+        <section id="mycel" className="bg-obsidian px-6 py-20 text-snow md:px-10">
           <div className="mx-auto max-w-[1400px]">
             <div className="grid grid-cols-1 items-stretch gap-14 md:grid-cols-[0.42fr_0.58fr] md:gap-16">
               <Reveal className="aspect-[16/9] w-full overflow-hidden border border-snow/20 md:aspect-auto md:h-full md:w-auto">
@@ -208,27 +232,37 @@ function Index() {
               </Reveal>
               <Reveal delay={0.06}>
                 <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-snow/60">
-                  #4 Mycel / A technical note
+                  #3 Mycel / The platform
                 </p>
                 <h2 className="mt-7 font-editorial text-[clamp(2.25rem,6vw,3.75rem)] uppercase leading-[0.95] tracking-tight text-snow">
                   Mycel
                 </h2>
-                <p className="mt-6 max-w-[46ch] text-[15px] leading-relaxed text-snow/80 md:text-[16px]">
-                  Mycel connects to Google on your behalf for sign-in and basic Workspace directory
-                  information only, not Gmail, Calendar, or Drive content.
+                <p className="mt-6 max-w-[52ch] text-[16px] leading-[1.7] text-snow md:text-[17px]">
+                  The agent platform every company we build runs on. We built it when nothing on
+                  the market let us compose agents from inspectable parts, run them against any
+                  model, give them memory, and hold them to a standard of trust that is earned
+                  rather than declared.
+                </p>
+                <p className="mt-5 max-w-[52ch] text-[15px] leading-[1.7] text-snow/80">
+                  An agent in Mycel is a versioned composition: skills, tools, rules, guardrails,
+                  triggers. Each block starts untrusted. Clean runs move it up a 0 to 9 readiness
+                  ladder. Past the midpoint, nothing advances without a person signing off. Every
+                  run is traced. Every run is graded, and the platform proposes the next
+                  improvement for a human to accept or reject. Firms share what works with each
+                  other across a common market without sharing what is private.
                 </p>
                 <dl className="mt-10 divide-y divide-snow/20 border-t border-snow/20">
                   {mycelSpecs.map((row) => (
-                    <div key={row.label} className="flex items-baseline justify-between gap-6 py-7">
-                      <dt className="font-mono text-[11px] uppercase tracking-[0.14em] text-snow/60">
+                    <div key={row.label} className="flex items-baseline justify-between gap-6 py-5">
+                      <dt className="shrink-0 font-mono text-[11px] uppercase tracking-[0.14em] text-snow/60">
                         {row.label}
                       </dt>
-                      <dd className="max-w-[26ch] text-right font-mono text-[12px] uppercase tracking-[0.06em] text-snow">
+                      <dd className="max-w-[34ch] text-right font-mono text-[12px] uppercase tracking-[0.06em] text-snow">
                         {row.value}
                       </dd>
                     </div>
                   ))}
-                  <div className="flex items-baseline justify-between gap-6 py-7">
+                  <div className="flex items-baseline justify-between gap-6 py-5">
                     <dt className="font-mono text-[11px] uppercase tracking-[0.14em] text-snow/60">
                       Details
                     </dt>
@@ -242,6 +276,33 @@ function Index() {
                     </dd>
                   </div>
                 </dl>
+                {/* Legal copy tied to Google OAuth verification. Ships verbatim. See VOICE.md. */}
+                <p className="mt-8 max-w-[52ch] font-mono text-[10.5px] uppercase leading-relaxed tracking-[0.06em] text-snow/50">
+                  Mycel connects to Google on your behalf for sign-in and basic Workspace directory
+                  information only, not Gmail, Calendar, or Drive content.
+                </p>
+              </Reveal>
+            </div>
+          </div>
+        </section>
+
+        {/* Contact */}
+        <section id="contact" className="border-t border-ink/80 px-6 py-20 md:px-10">
+          <div className="mx-auto max-w-[1400px]">
+            <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-graphite">
+              #4 Contact
+            </p>
+            <h2 className="mt-8 max-w-[18ch] font-editorial text-[clamp(2.25rem,6vw,3.75rem)] uppercase leading-[0.95] tracking-tight text-ink">
+              Talk to us.
+            </h2>
+            <p className="mt-5 max-w-[52ch] text-[16px] leading-[1.7] text-ink md:text-[17px]">
+              If you run a company that should be running on agents, have a business worth
+              building, or want to work with people who ship at this level, write to us. We read
+              everything ourselves.
+            </p>
+            <div className="mt-16 md:mt-20">
+              <Reveal>
+                <Contact />
               </Reveal>
             </div>
           </div>

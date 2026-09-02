@@ -9,15 +9,16 @@ function MycelPage() {
   return (
     <LegalPage eyebrow="Mycel" title="What Mycel is, and what it can see">
       <p className={legalP}>
-        Mycel is the substrate the collective builds on: agent memory, orchestration, and
-        structured data. It lets an agent remember what happened last time, coordinate with other
-        agents, and read the structured data a task actually needs. Built by 16x9, it connects your
-        business tools, automates workflows, and delivers intelligent insights across your
-        organization.
+        Mycel is the agent platform 16x9 built and runs its companies on. Agents are composed from
+        versioned skills, tools, rules, and guardrails. Every run is traced. Each building block
+        earns trust through use, and nothing is promoted without a person signing off. Mycel
+        connects to a firm's business tools, keeps memory across runs, and reads the structured
+        data a task needs.
       </p>
 
       <p className={legalP}>
-        Framers get Mycel on day one. Here is exactly what it can and cannot see.
+        Mycel is internal today. Here is exactly what it can and cannot see when it connects to
+        Google.
       </p>
 
       <h2 className={legalH2}>Does Mycel connect to Google on your behalf?</h2>
