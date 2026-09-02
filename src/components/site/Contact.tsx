@@ -53,7 +53,7 @@ export function Contact() {
           </span>
         </a>
         <p className="mt-8 border-t border-ink/80 pt-5 font-mono text-[11px] uppercase leading-relaxed tracking-[0.08em] text-graphite">
-          Every message is read by a person. Expect a reply within two working days.
+          Every message is read by a person.
         </p>
       </div>
     </div>

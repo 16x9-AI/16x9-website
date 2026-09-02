@@ -27,14 +27,14 @@ const work = [
     number: "01",
     name: "Field operations on agents",
     outcome:
-      "Dispatch, pricing, payroll, and customer notifications for a services company, moved off spreadsheets and onto agents with an audit trail on every action.",
+      "Dispatch, pricing, payroll, and customer notifications for a services company, being moved from spreadsheet and no-code automations onto agents that leave a record of what they did.",
     art: artAgentField,
   },
   {
     number: "02",
     name: "Autonomous publishing",
     outcome:
-      "A local-services site that researches, writes, cites, and publishes across 150+ city pages. Quality gates decide what ships. People decide what the gates check.",
+      "A local-services site with 150+ location pages and a blog that agents research, write, cite, and publish. Quality gates decide what ships. People decide what the gates check.",
     art: artContentDerivatives,
   },
   {
@@ -48,14 +48,14 @@ const work = [
     number: "04",
     name: "Capital matching",
     outcome:
-      "A financing marketplace where an agent prequalifies applicants and syncs with the lender network. Nothing publishes without clearing a compliance gate.",
+      "Agent prequalification and lender-network sync for a financing marketplace, plus a content pipeline where nothing publishes without clearing a compliance gate.",
     art: artOutreachSystems,
   },
   {
     number: "05",
     name: "Clinical research operations",
     outcome:
-      "A platform for a sponsored clinical research network: practice onboarding, trial matching against the public registry, and a code-level filter that keeps patient detail out of every answer.",
+      "A pilot platform for a sponsored clinical research network: practice onboarding, trial supply from the public registry, and a code-level filter that keeps patient detail out of every answer.",
     art: artNewsletter,
   },
   {
@@ -70,15 +70,15 @@ const work = [
 const practice = [
   {
     label: "Build",
-    body: "Products and the companies around them. We take a stake, so the work has to hold up past the demo.",
+    body: "Products, and the companies they live in. We stay after launch, so the work has to hold up past the demo.",
   },
   {
     label: "Operate",
-    body: "Agents run the daily work inside those companies: intake, research, publishing, dispatch, reporting. People own the decisions the agents surface.",
+    body: "Agents take on daily work inside those companies: research, publishing, intake, reporting. People own the decisions the agents surface.",
   },
   {
     label: "Research",
-    body: "A standing share of every quarter goes to capability we do not have yet. It is how the platform and the daily reports came to exist.",
+    body: "A standing share of every quarter goes to capability we do not have yet. Some of it becomes product. The rest becomes judgment.",
   },
 ];
 
@@ -86,13 +86,13 @@ const practice = [
 // 649 skills, 1,214 tool integrations, 48 agents, 93 connection environments.
 const mycelSpecs = [
   { label: "Composition", value: "Agents built from versioned skills, tools, rules, and guardrails" },
-  { label: "Catalog", value: "600+ skills, 1,200+ tool integrations, shared across firms" },
-  { label: "Models", value: "Any provider through one gateway. Pick a policy, not a vendor" },
+  { label: "Catalog", value: "600+ skills, 1,000+ tool integrations, shared across firms" },
+  { label: "Models", value: "Multiple providers through one gateway. Pick a policy, not a vendor" },
   { label: "Memory", value: "Episodic recall, document library, cache. Three privacy tiers" },
   { label: "Trust", value: "Every block earns a 0 to 9 readiness level from clean runs" },
   { label: "Learning", value: "Runs are graded. Improvements are proposed. People sign off" },
   { label: "Access", value: "Web app, MCP server, REST API, editor harness" },
-  { label: "Status", value: "Internal. Runs our companies. Not open yet" },
+  { label: "Status", value: "Internal. In use across our companies. Not open yet" },
 ];
 
 function Index() {
@@ -107,17 +107,17 @@ function Index() {
               16x9 / AI studio
             </p>
             <h1 className="mt-8 font-editorial text-[clamp(2.75rem,10vw,9.5rem)] uppercase leading-[0.92] tracking-tight text-ink">
-              We build companies
+              We build
               <br />
-              that run on agents.
+              agentic companies.
             </h1>
             <p className="mt-8 max-w-2xl text-[16px] leading-[1.7] text-ink md:text-[18px]">
-              A small team of builders and operators. Five companies in operation across real
-              estate, capital markets, clinical research, advisory, and field services. One agent
-              platform underneath all of them, built by us, run by us.
+              Builders, founders, and entrepreneurs working across five companies: real estate,
+              capital markets, clinical research, advisory, and field services. Each one is moving
+              its operations onto Mycel, the agent platform we built.
             </p>
             <p className="mt-6 max-w-xl font-mono text-[12px] uppercase leading-relaxed tracking-[0.08em] text-graphite">
-              Open to partners, operators, and builders.{" "}
+              Open to partners, founders, and builders.{" "}
               <a href="#contact" className="text-ink underline underline-offset-4 hover:text-graphite">
                 Write to us
               </a>
@@ -159,10 +159,10 @@ function Index() {
                   We work across industries on purpose.
                 </p>
                 <p>
-                  A pattern solved in one company shows up in the next. The publishing engine
-                  built for a cleaning business became the content system for a lender. The
-                  research desk built for advisors became the daily report on clinical trials.
-                  Generalists notice this. Specialists rebuild it.
+                  A pattern solved in one company shows up in the next. The daily intelligence
+                  report we built for the AI industry now runs a second edition on clinical
+                  research. The content engine is built once and run per company. Generalists
+                  notice this. Specialists rebuild it.
                 </p>
                 <p>
                   The name is the aspect ratio of a wide shot. It is the only metaphor on this
@@ -207,7 +207,7 @@ function Index() {
                   </span>
                 </div>
                 <p className="mt-6 max-w-[22ch] font-mono text-[11px] uppercase leading-relaxed tracking-[0.08em] text-snow/60">
-                  Running today, inside companies we hold a stake in. Not pilots.
+                  Running today, inside the companies we build with. Some in production, some in pilot.
                 </p>
               </div>
               <div>
@@ -238,10 +238,9 @@ function Index() {
                   Mycel
                 </h2>
                 <p className="mt-6 max-w-[52ch] text-[16px] leading-[1.7] text-snow md:text-[17px]">
-                  The agent platform every company we build runs on. We built it when nothing on
-                  the market let us compose agents from inspectable parts, run them against any
-                  model, give them memory, and hold them to a standard of trust that is earned
-                  rather than declared.
+                  The agent platform our companies run on. We built it to compose agents from
+                  inspectable parts, run them on the model that fits, give them memory, and hold
+                  them to a standard of trust that is earned rather than declared.
                 </p>
                 <p className="mt-5 max-w-[52ch] text-[15px] leading-[1.7] text-snow/80">
                   An agent in Mycel is a versioned composition: skills, tools, rules, guardrails,

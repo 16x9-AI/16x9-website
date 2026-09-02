@@ -19,7 +19,7 @@ export function Footer() {
             16X9
           </Link>
           <p className="mt-6 max-w-sm font-mono text-[11px] uppercase leading-relaxed tracking-[0.08em] text-snow/60">
-            An AI studio. Companies built and run on agents.
+            An AI studio. Agentic companies, built here.
           </p>
         </div>
         <div className="flex flex-col justify-between gap-10 md:items-end md:text-right">
@@ -50,7 +50,7 @@ export function Footer() {
       </div>
       <div className="border-t border-snow/20 px-6 py-4 md:px-10">
         <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-snow/60">
-          © 2026 16x9 Inc. Delaware.
+          © 2026 16x9 Inc.
         </p>
       </div>
     </footer>

@@ -9,7 +9,7 @@ function MycelPage() {
   return (
     <LegalPage eyebrow="Mycel" title="What Mycel is, and what it can see">
       <p className={legalP}>
-        Mycel is the agent platform 16x9 built and runs its companies on. Agents are composed from
+        Mycel is the agent platform 16x9 built for the companies it works inside. Agents are composed from
         versioned skills, tools, rules, and guardrails. Every run is traced. Each building block
         earns trust through use, and nothing is promoted without a person signing off. Mycel
         connects to a firm's business tools, keeps memory across runs, and reads the structured
