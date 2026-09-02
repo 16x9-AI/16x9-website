@@ -19,7 +19,8 @@ export function Footer() {
             16X9
           </Link>
           <p className="mt-6 max-w-sm font-mono text-[11px] uppercase leading-relaxed tracking-[0.08em] text-snow/60">
-            An AI studio. Agentic companies, built here.
+            An AI studio. Agentic systems, built and run. 16x9 is the aspect ratio of a wide
+            shot; we work across industries on purpose.
           </p>
         </div>
         <div className="flex flex-col justify-between gap-10 md:items-end md:text-right">

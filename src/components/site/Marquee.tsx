@@ -1,4 +1,5 @@
-const ITEM = "BUILD ✦ OPERATE ✦ RESEARCH ✦ SHIP";
+const ITEM =
+  "CLINICAL RESEARCH ✦ CAPITAL ADVISORY ✦ COMMERCIAL LENDING ✦ REAL ESTATE ✦ FIELD SERVICES";
 
 /**
  * Marquee: a quiet letterpress running-head divider — hairline-bounded,
