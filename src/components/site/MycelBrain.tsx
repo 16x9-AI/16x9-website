@@ -676,8 +676,13 @@ function GraphCanvas({ world, orientation, seed }: GraphCanvasProps) {
       const n = graph.nodes[id];
       if (!n || n.op <= 0.02) continue;
       const above = (n.y ?? 0) > world.H * 0.5;
-      const anchor =
-        (n.x ?? 0) < world.W * 0.3 ? "start" : (n.x ?? 0) > world.W * 0.7 ? "end" : "middle";
+      // "center", not "middle": middle is a textBaseline value and is invalid for
+      // textAlign, and the canvas spec IGNORES an invalid assignment rather than
+      // throwing. A hub in the centre third therefore inherited whatever alignment
+      // the previous iteration left behind — start, end, or the default — so its
+      // label sat off to one side depending on draw order.
+      const anchor: CanvasTextAlign =
+        (n.x ?? 0) < world.W * 0.3 ? "start" : (n.x ?? 0) > world.W * 0.7 ? "end" : "center";
       ctx.textAlign = anchor;
       ctx.globalAlpha = n.op;
       ctx.fillText(
