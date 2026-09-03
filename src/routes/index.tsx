@@ -451,11 +451,6 @@ function Index() {
                 <p className="mt-2 font-mono text-[10.5px] uppercase leading-relaxed tracking-[0.06em] text-graphite">
                   Counts from the platform catalog, Q3 2026, rounded down.
                 </p>
-                {/* Legal copy tied to Google OAuth verification. Ships verbatim, sentence case. See VOICE.md. */}
-                <p className="mt-2 max-w-[60ch] font-mono text-[11.5px] leading-relaxed text-ink/80">
-                  Mycel connects to Google on your behalf for sign-in and basic Workspace directory
-                  information only, not Gmail, Calendar, or Drive content.
-                </p>
               </Reveal>
             </div>
 

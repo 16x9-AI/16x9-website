@@ -26,7 +26,7 @@ Build: `npm run build` · Dev: `npm run dev` · Preview: `npm run preview` · Li
 - **No company names on the public site.** Work is described by industry (VOICE.md, decision 2026-09-02). If a card needs a name to make sense, rewrite the card.
 - **Status tags are audited, not decorative.** `FrameCell` takes `status: "Running" | "Pilot" | "Building"`. Check Linear before changing one. The audit date is in the comment above the `work` array in `index.tsx`.
 - **Mycel counts are dated.** The spec rows carry rounded-down counts pulled from the Mycel catalog; the exact numbers and date are in the comment above `mycelSpecs`. Update both together.
-- **The Google sentence ships verbatim** on `/` (the standalone `/mycel` page was removed 2026-09-03 at the founders' request; the privacy policy still carries the scope detail): "Mycel connects to Google on your behalf for sign-in and basic Workspace directory information only, not Gmail, Calendar, or Drive content."
+- **The Google scope disclosure lives on `/privacy` only.** Both the standalone `/mycel` page and the homepage scope sentence were removed on 2026-09-03 at Maxi's request. `/privacy` is the compliance surface for Google OAuth verification: do not edit its Google sections, and keep the footer link to it.
 
 ## Motion
 
