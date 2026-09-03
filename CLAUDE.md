@@ -30,7 +30,7 @@ Build: `npm run build` · Dev: `npm run dev` · Preview: `npm run preview` · Li
 
 ## Motion
 
-All illustration on the homepage is generative and drawn live in `src/components/site/Motif.tsx` (kinds: dots, field, filmstrip, waves, contours, lines, horizon). A motif fills its parent box and paints in the parent's current text colour, so `text-ink` on the light page and `text-snow` on the dark plate are the only theming needed. Rules the family follows, and any new kind must too:
+All illustration on the homepage is generative and drawn live in `src/components/site/Motif.tsx` (kinds: dots, field, filmstrip, waves, contours, lines, horizon, wideshot). A motif fills its parent box and paints in the parent's current text colour, so `text-ink` on the light page and `text-snow` on the dark plate are the only theming needed. Rules the family follows, and any new kind must too:
 
 - Deterministic: every frame re-seeds the same generator; only the time term moves.
 - Slow and quiet. If it reads as an animation, it is too fast.
@@ -38,7 +38,7 @@ All illustration on the homepage is generative and drawn live in `src/components
 - `prefers-reduced-motion` draws one still frame and stops (the global CSS override in `styles.css` also freezes the CSS keyframes: `animate-status-pulse`, `animate-marquee-drift`, `animate-mycel-pulse`).
 - The server renders an empty canvas with identical attributes; never set `width`/`height` in JSX.
 
-`CountUp` (the running-head tally) renders the final value on the server and animates once on first view. The Mycel brain canvas (`MycelBrain.tsx`) is the older sibling of this family and follows the same rules. The static SVGs the motifs replaced were removed 2026-09-03; `philosophy-diagram.svg` and `footer-horizon.svg` remain as static figures.
+`CountUp` (the running-head tally) renders the final value on the server and animates once on first view. The Mycel brain canvas (`MycelBrain.tsx`) is the older sibling of this family and follows the same rules. The static SVGs the motifs replaced were removed 2026-09-03 (the wide-shot figure is the `wideshot` motif); only `footer-horizon.svg` remains as static art.
 
 ## Contact
 

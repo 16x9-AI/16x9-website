@@ -14,7 +14,6 @@ import {
   type BoardRowData,
   type Status,
 } from "@/components/site/Board";
-import philosophyDiagram from "@/assets/art/philosophy-diagram.svg";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -415,13 +414,8 @@ function Index() {
 
               <Reveal delay={0.06} className="flex flex-col">
                 <figure className="m-0">
-                  <div className="aspect-video w-full overflow-hidden border border-ink/80">
-                    <img
-                      src={philosophyDiagram}
-                      alt=""
-                      aria-hidden
-                      className="h-full w-full object-cover"
-                    />
+                  <div className="aspect-video w-full overflow-hidden border border-ink/80 bg-obsidian text-snow">
+                    <Motif kind="wideshot" />
                   </div>
                   <figcaption className="mt-2 font-mono text-[10.5px] uppercase tracking-[0.12em] text-graphite">
                     Fig. 01. 16:9, the aspect ratio of a wide shot.
