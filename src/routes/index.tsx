@@ -257,8 +257,7 @@ function Index() {
           <div className="mx-auto w-full max-w-[1400px]">
             <p className={`${kicker} text-graphite`}>16x9 / AI studio</p>
             <h1 className="mt-5 text-balance font-editorial text-[clamp(2.5rem,6.4vw,5rem)] uppercase leading-[0.92] tracking-tight text-ink">
-              We build agentic companies
-              <br className="hidden md:block" />
+              We build agentic companies <br className="hidden md:block" />
               and run them.
             </h1>
 

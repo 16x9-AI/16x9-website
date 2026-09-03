@@ -27,7 +27,7 @@ export function Nav() {
       >
         <Link
           to="/"
-          className="flex items-center px-4 font-editorial text-[22px] leading-none tracking-tight text-ink focus-visible:bg-ink focus-visible:text-background focus-visible:outline-none sm:px-6 md:px-10"
+          className="flex items-center px-3 font-editorial text-[22px] leading-none tracking-tight text-ink focus-visible:bg-ink focus-visible:text-background focus-visible:outline-none sm:px-6 md:px-10"
         >
           16X9
         </Link>
@@ -36,7 +36,7 @@ export function Nav() {
             <li key={link.href} className="flex border-l border-ink/80">
               <a
                 href={link.href}
-                className="flex items-center px-3 font-mono text-[11px] uppercase tracking-[0.12em] text-ink transition-colors hover:bg-ink hover:text-background focus-visible:bg-ink focus-visible:text-background focus-visible:outline-none sm:px-5 md:px-7"
+                className="flex items-center px-2.5 font-mono text-[11px] uppercase tracking-[0.08em] text-ink sm:tracking-[0.12em] transition-colors hover:bg-ink hover:text-background focus-visible:bg-ink focus-visible:text-background focus-visible:outline-none sm:px-5 md:px-7"
               >
                 {link.label}
               </a>
