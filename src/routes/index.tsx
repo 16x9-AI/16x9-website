@@ -3,197 +3,90 @@ import { Nav } from "@/components/site/Nav";
 import { Footer } from "@/components/site/Footer";
 import { Reveal } from "@/components/site/Reveal";
 import { Marquee } from "@/components/site/Marquee";
+import { FrameGrid, FrameCell } from "@/components/site/FrameGrid";
 import { MycelBrain } from "@/components/site/MycelBrain";
 import { Contact } from "@/components/site/Contact";
-import { Ledger, type LedgerGroup } from "@/components/site/Ledger";
 import heroHorizon from "@/assets/art/hero-horizon.svg";
+import philosophyDiagram from "@/assets/art/philosophy-diagram.svg";
+import artAgentField from "@/assets/art/exp-01-agent-field-services.svg";
+import artContentDerivatives from "@/assets/art/exp-02-content-derivatives.svg";
+import artDealIntelligence from "@/assets/art/exp-03-deal-intelligence.svg";
+import artOutreachSystems from "@/assets/art/exp-04-outreach-systems.svg";
+import artNewsletter from "@/assets/art/exp-05-newsletter-intelligence.svg";
+import artWebsiteGen from "@/assets/art/exp-06-website-generation.svg";
 
 export const Route = createFileRoute("/")({
   component: Index,
 });
 
-// The record. Audited against Linear (closed issues, all teams) and the Mycel
-// 16x9 universe on 2026-09-02. Companies are described by industry, never
-// named (VOICE.md). Status values: running = in use today; pilot = live with a
-// first cohort; building = in progress, not yet relied on.
-const record: LedgerGroup[] = [
+// Six systems, described by industry, never by company name (VOICE.md,
+// decision 2026-09-02). Status audited against Linear closed issues, the Mycel
+// 16x9 universe, and the Vercel project list on 2026-09-02.
+const work = [
   {
-    industry: "Clinical research",
-    context: "A Southwest Florida research site network, and a sponsored-research network being built beside it.",
-    rows: [
-      {
-        name: "Sponsor development machine",
-        detail:
-          "Scans the public trial registry, scores sponsor fit against the network's therapeutic areas, and shortlists targets for the team.",
-        status: "running",
-      },
-      {
-        name: "Operations moving onto agents",
-        detail:
-          "Function by function. Receivables and clinical-trial-agreement billing first, with a gate verdict on every line item before it is sent.",
-        status: "building",
-      },
-      {
-        name: "Document agents",
-        detail:
-          "Read, OCR, rename, and file the network's shared drive. Proven on a dry run; every move is written to a ledger before it happens.",
-        status: "pilot",
-      },
-      {
-        name: "Sponsored-research platform",
-        detail:
-          "Conversational site onboarding backed by a live model, trial supply from the public registry, one sign-in, and a code-level filter that keeps patient detail out of every free-text answer.",
-        status: "pilot",
-      },
-      {
-        name: "Daily clinical-research report",
-        detail: "Researched, written, and published every morning without a hand on it.",
-        status: "running",
-      },
-    ],
+    status: "Running",
+    name: "Intelligence engine",
+    outcome:
+      "For advisory firms. Evidence pulled daily from SEC filings and global news, scored on six credibility axes, checked by an adversarial pass, and kept in a forecast ledger that is recalibrated against what actually happened.",
+    art: artDealIntelligence,
   },
   {
-    industry: "Capital advisory",
-    context: "A network for independent M&A, debt, and real-estate advisory firms, sharing one intelligence layer.",
-    rows: [
-      {
-        name: "Intelligence engine",
-        detail:
-          "Evidence pulled daily from SEC filings and global news through a 200-source registry, scored on six credibility axes, verified with an adversarial pass, and held in a forecast ledger that is recalibrated against what actually happened.",
-        status: "running",
-      },
-      {
-        name: "Public risk desk",
-        detail:
-          "Priority intelligence requirements published as verified notes with footnoted sources. Jurisdiction pulses, license clocks, ownership-opacity flags.",
-        status: "running",
-      },
-      {
-        name: "Sector primers",
-        detail:
-          "Twelve finance-firm types mapped from how they operate today to a fully agentic end state, and what closes the gap.",
-        status: "running",
-      },
-      {
-        name: "Firm operating system",
-        detail:
-          "Skills, agents, and tables an advisory shop runs engagements, asks, offers, and campaigns on. Six skills, three agents, four tables, one command-line install.",
-        status: "running",
-      },
-      {
-        name: "Finance runners",
-        detail:
-          "Reconciliation, month-end close, statements, variance analysis, audit support, KYC screening, and model building, each as a governed agent.",
-        status: "building",
-      },
-      {
-        name: "Public site",
-        detail: "Rebuilt as a data-backed front end on the platform. What the desk knows is what the site shows.",
-        status: "running",
-      },
-    ],
+    status: "Running",
+    name: "Advisory operating layer",
+    outcome:
+      "A public risk desk that publishes verified notes with footnoted sources. Twelve sector primers, from how each finance-firm type works today to fully agentic. A firm operating system of skills, agents, and tables an advisory shop runs its engagements on.",
+    art: artOutreachSystems,
   },
   {
-    industry: "Commercial lending",
-    context: "A financing marketplace that matches businesses to capital without touching their credit score first.",
-    rows: [
-      {
-        name: "Content engine with a compliance gate",
-        detail:
-          "Topics chosen at the intersection of vertical and product, drafts grounded in a source registry, and a gate that blocks anything ungrounded before it publishes.",
-        status: "running",
-      },
-      {
-        name: "Signal collectors",
-        detail: "Federal registers and global news feed the reactive content path. Disaster-relief financing drafts within hours of a declaration.",
-        status: "running",
-      },
-      {
-        name: "Lender-network integration",
-        detail:
-          "Agent prequalification, application submission, and status sync into the lender network, with consent and suppression records designed against TCPA.",
-        status: "building",
-      },
-    ],
+    status: "Running",
+    name: "Clinical research operations",
+    outcome:
+      "A site network's daily work moving onto agents. A sponsor-development machine scans the public trial registry and scores fit. Receivables and trial-agreement billing run behind a gate. Document agents read, rename, and file the shared drive.",
+    art: artAgentField,
   },
   {
-    industry: "Real estate",
-    context: "An agentic operating platform for property operators. Early.",
-    rows: [
-      {
-        name: "Tenant-application automation",
-        detail: "New leads become property applications in the management system without a person in the loop.",
-        status: "running",
-      },
-      {
-        name: "Vendor discovery and outreach",
-        detail: "Local service vendors found, validated, and enriched from public maps; outreach coordinated cache-first.",
-        status: "building",
-      },
-      {
-        name: "Investment screening",
-        detail: "Scores an opportunity layer by layer and writes the scorecard to tables the team can query.",
-        status: "building",
-      },
-    ],
+    status: "Pilot",
+    name: "Sponsored-research platform",
+    outcome:
+      "Conversational site onboarding backed by a live model, trial supply from the public registry, one sign-in, and a code-level filter that keeps patient detail out of every free-text answer.",
+    art: artContentDerivatives,
   },
   {
-    industry: "Field services",
-    context: "A nationwide commercial and government cleaning company.",
-    rows: [
-      {
-        name: "Self-publishing website",
-        detail:
-          "150+ location pages served as real HTML, and a blog researched, composed, audited, graded, and challenged by five agents. Quality gates decide what ships. People decide what the gates check.",
-        status: "running",
-      },
-      {
-        name: "B2B targeting engine",
-        detail: "Who to call in Miami-Dade, why now, who decides, and how to reach them.",
-        status: "running",
-      },
-      {
-        name: "Back office on agents",
-        detail:
-          "Cleaner assignment and operations first. HR and accounting underway. A dispute agent that opens chargeback trackers is in test.",
-        status: "building",
-      },
-    ],
+    status: "Running",
+    name: "Self-publishing website",
+    outcome:
+      "For a nationwide cleaning company. 150+ location pages, and a blog researched, composed, audited, graded, and challenged by five agents. Quality gates decide what ships. The back office is moving onto agents next, function by function.",
+    art: artWebsiteGen,
   },
   {
-    industry: "Across the studio",
-    context: "Systems every company inherits.",
-    rows: [
-      {
-        name: "Daily AI intelligence report",
-        detail: (
-          <>
-            Roughly 1,800 stories from 50 sources each morning, ranked to 30, scored, and published. Public at{" "}
-            <a href="/intel" className="underline underline-offset-4 hover:text-snow">
-              /intel
-            </a>
-            .
-          </>
-        ),
-        status: "running",
-      },
-      {
-        name: "Delivery pipeline",
-        detail:
-          "Agents that take a ticket, implement it in the repo, verify against the live system, and close it with evidence. Humans review the pull request.",
-        status: "running",
-      },
-      {
-        name: "Accounting platform",
-        detail: "US GAAP close, reconciliation queue, period locks, and QuickBooks sync, on an open-source ERP core.",
-        status: "building",
-      },
-      {
-        name: "Paper-trading desk",
-        detail: "Gradient-boosted alpha factors, regime detection, transaction-cost modeling. Paper only.",
-        status: "building",
-      },
-    ],
+    status: "Running",
+    name: "Daily intelligence",
+    outcome: (
+      <>
+        Two reports every morning, one on the AI industry and one on clinical research.
+        Researched, written, and published by agents. The first one is public at{" "}
+        <a href="/intel" className="underline underline-offset-4 hover:text-snow">
+          /intel
+        </a>
+        .
+      </>
+    ),
+    art: artNewsletter,
+  },
+] as const;
+
+const practice = [
+  {
+    label: "Build",
+    body: "Products, and the companies they live in. We stay after launch, so the work has to hold up past the demo.",
+  },
+  {
+    label: "Operate",
+    body: "Agents take on daily work inside those companies: research, publishing, intake, reporting. People own the decisions the agents surface.",
+  },
+  {
+    label: "Research",
+    body: "A standing share of every quarter goes to capability we do not have yet. Some of it becomes product. The rest becomes judgment.",
   },
 ];
 
@@ -210,34 +103,26 @@ const mycelSpecs = [
   { label: "Status", value: "Internal. In use across our companies. Not open yet" },
 ];
 
-const habits = [
-  "Nothing publishes without a gate. A person decides what the gate checks.",
-  "Every agent run leaves a trace. If we cannot read why it did something, it does not run in production.",
-  "Trust is earned per component, from clean runs. It is never declared.",
-  "Status is printed as it is: running, pilot, building.",
-  "We read the field every morning and publish what we read.",
-];
-
 function Index() {
   return (
     <>
       <Nav />
       <main>
-        {/* Statement */}
+        {/* Hero */}
         <section className="flex min-h-[calc(100dvh-8rem)] flex-col justify-between px-6 pb-10 pt-14 md:px-10 md:pt-20">
           <div className="mx-auto w-full max-w-[1400px]">
             <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-graphite">
               16x9 / AI studio
             </p>
-            <h1 className="mt-8 font-editorial text-[clamp(2.75rem,9vw,8.5rem)] uppercase leading-[0.92] tracking-tight text-ink">
-              We build agentic systems.
+            <h1 className="mt-8 font-editorial text-[clamp(2.75rem,10vw,9.5rem)] uppercase leading-[0.92] tracking-tight text-ink">
+              We build
               <br />
-              Then we run them.
+              agentic companies.
             </h1>
             <p className="mt-8 max-w-2xl text-[16px] leading-[1.7] text-ink md:text-[18px]">
-              Inside clinical research networks, advisory firms, lenders, property operators, and
-              field-services companies. Built and operated on Mycel, the agent platform we made for
-              it.
+              Builders, founders, and entrepreneurs working across clinical research, capital
+              advisory, commercial lending, real estate, and field services. Every company we work
+              in is moving its operations onto Mycel, the agent platform we built.
             </p>
             <p className="mt-6 max-w-xl font-mono text-[12px] uppercase leading-relaxed tracking-[0.08em] text-graphite">
               Open to partners, founders, and builders.{" "}
@@ -259,31 +144,98 @@ function Index() {
 
         <Marquee />
 
-        {/* The record */}
-        <section id="work" className="bg-obsidian px-6 py-24 text-snow md:px-10">
-          <div className="mx-auto max-w-[1400px]">
-            <div className="grid grid-cols-1 gap-10 md:grid-cols-[0.34fr_1fr] md:gap-12">
-              <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-snow/60">
-                The record
+        {/* How we work */}
+        <section id="studio" className="border-b border-ink/80 px-6 py-20 md:px-10">
+          <div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-16 md:grid-cols-[0.9fr_1.6fr]">
+            <div>
+              <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-graphite">
+                #1 The studio
               </p>
-              <div>
-                <h2 className="max-w-[20ch] font-editorial text-[clamp(2.25rem,6vw,5rem)] uppercase leading-[0.95] tracking-tight text-snow">
-                  What is built, what it does, where it stands.
-                </h2>
-                <p className="mt-6 max-w-[56ch] text-[15px] leading-[1.7] text-snow/80 md:text-[16px]">
-                  Described by industry. Names on request. Status is audited against our own
-                  tracker before it is printed here.
+              <img
+                src={philosophyDiagram}
+                alt=""
+                aria-hidden
+                className="mt-8 w-full max-w-[340px] md:max-w-[400px]"
+              />
+              <p className="mt-6 border-t border-ink/30 pt-4 font-mono text-[11px] uppercase tracking-[0.14em] text-graphite">
+                FIG. 01 - 16:9, the aspect ratio of a wide shot
+              </p>
+            </div>
+            <Reveal>
+              <div className="max-w-[42em] space-y-6 text-[16px] leading-[1.75] text-ink md:text-[18px]">
+                <p className="font-editorial text-[28px] uppercase leading-[1.05] tracking-tight md:text-[34px]">
+                  We work across industries on purpose.
+                </p>
+                <p>
+                  A pattern solved in one company shows up in the next. The daily intelligence
+                  report we built for the AI industry now runs a second edition on clinical
+                  research. The content engine is built once and run per company. Generalists
+                  notice this. Specialists rebuild it.
+                </p>
+                <p>
+                  The name is the aspect ratio of a wide shot. It is the only metaphor on this
+                  page.
                 </p>
               </div>
-            </div>
-            <div className="mt-14 md:mt-16">
-              <Ledger groups={record} />
+              <dl className="mt-12 grid grid-cols-1 gap-8 border-t border-ink/80 pt-8 sm:grid-cols-3">
+                {practice.map((p) => (
+                  <div key={p.label}>
+                    <dt className="font-mono text-[11px] uppercase tracking-[0.14em] text-graphite">
+                      {p.label}
+                    </dt>
+                    <dd className="mt-3 text-[14.5px] leading-[1.65] text-ink">{p.body}</dd>
+                  </div>
+                ))}
+              </dl>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* Work */}
+        <section
+          id="work"
+          className="border-t border-snow/20 bg-obsidian px-6 py-24 text-snow md:px-10"
+        >
+          <div className="mx-auto max-w-[1400px]">
+            <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-snow/60">
+              #2 Work
+            </p>
+            <h2 className="mt-8 max-w-[18ch] font-editorial text-[clamp(2.5rem,7vw,6rem)] uppercase leading-[0.95] tracking-tight text-snow">
+              Six systems, in operation.
+            </h2>
+            <div className="mt-16 grid grid-cols-1 gap-10 md:mt-20 md:grid-cols-[max-content_1fr]">
+              <div className="md:sticky md:top-24 md:self-start md:border-r md:border-snow/20 md:pr-10">
+                <div className="flex items-center gap-3">
+                  <span
+                    aria-hidden
+                    className="aspect-video w-12 shrink-0 border border-snow/60 bg-snow md:w-16"
+                  />
+                  <span className="font-editorial text-[28px] uppercase leading-none tracking-tight text-snow md:text-[34px]">
+                    16X9
+                  </span>
+                </div>
+                <p className="mt-6 max-w-[22ch] font-mono text-[11px] uppercase leading-relaxed tracking-[0.08em] text-snow/60">
+                  Running today, inside the companies we build with. Some in production, some in pilot.
+                </p>
+              </div>
+              <div>
+                <FrameGrid>
+                  {work.map((item) => (
+                    <FrameCell key={item.name} {...item} />
+                  ))}
+                </FrameGrid>
+                <p className="mt-14 max-w-[62ch] border-t border-snow/20 pt-5 font-mono text-[11px] uppercase leading-relaxed tracking-[0.08em] text-snow/60">
+                  Also in motion: a compliance-gated content engine and lender-network integration
+                  for a financing marketplace, and an agentic operating platform for property
+                  operators.
+                </p>
+              </div>
             </div>
           </div>
         </section>
 
         {/* Mycel */}
-        <section id="mycel" className="border-t border-snow/20 bg-obsidian px-6 py-20 text-snow md:px-10">
+        <section id="mycel" className="bg-obsidian px-6 py-20 text-snow md:px-10">
           <div className="mx-auto max-w-[1400px]">
             <div className="grid grid-cols-1 items-stretch gap-14 md:grid-cols-[0.42fr_0.58fr] md:gap-16">
               <Reveal className="aspect-[16/9] w-full overflow-hidden border border-snow/20 md:aspect-auto md:h-full md:w-auto">
@@ -293,23 +245,23 @@ function Index() {
               </Reveal>
               <Reveal delay={0.06}>
                 <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-snow/60">
-                  Mycel / The platform
+                  #3 Mycel / The platform
                 </p>
                 <h2 className="mt-7 font-editorial text-[clamp(2.25rem,6vw,3.75rem)] uppercase leading-[0.95] tracking-tight text-snow">
                   Mycel
                 </h2>
                 <p className="mt-6 max-w-[52ch] text-[16px] leading-[1.7] text-snow md:text-[17px]">
-                  The agent platform the record above runs on. We built it to compose agents from
+                  The agent platform our companies run on. We built it to compose agents from
                   inspectable parts, run them on the model that fits, give them memory, and hold
                   them to a standard of trust that is earned rather than declared.
                 </p>
                 <p className="mt-5 max-w-[52ch] text-[15px] leading-[1.7] text-snow/80">
-                  An agent is a versioned composition: skills, tools, rules, guardrails, triggers.
-                  Each block starts untrusted. Clean runs move it up a 0 to 9 readiness ladder.
-                  Past the midpoint, nothing advances without a person signing off. Every run is
-                  traced and graded, and the platform proposes the next improvement for a human to
-                  accept or reject. Firms share what works across a common market without sharing
-                  what is private.
+                  An agent in Mycel is a versioned composition: skills, tools, rules, guardrails,
+                  triggers. Each block starts untrusted. Clean runs move it up a 0 to 9 readiness
+                  ladder. Past the midpoint, nothing advances without a person signing off. Every
+                  run is traced. Every run is graded, and the platform proposes the next
+                  improvement for a human to accept or reject. Firms share what works with each
+                  other across a common market without sharing what is private.
                 </p>
                 <dl className="mt-10 divide-y divide-snow/20 border-t border-snow/20">
                   {mycelSpecs.map((row) => (
@@ -346,37 +298,11 @@ function Index() {
           </div>
         </section>
 
-        {/* How we work */}
-        <section id="how" className="border-b border-ink/80 px-6 py-20 md:px-10">
-          <div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-10 md:grid-cols-[0.34fr_1fr] md:gap-12">
-            <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-graphite">
-              How we work
-            </p>
-            <Reveal>
-              <ol className="divide-y divide-ink/20 border-t border-ink/80">
-                {habits.map((h) => (
-                  <li
-                    key={h}
-                    className="py-6 font-editorial text-[22px] leading-[1.15] tracking-tight text-ink md:text-[28px]"
-                  >
-                    {h}
-                  </li>
-                ))}
-              </ol>
-              <p className="mt-8 max-w-[52ch] text-[15px] leading-[1.7] text-graphite">
-                The people are builders, founders, and entrepreneurs. Some of us run the companies
-                above. We work across industries on purpose: a pattern solved in one shows up in
-                the next, and generalists notice.
-              </p>
-            </Reveal>
-          </div>
-        </section>
-
         {/* Contact */}
-        <section id="contact" className="px-6 py-20 md:px-10">
+        <section id="contact" className="border-t border-ink/80 px-6 py-20 md:px-10">
           <div className="mx-auto max-w-[1400px]">
             <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-graphite">
-              Contact
+              #4 Contact
             </p>
             <h2 className="mt-8 max-w-[18ch] font-editorial text-[clamp(2.25rem,6vw,3.75rem)] uppercase leading-[0.95] tracking-tight text-ink">
               Talk to us.
