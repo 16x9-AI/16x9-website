@@ -16,7 +16,7 @@ Build: `npm run build` · Dev: `npm run dev` · Preview: `npm run preview` · Li
 
 ## Routes
 
-- `/` — `routes/index.tsx`. Sections in order: hero, marquee (industries), the studio (diagram + Build/Operate/Research), work (six status-tagged cards on the dark plate), Mycel (brain canvas + spec rows + the Google sentence), contact.
+- `/` — `routes/index.tsx`. Frames in order: front page (headline, lede + email, audience index, live proof card, horizon motif), marquee (computed status tally), the board (five industry columns with motifs and status rows), the studio + figures + Mycel plate with the studio-wide strip beneath, contact (two doors).
 - `/privacy`, `/terms` — legal. Also verification-sensitive.
 - `/intel` — NOT a router route. `vercel.json` rewrites `/intel` and `/intel/*` onto the daily AI intelligence report deployment (`16x9-ai-industry-daily-report.vercel.app`). Link to it with a plain `<a href="/intel">`, never `<Link to>`.
 - `src/routeTree.gen.ts` — generated on dev/build. Never hand-edit.
@@ -27,6 +27,18 @@ Build: `npm run build` · Dev: `npm run dev` · Preview: `npm run preview` · Li
 - **Status tags are audited, not decorative.** `FrameCell` takes `status: "Running" | "Pilot" | "Building"`. Check Linear before changing one. The audit date is in the comment above the `work` array in `index.tsx`.
 - **Mycel counts are dated.** The spec rows carry rounded-down counts pulled from the Mycel catalog; the exact numbers and date are in the comment above `mycelSpecs`. Update both together.
 - **The Google sentence ships verbatim** on `/` (the standalone `/mycel` page was removed 2026-09-03 at the founders' request; the privacy policy still carries the scope detail): "Mycel connects to Google on your behalf for sign-in and basic Workspace directory information only, not Gmail, Calendar, or Drive content."
+
+## Motion
+
+All illustration on the homepage is generative and drawn live in `src/components/site/Motif.tsx` (kinds: dots, field, filmstrip, waves, contours, lines, horizon). A motif fills its parent box and paints in the parent's current text colour, so `text-ink` on the light page and `text-snow` on the dark plate are the only theming needed. Rules the family follows, and any new kind must too:
+
+- Deterministic: every frame re-seeds the same generator; only the time term moves.
+- Slow and quiet. If it reads as an animation, it is too fast.
+- Cheap: ~30 fps cap, the loop pauses off-screen, a few hundred primitives at most.
+- `prefers-reduced-motion` draws one still frame and stops (the global CSS override in `styles.css` also freezes the CSS keyframes: `animate-status-pulse`, `animate-marquee-drift`, `animate-mycel-pulse`).
+- The server renders an empty canvas with identical attributes; never set `width`/`height` in JSX.
+
+`CountUp` (the running-head tally) renders the final value on the server and animates once on first view. The Mycel brain canvas (`MycelBrain.tsx`) is the older sibling of this family and follows the same rules. The static SVGs the motifs replaced were removed 2026-09-03; `philosophy-diagram.svg` and `footer-horizon.svg` remain as static figures.
 
 ## Contact
 

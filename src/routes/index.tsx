@@ -5,6 +5,8 @@ import { Reveal } from "@/components/site/Reveal";
 import { Marquee } from "@/components/site/Marquee";
 import { MycelBrain } from "@/components/site/MycelBrain";
 import { Contact } from "@/components/site/Contact";
+import { Motif } from "@/components/site/Motif";
+import { CountUp } from "@/components/site/CountUp";
 import {
   BoardColumn,
   BoardRow,
@@ -12,14 +14,7 @@ import {
   type BoardRowData,
   type Status,
 } from "@/components/site/Board";
-import heroHorizon from "@/assets/art/hero-horizon.svg";
 import philosophyDiagram from "@/assets/art/philosophy-diagram.svg";
-import artAgentField from "@/assets/art/exp-01-agent-field-services.svg";
-import artContentDerivatives from "@/assets/art/exp-02-content-derivatives.svg";
-import artDealIntelligence from "@/assets/art/exp-03-deal-intelligence.svg";
-import artOutreachSystems from "@/assets/art/exp-04-outreach-systems.svg";
-import artNewsletter from "@/assets/art/exp-05-newsletter-intelligence.svg";
-import artWebsiteGen from "@/assets/art/exp-06-website-generation.svg";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -60,7 +55,7 @@ const board: BoardColumnData[] = [
   {
     industry: "Clinical research",
     context: "A site network and a sponsored-research network beside it.",
-    art: artAgentField,
+    motif: "dots",
     rows: [
       {
         status: "Running",
@@ -85,7 +80,7 @@ const board: BoardColumnData[] = [
   {
     industry: "Capital advisory",
     context: "M&A, debt, and real-estate advisory firms on one intelligence layer.",
-    art: artDealIntelligence,
+    motif: "field",
     rows: [
       {
         status: "Running",
@@ -109,7 +104,7 @@ const board: BoardColumnData[] = [
   {
     industry: "Commercial lending",
     context: "Businesses matched to capital, no hard credit pull first.",
-    art: artContentDerivatives,
+    motif: "filmstrip",
     rows: [
       {
         status: "Running",
@@ -133,7 +128,7 @@ const board: BoardColumnData[] = [
   {
     industry: "Real estate",
     context: "An agentic operating platform for property operators. Early.",
-    art: artOutreachSystems,
+    motif: "waves",
     rows: [
       {
         status: "Running",
@@ -155,7 +150,7 @@ const board: BoardColumnData[] = [
   {
     industry: "Field services",
     context: "A nationwide commercial and government cleaning company.",
-    art: artWebsiteGen,
+    motif: "contours",
     rows: [
       {
         status: "Running",
@@ -238,9 +233,15 @@ function tally(rows: { status: Status }[]) {
 }
 const counts = tally([...board.flatMap((c) => c.rows), ...studioRows, { status: "Running" }]);
 const marqueeItems = [
-  `${counts.Running} running`,
-  `${counts.Pilot} pilot`,
-  `${counts.Building} building`,
+  <>
+    <CountUp value={counts.Running} /> running
+  </>,
+  <>
+    <CountUp value={counts.Pilot} /> pilot
+  </>,
+  <>
+    <CountUp value={counts.Building} /> building
+  </>,
   "audited Q3 2026",
 ];
 
@@ -315,13 +316,8 @@ function Index() {
               <Reveal delay={0.12} className="md:col-span-2 lg:col-span-1">
                 <p className={`${kicker} text-graphite`}>Published this morning</p>
                 <a href="/intel" className={`group mt-3 block ${focusRow}`}>
-                  <div className="hidden aspect-video w-full overflow-hidden border border-ink/80 sm:block">
-                    <img
-                      src={artNewsletter}
-                      alt=""
-                      aria-hidden
-                      className="h-full w-full object-cover"
-                    />
+                  <div className="hidden aspect-video w-full overflow-hidden border border-ink/80 text-ink sm:block">
+                    <Motif kind="lines" />
                   </div>
                   <p className="mt-3 text-[14px] font-medium leading-snug text-ink">
                     Daily AI-industry report
@@ -338,12 +334,9 @@ function Index() {
             </div>
 
             <div className="mt-6 hidden border-t border-ink/30 sm:block">
-              <img
-                src={heroHorizon}
-                alt=""
-                aria-hidden
-                className="mt-3 h-10 w-full object-cover md:h-12"
-              />
+              <div className="mt-3 h-10 w-full text-ink md:h-12">
+                <Motif kind="horizon" />
+              </div>
             </div>
           </div>
         </section>

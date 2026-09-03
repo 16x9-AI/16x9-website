@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { Motif, type MotifKind } from "@/components/site/Motif";
 
 // The board: five newspaper columns, one per industry, on the dark plate.
 // Each row is one system with its status printed as it is. No numbering:
@@ -16,7 +17,7 @@ export type BoardRowData = {
 export type BoardColumnData = {
   industry: string;
   context: string;
-  art: string;
+  motif: MotifKind;
   rows: BoardRowData[];
   also?: string;
 };
@@ -26,7 +27,8 @@ export function StatusDot({ status, tone = "dark" }: { status: Status; tone?: To
   const half = tone === "dark" ? "bg-snow/50" : "bg-ink/50";
   const hollow = tone === "dark" ? "border border-snow/50" : "border border-ink/50";
   const text = tone === "dark" ? "text-snow/60" : "text-graphite";
-  const dot = status === "Running" ? solid : status === "Pilot" ? half : hollow;
+  const dot =
+    status === "Running" ? `${solid} animate-status-pulse` : status === "Pilot" ? half : hollow;
   return (
     <span
       className={`inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] ${text}`}
@@ -62,8 +64,8 @@ export function BoardColumn({ col }: { col: BoardColumnData }) {
         {col.context}
       </p>
       {/* Art is a desktop device; on a phone the five columns stack and it only adds scroll. */}
-      <div className="mt-4 hidden aspect-[2/1] w-full overflow-hidden border border-snow/20 sm:block">
-        <img src={col.art} alt="" aria-hidden className="art-invert h-full w-full object-cover" />
+      <div className="mt-4 hidden aspect-[2/1] w-full overflow-hidden border border-snow/20 text-snow sm:block">
+        <Motif kind={col.motif} />
       </div>
       <ul className="mt-4">
         {col.rows.map((r) => (

@@ -148,4 +148,19 @@
     50% { opacity: 1; }
   }
   .animate-mycel-pulse { animation: mycel-pulse 6s ease-in-out infinite; }
+
+  /* A running system's status dot breathes; pilot and building hold still. */
+  @keyframes status-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  .animate-status-pulse { animation: status-pulse 3.2s ease-in-out infinite; }
+
+  /* The running head drifts at reading speed. The track holds the items twice
+     and moves by half its width, so the loop is seamless. */
+  @keyframes marquee-drift {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  .animate-marquee-drift { animation: marquee-drift 90s linear infinite; }
 }
