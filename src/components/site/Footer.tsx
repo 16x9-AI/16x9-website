@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import footerHorizon from "@/assets/art/footer-horizon.svg";
+import { Motif } from "@/components/site/Motif";
 
 const linkColumns = [
   { to: "/privacy" as const, label: "Privacy" },
@@ -45,12 +45,9 @@ export function Footer() {
         </div>
       </div>
       <div className="border-t border-snow/20">
-        <img
-          src={footerHorizon}
-          alt=""
-          aria-hidden
-          className="h-14 w-full object-cover opacity-70 invert md:h-16"
-        />
+        <div className="h-14 w-full text-snow/80 md:h-16">
+          <Motif kind="horizon" />
+        </div>
       </div>
       <div className="border-t border-snow/20 px-6 py-4 md:px-10">
         <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-snow/60">

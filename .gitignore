@@ -33,3 +33,4 @@ dist-ssr
 
 # Vercel local project link
 .vercel
+.env*

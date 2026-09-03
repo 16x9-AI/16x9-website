@@ -56,7 +56,7 @@ export function BoardRow({ row, tone = "dark" }: { row: BoardRowData; tone?: Ton
 
 export function BoardColumn({ col }: { col: BoardColumnData }) {
   return (
-    <div className="flex flex-col">
+    <div className="group flex flex-col">
       <h3 className="font-editorial text-[24px] uppercase leading-none tracking-tight text-snow">
         {col.industry}
       </h3>
@@ -64,7 +64,7 @@ export function BoardColumn({ col }: { col: BoardColumnData }) {
         {col.context}
       </p>
       {/* Art is a desktop device; on a phone the five columns stack and it only adds scroll. */}
-      <div className="mt-4 hidden aspect-[2/1] w-full overflow-hidden border border-snow/20 text-snow sm:block">
+      <div className="mt-4 hidden aspect-[2/1] w-full overflow-hidden border border-snow/20 text-snow/70 transition-colors duration-300 group-hover:text-snow sm:block">
         <Motif kind={col.motif} />
       </div>
       <ul className="mt-4">
