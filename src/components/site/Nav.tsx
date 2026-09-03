@@ -20,7 +20,7 @@ const links = [
  */
 export function Nav() {
   return (
-    <header className="relative z-40 mt-4 border-b border-ink/80 bg-background md:mt-6">
+    <header className="relative z-40 mx-4 mt-4 border-b border-ink/80 bg-background md:mx-6 md:mt-6">
       <nav
         aria-label="Primary"
         className="mx-auto flex h-16 max-w-[1400px] items-stretch justify-between md:h-[72px]"
