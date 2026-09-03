@@ -28,7 +28,9 @@ export function StatusDot({ status, tone = "dark" }: { status: Status; tone?: To
   const text = tone === "dark" ? "text-snow/60" : "text-graphite";
   const dot = status === "Running" ? solid : status === "Pilot" ? half : hollow;
   return (
-    <span className={`inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.12em] ${text}`}>
+    <span
+      className={`inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] ${text}`}
+    >
       <span aria-hidden className={`inline-block h-[6px] w-[6px] ${dot}`} />
       {status}
     </span>
@@ -42,7 +44,9 @@ export function BoardRow({ row, tone = "dark" }: { row: BoardRowData; tone?: Ton
   return (
     <li className={`border-t ${rule} pt-3 pb-4`}>
       <StatusDot status={row.status} tone={tone} />
-      <p className={`mt-1.5 text-[14px] font-medium leading-snug ${name}`}>{row.name}</p>
+      <h4 className={`mt-1.5 font-sans text-[14px] font-medium leading-snug ${name}`}>
+        {row.name}
+      </h4>
       <p className={`mt-1 text-[13px] leading-[1.5] ${body}`}>{row.outcome}</p>
     </li>
   );
@@ -67,7 +71,7 @@ export function BoardColumn({ col }: { col: BoardColumnData }) {
         ))}
       </ul>
       {col.also && (
-        <p className="mt-auto border-t border-snow/20 pt-3 font-mono text-[10.5px] uppercase leading-relaxed tracking-[0.06em] text-snow/55">
+        <p className="border-t border-snow/20 pt-3 font-mono text-[10.5px] uppercase leading-relaxed tracking-[0.06em] text-snow/55">
           {col.also}
         </p>
       )}

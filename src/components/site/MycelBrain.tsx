@@ -78,7 +78,7 @@ const HUB_META = [
   },
   {
     label: "AGENTS",
-    caption: "The operators. Agents that run the work end to end.",
+    caption: "Agents that run the work end to end.",
   },
   {
     label: "DATA",
@@ -672,10 +672,13 @@ function GraphCanvas({ world, orientation, seed }: GraphCanvasProps) {
     ctx.font = `${13 / scale}px "Geist Mono Variable", ui-monospace, monospace`;
     ctx.fillStyle = ink;
     ctx.textBaseline = "alphabetic";
-    for (const id of graph.hubNodeIds) {
+    for (const [hubIdx, id] of graph.hubNodeIds.entries()) {
       const n = graph.nodes[id];
       if (!n || n.op <= 0.02) continue;
-      const above = (n.y ?? 0) > world.H * 0.5;
+      // Alternate label side per hub rather than by half of the world: in a
+      // compact box all three hubs can land in the same half and the labels
+      // would print on top of each other.
+      const above = hubIdx % 2 === 1;
       // "center", not "middle": middle is a textBaseline value and is invalid for
       // textAlign, and the canvas spec IGNORES an invalid assignment rather than
       // throwing. A hub in the centre third therefore inherited whatever alignment
@@ -692,7 +695,7 @@ function GraphCanvas({ world, orientation, seed }: GraphCanvasProps) {
       );
     }
     ctx.globalAlpha = 1;
-  }, [world.H, world.W]);
+  }, [world.W]);
 
   const targetOpacities = useCallback(() => {
     const graph = graphRef.current;
@@ -1015,7 +1018,7 @@ function GraphCanvas({ world, orientation, seed }: GraphCanvasProps) {
             transition={{ duration: 0.25, ease: EASE_OUT }}
             className="font-mono text-[11px] uppercase leading-relaxed tracking-[0.08em] text-ink"
           >
-            {activeCaption ?? "Three systems, one substrate. Select a node to isolate it."}
+            {activeCaption ?? "Memory, agents, data. Select a node to isolate it."}
           </motion.p>
         </AnimatePresence>
       </div>
@@ -1031,11 +1034,11 @@ const WORLD_LANDSCAPE: World = { W: 1600, H: 900 };
 function useIsDesktop() {
   const [isDesktop, setIsDesktop] = useState(() => {
     if (typeof window === "undefined") return true;
-    return window.matchMedia("(min-width: 768px)").matches;
+    return window.matchMedia("(min-width: 1024px)").matches;
   });
 
   useEffect(() => {
-    const mql = window.matchMedia("(min-width: 768px)");
+    const mql = window.matchMedia("(min-width: 1024px)");
     const onChange = () => setIsDesktop(mql.matches);
     onChange();
     mql.addEventListener("change", onChange);

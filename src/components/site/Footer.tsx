@@ -18,8 +18,13 @@ export function Footer() {
           >
             16X9
           </Link>
-          <p className="mt-6 max-w-sm font-mono text-[11px] uppercase leading-relaxed tracking-[0.08em] text-snow/60">
-            An AI studio. Agentic companies, built here.
+          <p className="mt-6 font-mono text-[11px] uppercase leading-relaxed tracking-[0.14em] text-snow/60">
+            <a
+              href="mailto:info@16x9.ai"
+              className="text-snow underline underline-offset-4 hover:text-snow/70"
+            >
+              info@16x9.ai
+            </a>
           </p>
         </div>
         <div className="flex flex-col justify-between gap-10 md:items-end md:text-right">

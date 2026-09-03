@@ -9,16 +9,22 @@ function MycelPage() {
   return (
     <LegalPage eyebrow="Mycel" title="What Mycel is, and what it can see">
       <p className={legalP}>
-        Mycel is the agent platform 16x9 built for the companies it works inside. Agents are composed from
-        versioned skills, tools, rules, and guardrails. Every run is traced. Each building block
-        earns trust through use, and nothing is promoted without a person signing off. Mycel
-        connects to a firm's business tools, keeps memory across runs, and reads the structured
-        data a task needs.
+        Mycel is the agent platform 16x9 built for the companies it works inside. Agents are
+        composed from versioned skills, tools, rules, and guardrails. Every run is traced. Each
+        building block earns trust through use, and nothing is promoted without a person signing
+        off. Mycel connects to a firm's business tools, keeps memory across runs, and reads the
+        structured data a task needs.
       </p>
 
       <p className={legalP}>
         Mycel is internal today. Here is exactly what it can and cannot see when it connects to
         Google.
+      </p>
+
+      {/* Legal copy tied to Google OAuth verification. Ships verbatim. See VOICE.md. */}
+      <p className={legalP}>
+        Mycel connects to Google on your behalf for sign-in and basic Workspace directory
+        information only, not Gmail, Calendar, or Drive content.
       </p>
 
       <h2 className={legalH2}>Does Mycel connect to Google on your behalf?</h2>
@@ -31,19 +37,17 @@ function MycelPage() {
         <li>
           <span className="font-mono text-[13px] text-ink">userinfo.email</span> and{" "}
           <span className="font-mono text-[13px] text-ink">userinfo.profile</span>, plus{" "}
-          <span className="font-mono text-[13px] text-ink">openid</span>: your email address,
-          name, and profile photo, used to identify you and sign you in.
+          <span className="font-mono text-[13px] text-ink">openid</span>: your email address, name,
+          and profile photo, used to identify you and sign you in.
         </li>
         <li>
           <span className="font-mono text-[13px] text-ink">admin.directory.user.readonly</span>:
-          read-only access to basic user records in your Google Workspace directory, such as
-          names and email addresses of people in your organization.
+          read-only access to basic user records in your Google Workspace directory, such as names
+          and email addresses of people in your organization.
         </li>
         <li>
-          <span className="font-mono text-[13px] text-ink">
-            admin.directory.customer.readonly
-          </span>
-          : read-only access to basic information about your Google Workspace customer account.
+          <span className="font-mono text-[13px] text-ink">admin.directory.customer.readonly</span>:
+          read-only access to basic information about your Google Workspace customer account.
         </li>
       </ul>
       <p className={legalP}>
@@ -57,8 +61,8 @@ function MycelPage() {
       <h2 className={legalH2}>How the connection works</h2>
       <p className={legalP}>
         All connections use industry-standard OAuth 2.0 authentication. You are shown Google's own
-        consent screen, listing the scopes above, before anything is granted. You can revoke
-        Mycel's access to your Google account at any time at{" "}
+        consent screen, listing the scopes above, before anything is granted. You can revoke Mycel's
+        access to your Google account at any time at{" "}
         <a
           className={legalLink}
           href="https://myaccount.google.com/permissions"
@@ -74,10 +78,10 @@ function MycelPage() {
       <p className={legalP}>
         Identity and directory information obtained through Google sign-in is used to authenticate
         you, associate your activity with the correct organization inside Mycel, and let agents
-        reference basic directory facts, such as who is on a team, when that is relevant to a
-        task. This data is stored in Mycel's own database, separate from Google's systems, and is
-        only visible to authorized members of your organization and to the 16x9 team operating
-        Mycel on your behalf.
+        reference basic directory facts, such as who is on a team, when that is relevant to a task.
+        This data is stored in Mycel's own database, separate from Google's systems, and is only
+        visible to authorized members of your organization and to the 16x9 team operating Mycel on
+        your behalf.
       </p>
       <p className={legalP}>
         Mycel's use and transfer of information received from Google APIs adheres to the{" "}
