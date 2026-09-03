@@ -86,7 +86,7 @@ const practice = [
   },
   {
     label: "Research",
-    body: "A standing share of every quarter goes to capability we do not have yet. Some of it becomes product. The rest becomes judgment.",
+    body: "A standing share of every quarter goes to capability we do not have yet: an accounting platform on an open-source ERP core, a paper-trading desk, research scouts. Most of it stays internal.",
   },
 ];
 
@@ -121,8 +121,8 @@ function Index() {
             </h1>
             <p className="mt-8 max-w-2xl text-[16px] leading-[1.7] text-ink md:text-[18px]">
               Builders, founders, and entrepreneurs working across clinical research, capital
-              advisory, commercial lending, real estate, and field services. Every company we work
-              in is moving its operations onto Mycel, the agent platform we built.
+              advisory, commercial lending, real estate, and field services. Every company we build
+              with is moving its operations onto Mycel, the agent platform we built.
             </p>
             <p className="mt-6 max-w-xl font-mono text-[12px] uppercase leading-relaxed tracking-[0.08em] text-graphite">
               Open to partners, founders, and builders.{" "}
@@ -215,7 +215,7 @@ function Index() {
                   </span>
                 </div>
                 <p className="mt-6 max-w-[22ch] font-mono text-[11px] uppercase leading-relaxed tracking-[0.08em] text-snow/60">
-                  Running today, inside the companies we build with. Some in production, some in pilot.
+                  Inside the companies we build with. Running means in use today. Pilot means live with a first cohort. Building means not yet relied on.
                 </p>
               </div>
               <div>
@@ -309,8 +309,8 @@ function Index() {
             </h2>
             <p className="mt-5 max-w-[52ch] text-[16px] leading-[1.7] text-ink md:text-[17px]">
               If you run a company that should be running on agents, have a business worth
-              building, or want to work with people who ship at this level, write to us. We read
-              everything ourselves.
+              building, or build things yourself and want to do it alongside us, write to us. We
+              read everything ourselves.
             </p>
             <div className="mt-16 md:mt-20">
               <Reveal>
