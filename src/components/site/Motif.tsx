@@ -51,16 +51,17 @@ function alpha(ctx: CanvasRenderingContext2D, a: number) {
 /** Dot lattice with a breathing bright region, corner brackets, a drifting reticle. */
 const dots: Draw = (ctx, w, h, t, rnd) => {
   const s = Math.max(7, Math.min(w, h) / 20);
-  const cx = w * (0.62 + 0.05 * Math.sin(t * 0.11));
-  const cy = h * (0.42 + 0.07 * Math.cos(t * 0.08));
-  const sigma = Math.min(w, h) * 0.22;
+  // the bright region wanders on a ~14 s orbit and breathes on a ~5 s cycle
+  const cx = w * (0.6 + 0.14 * Math.sin(t * 0.45));
+  const cy = h * (0.45 + 0.16 * Math.cos(t * 0.31));
+  const sigma = Math.min(w, h) * (0.2 + 0.06 * Math.sin(t * 1.25));
   for (let y = s; y < h - s * 0.5; y += s) {
     for (let x = s; x < w - s * 0.5; x += s) {
       const d2 = (x - cx) ** 2 + (y - cy) ** 2;
       const bump = Math.exp(-d2 / (2 * sigma * sigma));
-      const grain = 0.6 + 0.4 * rnd();
+      const grain = 0.55 + 0.45 * (0.5 + 0.5 * Math.sin(t * 1.7 + rnd() * Math.PI * 2));
       alpha(ctx, (0.1 + 0.85 * bump) * grain);
-      const r = 0.7 + 1.3 * bump;
+      const r = 0.7 + 1.5 * bump;
       ctx.beginPath();
       ctx.arc(x, y, r, 0, Math.PI * 2);
       ctx.fill();
@@ -85,9 +86,9 @@ const dots: Draw = (ctx, w, h, t, rnd) => {
     ctx.lineTo(sx + dx * L, sy);
     ctx.stroke();
   }
-  // reticle, drifting against the bright region
-  const rx = w * (0.36 + 0.04 * Math.cos(t * 0.07));
-  const ry = h * (0.55 + 0.05 * Math.sin(t * 0.1));
+  // reticle, tracking a point the bright region never quite reaches (~9 s)
+  const rx = w * (0.34 + 0.06 * Math.cos(t * 0.7));
+  const ry = h * (0.55 + 0.08 * Math.sin(t * 0.55));
   const rr = s * 1.1;
   alpha(ctx, 0.85);
   ctx.beginPath();
@@ -105,18 +106,20 @@ const dots: Draw = (ctx, w, h, t, rnd) => {
 /** Dense point cloud with a slowly orbiting core; points twinkle in place. */
 const field: Draw = (ctx, w, h, t, rnd) => {
   const n = Math.round(Math.min(900, (w * h) / 70));
-  const cx = w * (0.55 + 0.08 * Math.cos(t * 0.06));
-  const cy = h * (0.45 + 0.1 * Math.sin(t * 0.05));
-  const sigma = Math.min(w, h) * 0.3;
+  // the core orbits on a ~12 s loop; each point twinkles on its own phase and
+  // drifts a few pixels, so the cloud reads as a slow, living field
+  const cx = w * (0.55 + 0.16 * Math.cos(t * 0.5));
+  const cy = h * (0.45 + 0.18 * Math.sin(t * 0.37));
+  const sigma = Math.min(w, h) * (0.28 + 0.05 * Math.sin(t * 0.9));
   for (let i = 0; i < n; i++) {
-    const x = rnd() * w;
-    const y = rnd() * h;
     const phase = rnd() * Math.PI * 2;
+    const x = rnd() * w + 3 * Math.sin(t * 0.6 + phase);
+    const y = rnd() * h + 2 * Math.cos(t * 0.45 + phase * 1.3);
     const d2 = (x - cx) ** 2 + (y - cy) ** 2;
     const bump = Math.exp(-d2 / (2 * sigma * sigma));
-    const twinkle = 0.7 + 0.3 * Math.sin(t * 0.9 + phase);
+    const twinkle = 0.55 + 0.45 * Math.sin(t * 1.4 + phase);
     alpha(ctx, (0.06 + 0.9 * bump) * twinkle);
-    const r = 0.8 + 1.1 * bump;
+    const r = 0.8 + 1.3 * bump;
     ctx.beginPath();
     ctx.arc(x, y, r, 0, Math.PI * 2);
     ctx.fill();

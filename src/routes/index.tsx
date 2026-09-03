@@ -427,8 +427,10 @@ function Index() {
                     Fig. 01. 16:9, the aspect ratio of a wide shot.
                   </figcaption>
                 </figure>
-                <div className="mt-6 hidden aspect-video w-full overflow-hidden border border-ink/80 sm:block lg:aspect-auto lg:h-[420px]">
-                  <MycelBrain />
+                <div className="mt-6 hidden aspect-video w-full overflow-hidden border border-ink/80 bg-obsidian sm:block lg:aspect-auto lg:h-[420px]">
+                  <div className="h-full w-full invert">
+                    <MycelBrain />
+                  </div>
                 </div>
               </Reveal>
 
