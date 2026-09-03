@@ -108,7 +108,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
+      // favicon.ico must exist and must be listed first. Browsers fire a
+      // speculative GET /favicon.ico for the origin before they parse these
+      // tags, so a missing .ico leaves a window with nothing valid to paint
+      // and whatever the origin showed previously can flash in the tab.
+      { rel: "icon", href: "/favicon.ico", sizes: "any" },
       { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
     ],
   }),
   shellComponent: RootShell,
