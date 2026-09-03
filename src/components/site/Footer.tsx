@@ -10,7 +10,7 @@ const linkColumns = [
 export function Footer() {
   return (
     <footer className="bg-obsidian text-snow">
-      <div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-10 px-6 py-16 md:grid-cols-[1.4fr_1fr] md:px-10 md:py-20">
+      <div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-10 px-6 py-12 md:grid-cols-[1.4fr_1fr] md:px-10 md:py-14">
         <div>
           <Link
             to="/"
@@ -45,7 +45,7 @@ export function Footer() {
           src={footerHorizon}
           alt=""
           aria-hidden
-          className="h-16 w-full object-cover opacity-70 invert md:h-20"
+          className="h-14 w-full object-cover opacity-70 invert md:h-16"
         />
       </div>
       <div className="border-t border-snow/20 px-6 py-4 md:px-10">

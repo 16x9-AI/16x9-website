@@ -3,9 +3,9 @@ import { Nav } from "@/components/site/Nav";
 import { Footer } from "@/components/site/Footer";
 import { Reveal } from "@/components/site/Reveal";
 import { Marquee } from "@/components/site/Marquee";
-import { FrameGrid, FrameCell } from "@/components/site/FrameGrid";
 import { MycelBrain } from "@/components/site/MycelBrain";
 import { Contact } from "@/components/site/Contact";
+import { BoardColumn, BoardRow, StatusDot, type BoardColumnData, type BoardRowData } from "@/components/site/Board";
 import heroHorizon from "@/assets/art/hero-horizon.svg";
 import philosophyDiagram from "@/assets/art/philosophy-diagram.svg";
 import artAgentField from "@/assets/art/exp-01-agent-field-services.svg";
@@ -19,307 +19,340 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-// Six systems, described by industry, never by company name (VOICE.md,
-// decision 2026-09-02). Status audited against Linear closed issues, the Mycel
-// 16x9 universe, and the Vercel project list on 2026-09-02.
-const work = [
+// Who we work with. One row per audience, one sentence each, one anchor.
+const audiences = [
   {
-    status: "Running",
-    name: "Intelligence engine",
-    outcome:
-      "For advisory firms. Evidence pulled daily from SEC filings and global news, scored on six credibility axes, checked by an adversarial pass, and kept in a forecast ledger that is recalibrated against what actually happened.",
-    art: artDealIntelligence,
+    label: "Clients",
+    text: "Companies that should be running on agents. Operations move over one function at a time, behind gates a person sets.",
+    href: "#work",
   },
   {
-    status: "Running",
-    name: "Advisory operating layer",
-    outcome:
-      "A public risk desk publishing verified notes with footnoted sources. Twelve sector primers, from how each finance-firm type works today to fully agentic. A firm operating system an advisory shop runs its engagements on.",
-    art: artOutreachSystems,
+    label: "Partners",
+    text: "Firms and co-builders. Systems already running, a platform to run them on, and a standing research allocation.",
+    href: "#studio",
   },
   {
-    status: "Running",
-    name: "Clinical research operations",
-    outcome:
-      "A site network's daily work moving onto agents. A sponsor-development machine scans the public trial registry and scores fit. Billing runs behind a gate. Document agents read, rename, and file the shared drive.",
+    label: "Builders",
+    text: "You build on the platform the companies run on. What you ship earns its trust run by run.",
+    href: "#mycel",
+  },
+  {
+    label: "Business owners",
+    text: "Some of us run the companies described here. If you have a business worth building, we build it and run it with you.",
+    href: "#contact",
+  },
+];
+
+// The board. Companies are described by industry, never by name (VOICE.md,
+// decision 2026-09-02). Every status audited against Linear closed issues,
+// the Mycel 16x9 universe, and the Vercel project list on 2026-09-02.
+// Outcome budget: two lines at 13px in a ~246px column (about 80 characters).
+const board: BoardColumnData[] = [
+  {
+    industry: "Clinical research",
+    context: "A site network and a sponsored-research network beside it.",
     art: artAgentField,
+    rows: [
+      { status: "Running", name: "Sponsor development", outcome: "Scans the public trial registry, scores sponsor fit, shortlists targets." },
+      { status: "Pilot", name: "Sponsored-research platform", outcome: "Conversational onboarding, registry trial supply, a patient-detail filter in code. One practice live." },
+      { status: "Pilot", name: "Document agents", outcome: "Read, OCR, rename, and file the shared drive. Each move is written to a ledger first." },
+      { status: "Building", name: "Operations on agents", outcome: "Function by function. Each billing line clears a gate verdict first." },
+    ],
+    also: "Also running: a clinical-research intelligence report, every morning.",
   },
   {
-    status: "Pilot",
-    name: "Sponsored-research platform",
-    outcome:
-      "Conversational site onboarding backed by a live model, trial supply from the public registry, one sign-in, and a code-level filter that keeps patient detail out of every free-text answer.",
+    industry: "Capital advisory",
+    context: "M&A, debt, and real-estate advisory firms on one intelligence layer.",
+    art: artDealIntelligence,
+    rows: [
+      { status: "Running", name: "Intelligence engine", outcome: "SEC filings and news daily. Six credibility axes, an adversarial pass, forecasts scored against outcomes." },
+      { status: "Running", name: "Public risk desk", outcome: "Footnoted notes: jurisdiction pulses, license clocks, ownership-opacity flags." },
+      { status: "Running", name: "Firm operating system", outcome: "Six skills, three agents, four tables. Command-line install. Shipped August 2026." },
+      { status: "Building", name: "Finance runners", outcome: "Reconciliation, close, statements, variance, audit support, KYC screening." },
+    ],
+    also: "Also running: twelve sector primers, a data-backed public site. Building: a pre-call audit.",
+  },
+  {
+    industry: "Commercial lending",
+    context: "A financing marketplace: businesses matched to capital, no hard credit pull first.",
     art: artContentDerivatives,
+    rows: [
+      { status: "Running", name: "Compliance-gated content engine", outcome: "Topics by vertical and product, drafts grounded in a source registry. The gate blocks ungrounded claims before publish." },
+      { status: "Running", name: "Regulatory collectors", outcome: "Federal Register and global-event feeds open reactive drafts, disaster-relief financing among them." },
+      { status: "Building", name: "Lender-network integration", outcome: "Agent prequalification, application submission, consent designed against TCPA." },
+    ],
   },
   {
-    status: "Running",
-    name: "Self-publishing website",
-    outcome:
-      "For a nationwide cleaning company. 150+ location pages, and a blog researched, composed, audited, graded, and challenged by five agents. Quality gates decide what ships. The back office moves onto agents next.",
+    industry: "Real estate",
+    context: "An agentic operating platform for property operators. Early.",
+    art: artOutreachSystems,
+    rows: [
+      { status: "Running", name: "Tenant applications", outcome: "New leads become applications in the property management system. Live since June 2026." },
+      { status: "Building", name: "Vendor discovery", outcome: "Listing scraping, validation, enrichment, then an outreach coordinator." },
+      { status: "Building", name: "Investment screening", outcome: "Scores an opportunity layer by layer and writes scorecards to tables." },
+    ],
+  },
+  {
+    industry: "Field services",
+    context: "A nationwide commercial and government cleaning company.",
     art: artWebsiteGen,
+    rows: [
+      { status: "Running", name: "Self-publishing website", outcome: "154 location pages as real HTML. A blog by five agents behind quality gates." },
+      { status: "Running", name: "B2B targeting engine", outcome: "Miami-Dade: who to call, why now, who decides, how to reach them." },
+      { status: "Building", name: "Back office on agents", outcome: "Cleaner assignment and operations first. HR and accounting underway." },
+    ],
+    also: "Also building: a dispute agent that opens chargeback trackers, in test.",
   },
-  {
-    status: "Running",
-    name: "Daily intelligence",
-    outcome: (
-      <>
-        Two reports every morning, one on the AI industry and one on clinical research.
-        Researched, written, and published by agents. The first one is public at{" "}
-        <a href="/intel" className="underline underline-offset-4 hover:text-snow">
-          /intel
-        </a>
-        .
-      </>
-    ),
-    art: artNewsletter,
-  },
-] as const;
+];
 
 const practice = [
-  {
-    label: "Build",
-    body: "Products, and the companies they live in. We stay after launch, so the work has to hold up past the demo.",
-  },
-  {
-    label: "Operate",
-    body: "Agents take on daily work inside those companies: research, publishing, intake, reporting. People own the decisions the agents surface.",
-  },
-  {
-    label: "Research",
-    body: "A standing share of every quarter goes to capability we do not have yet: an accounting platform on an open-source ERP core, a paper-trading desk, research scouts. Most of it stays internal.",
-  },
+  { label: "Build", body: "Products, and the companies they live in. We stay after launch, so the work has to hold up past the demo." },
+  { label: "Operate", body: "Agents take on daily work: research, publishing, intake, reporting. People own the decisions the agents surface." },
+  { label: "Research", body: "A standing share of every quarter goes to capability we do not have yet." },
+];
+
+// Systems built once and shared by every company. Same status rules as the board.
+const studioRows: BoardRowData[] = [
+  { status: "Running", name: "Delivery pipeline", outcome: "Agents take a ticket, implement it, verify against the live system, and close with evidence. People review the pull requests." },
+  { status: "Building", name: "Accounting platform", outcome: "US GAAP close, a reconciliation queue, period locks, bookkeeping sync, on an open-source ERP core. Operational beta." },
+  { status: "Building", name: "Paper-trading desk", outcome: "Gradient-boosted alpha factors, regime detection, transaction-cost modeling. Paper only." },
 ];
 
 // Counts pulled from the Mycel catalog on 2026-09-02 and rounded down:
 // 649 skills, 1,214 tool integrations, 84 agents, 93 connection environments.
 const mycelSpecs = [
-  { label: "Composition", value: "Agents built from versioned skills, tools, rules, and guardrails" },
-  { label: "Catalog", value: "600+ skills, 1,000+ tool integrations, shared across firms" },
-  { label: "Models", value: "Multiple providers through one gateway. Pick a policy, not a vendor" },
-  { label: "Memory", value: "Episodic recall, document library, cache. Three privacy tiers" },
-  { label: "Trust", value: "Every block earns a 0 to 9 readiness level from clean runs" },
-  { label: "Learning", value: "Runs are graded. Improvements are proposed. People sign off" },
-  { label: "Access", value: "Web app, MCP server, REST API, editor harness" },
-  { label: "Status", value: "Internal. In use across our companies. Not open yet" },
+  { label: "Composition", value: "Agents from versioned skills, tools, rules, guardrails, and triggers." },
+  { label: "Catalog", value: "600+ skills, 1,000+ tool integrations, 80+ agents, shared across firms." },
+  { label: "Models", value: "Multiple providers through one gateway. Pick a policy, not a vendor." },
+  { label: "Memory", value: "Episodic recall, document library, cache. Three privacy tiers." },
+  { label: "Trust", value: "Each block earns 0 to 9 from clean runs. Human sign-off above 5." },
+  { label: "Learning", value: "Every run graded. Improvements proposed. People sign off." },
+  { label: "Tenancy", value: "Firms share building blocks across a market, never private data." },
+  { label: "Access", value: "Web app, MCP server, REST API, editor harness." },
 ];
+
+const habits = [
+  "Nothing publishes without a gate. A person decides what the gate checks.",
+  "Every agent run leaves a trace.",
+  "Trust is earned per component from clean runs, never declared.",
+  "Status is printed as it is: running, pilot, building.",
+  "We read the field every morning and publish what we read.",
+];
+
+const kicker = "font-mono text-[11px] uppercase tracking-[0.16em]";
 
 function Index() {
   return (
     <>
       <Nav />
       <main>
-        {/* Hero */}
-        <section className="flex min-h-[calc(100dvh-8rem)] flex-col justify-between px-6 pb-10 pt-14 md:px-10 md:pt-20">
+        {/* Frame 1: the front page */}
+        <section className="px-6 pb-8 pt-10 md:px-10 md:pt-12">
           <div className="mx-auto w-full max-w-[1400px]">
-            <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-graphite">
-              16x9 / AI studio
-            </p>
-            <h1 className="mt-8 font-editorial text-[clamp(2.75rem,10vw,9.5rem)] uppercase leading-[0.92] tracking-tight text-ink">
-              We build
+            <p className={`${kicker} text-graphite`}>16x9 / AI studio</p>
+            <h1 className="mt-5 font-editorial text-[clamp(2.5rem,6.4vw,5.75rem)] uppercase leading-[0.92] tracking-tight text-ink">
+              We build agentic companies
               <br />
-              agentic companies.
+              and run them.
             </h1>
-            <p className="mt-8 max-w-2xl text-[16px] leading-[1.7] text-ink md:text-[18px]">
-              Builders, founders, and entrepreneurs working across clinical research, capital
-              advisory, commercial lending, real estate, and field services. Every company we build
-              with is moving its operations onto Mycel, the agent platform we built.
-            </p>
-            <p className="mt-6 max-w-xl font-mono text-[12px] uppercase leading-relaxed tracking-[0.08em] text-graphite">
-              Open to partners, founders, and builders.{" "}
-              <a href="#contact" className="text-ink underline underline-offset-4 hover:text-graphite">
-                Write to us
-              </a>
-              .
-            </p>
-          </div>
-          <div className="mx-auto mt-14 w-full max-w-[1400px] border-t border-ink/30">
-            <img
-              src={heroHorizon}
-              alt=""
-              aria-hidden
-              className="mt-6 h-28 w-full object-cover md:h-40"
-            />
+
+            <div className="mt-8 grid grid-cols-1 gap-10 border-t border-ink/80 pt-8 md:grid-cols-[1.15fr_1fr_0.95fr] md:gap-12">
+              <Reveal>
+                <p className="max-w-[46ch] text-[16px] leading-[1.65] text-ink md:text-[17px]">
+                  An AI studio. Founders and entrepreneurs who build agentic systems and run them
+                  inside the companies behind the work below. Some of us run those companies. We
+                  stay after launch. We also build for outside partners. The work runs on Mycel,
+                  the agent platform we built.
+                </p>
+                <p className="mt-6 font-mono text-[12px] uppercase leading-relaxed tracking-[0.08em] text-graphite">
+                  Clients, partners, founders, builders: write to{" "}
+                  <a href="mailto:info@16x9.ai" className="text-ink underline underline-offset-4 hover:text-graphite">
+                    info@16x9.ai
+                  </a>
+                </p>
+              </Reveal>
+
+              <Reveal delay={0.06}>
+                <p className={`${kicker} text-graphite`}>Who we work with</p>
+                <ul className="mt-3">
+                  {audiences.map((a) => (
+                    <li key={a.label} className="border-t border-ink/30">
+                      <a href={a.href} className="group block py-3 hover:bg-ink/[0.03]">
+                        <span className="flex items-baseline justify-between font-mono text-[11px] uppercase tracking-[0.14em] text-graphite">
+                          <span>{a.label}</span>
+                          <span aria-hidden className="text-ink/50 group-hover:text-ink">→</span>
+                        </span>
+                        <span className="mt-1 block text-[13.5px] leading-[1.5] text-ink">{a.text}</span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </Reveal>
+
+              <Reveal delay={0.12}>
+                <p className={`${kicker} text-graphite`}>Proof, today</p>
+                <a href="/intel" className="group mt-3 block">
+                  <div className="aspect-video w-full overflow-hidden border border-ink/80">
+                    <img src={artNewsletter} alt="" aria-hidden className="h-full w-full object-cover" />
+                  </div>
+                  <div className="mt-3">
+                    <StatusDot status="Running" tone="light" />
+                  </div>
+                  <p className="mt-1.5 text-[14px] font-medium leading-snug text-ink">Daily AI-industry report</p>
+                  <p className="mt-1 text-[13.5px] leading-[1.5] text-graphite">
+                    About 1,800 stories from about 50 sources every morning, ranked to about 30, scored,
+                    and published by agents.
+                  </p>
+                  <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.12em] text-ink underline underline-offset-4 group-hover:text-graphite">
+                    Read today's edition at /intel →
+                  </p>
+                </a>
+              </Reveal>
+            </div>
+
+            <div className="mt-8 border-t border-ink/30">
+              <img src={heroHorizon} alt="" aria-hidden className="mt-4 h-16 w-full object-cover md:h-20" />
+            </div>
           </div>
         </section>
 
         <Marquee />
 
-        {/* How we work */}
-        <section id="studio" className="border-b border-ink/80 px-6 py-20 md:px-10">
-          <div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-16 md:grid-cols-[0.9fr_1.6fr]">
-            <div>
-              <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-graphite">
-                #1 The studio
-              </p>
-              <img
-                src={philosophyDiagram}
-                alt=""
-                aria-hidden
-                className="mt-8 w-full max-w-[340px] md:max-w-[400px]"
-              />
-              <p className="mt-6 border-t border-ink/30 pt-4 font-mono text-[11px] uppercase tracking-[0.14em] text-graphite">
-                FIG. 01 - 16:9, the aspect ratio of a wide shot
-              </p>
-            </div>
-            <Reveal>
-              <div className="max-w-[42em] space-y-6 text-[16px] leading-[1.75] text-ink md:text-[18px]">
-                <p className="font-editorial text-[28px] uppercase leading-[1.05] tracking-tight md:text-[34px]">
-                  We work across industries on purpose.
-                </p>
-                <p>
-                  A pattern solved in one company shows up in the next. The daily intelligence
-                  report we built for the AI industry now runs a second edition on clinical
-                  research. The content engine is built once and run per company. Generalists
-                  notice this. Specialists rebuild it.
-                </p>
-                <p>
-                  The name is the aspect ratio of a wide shot. It is the only metaphor on this
-                  page.
+        {/* Frame 2: the board */}
+        <section id="work" className="bg-obsidian px-6 py-10 text-snow md:px-10 md:py-12">
+          <div className="mx-auto max-w-[1400px]">
+            <div className="grid grid-cols-1 items-end gap-6 md:grid-cols-[1fr_auto]">
+              <div>
+                <p className={`${kicker} text-snow/60`}>#1 Work</p>
+                <h2 className="mt-4 font-editorial text-[clamp(2.25rem,4.5vw,3.5rem)] uppercase leading-[0.95] tracking-tight text-snow">
+                  Five industries. Status as printed.
+                </h2>
+                <p className="mt-3 max-w-[60ch] text-[13.5px] leading-[1.5] text-snow/75">
+                  Inside the companies we build with, and for outside partners. Described by industry,
+                  not by name. Audited September 2026.
                 </p>
               </div>
-              <dl className="mt-12 grid grid-cols-1 gap-8 border-t border-ink/80 pt-8 sm:grid-cols-3">
+              <p className="font-mono text-[11px] uppercase leading-relaxed tracking-[0.08em] text-snow/60 md:text-right">
+                Running: in use today.
+                <br />
+                Pilot: live with a first cohort.
+                <br />
+                Building: not yet relied on.
+              </p>
+            </div>
+            <div className="mt-8 grid grid-cols-1 gap-x-5 gap-y-12 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+              {board.map((col, i) => (
+                <Reveal key={col.industry} delay={i * 0.04} className="flex">
+                  <BoardColumn col={col} />
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Frame 3: the studio and the platform, one plate */}
+        <section className="border-t border-ink/80 px-6 py-12 md:px-10">
+          <div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-12 lg:grid-cols-[0.95fr_0.75fr_1.1fr] lg:gap-10">
+            <Reveal id="studio">
+              <p className={`${kicker} text-graphite`}>#2 The studio</p>
+              <h2 className="mt-4 font-editorial text-[30px] uppercase leading-[1.02] tracking-tight text-ink md:text-[34px]">
+                Across industries on purpose.
+              </h2>
+              <p className="mt-4 text-[15px] leading-[1.65] text-ink">
+                A pattern solved in one company shows up in the next. The daily intelligence report
+                built for the AI industry now runs a second edition on clinical research. Outreach,
+                newsletter, and campaign-reporting agents are built once and shared across companies.
+              </p>
+              <dl className="mt-6 border-t border-ink/80">
                 {practice.map((p) => (
-                  <div key={p.label}>
-                    <dt className="font-mono text-[11px] uppercase tracking-[0.14em] text-graphite">
-                      {p.label}
-                    </dt>
-                    <dd className="mt-3 text-[14.5px] leading-[1.65] text-ink">{p.body}</dd>
+                  <div key={p.label} className="grid grid-cols-[92px_1fr] gap-4 border-b border-ink/30 py-3">
+                    <dt className="font-mono text-[11px] uppercase tracking-[0.14em] text-graphite">{p.label}</dt>
+                    <dd className="text-[13.5px] leading-[1.55] text-ink">{p.body}</dd>
                   </div>
                 ))}
               </dl>
+              <p className={`${kicker} mt-6 text-graphite`}>Shared by every company</p>
+              <ul className="mt-2">
+                {studioRows.map((r) => (
+                  <BoardRow key={r.name} row={r} tone="light" />
+                ))}
+              </ul>
+            </Reveal>
+
+            <Reveal delay={0.06} className="flex flex-col">
+              <div className="aspect-video w-full overflow-hidden border border-ink/80">
+                <img src={philosophyDiagram} alt="" aria-hidden className="h-full w-full object-cover" />
+              </div>
+              <p className="mt-2 font-mono text-[10.5px] uppercase tracking-[0.12em] text-graphite">
+                Fig. 01. 16:9, the aspect ratio of a wide shot.
+              </p>
+              <div className="mt-6 min-h-[380px] flex-1 overflow-hidden border border-ink/80">
+                <MycelBrain />
+              </div>
+              <p className="mt-2 font-mono text-[10.5px] uppercase tracking-[0.12em] text-graphite">
+                Fig. 02. Mycel as a network: memory, agents, data. Select a hub.
+              </p>
+            </Reveal>
+
+            <Reveal id="mycel" delay={0.12}>
+              <p className={`${kicker} text-graphite`}>#3 Mycel / The platform</p>
+              <h2 className="mt-4 font-editorial text-[clamp(2rem,4vw,2.75rem)] uppercase leading-[0.95] tracking-tight text-ink">
+                Mycel
+              </h2>
+              <p className="mt-4 text-[15px] leading-[1.65] text-ink">
+                The agent platform our companies run on. Internal, not open. Agents are composed from
+                versioned parts, every run is traced, and trust is earned per block from clean runs,
+                never declared.
+              </p>
+              <dl className="mt-6 grid grid-cols-1 gap-x-8 sm:grid-cols-2">
+                {mycelSpecs.map((s) => (
+                  <div key={s.label} className="border-t border-ink/80 pb-4 pt-3">
+                    <dt className="font-mono text-[11px] uppercase tracking-[0.14em] text-graphite">{s.label}</dt>
+                    <dd className="mt-1 text-[12.5px] leading-[1.5] text-ink">{s.value}</dd>
+                  </div>
+                ))}
+              </dl>
+              <div className="flex items-baseline justify-between border-t border-ink/80 py-3">
+                <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-graphite">Details</span>
+                <Link to="/mycel" className="font-mono text-[12px] uppercase tracking-[0.06em] text-ink underline underline-offset-4 hover:text-graphite">
+                  Read more about Mycel →
+                </Link>
+              </div>
+              <p className="mt-4 font-mono text-[10.5px] uppercase leading-relaxed tracking-[0.06em] text-graphite">
+                Counts from the platform catalog, September 2026, rounded down.
+              </p>
+              {/* Legal copy tied to Google OAuth verification. Ships verbatim. See VOICE.md. */}
+              <p className="mt-2 max-w-[60ch] font-mono text-[10.5px] uppercase leading-relaxed tracking-[0.06em] text-graphite">
+                Mycel connects to Google on your behalf for sign-in and basic Workspace directory
+                information only, not Gmail, Calendar, or Drive content.
+              </p>
             </Reveal>
           </div>
         </section>
 
-        {/* Work */}
-        <section
-          id="work"
-          className="border-t border-snow/20 bg-obsidian px-6 py-24 text-snow md:px-10"
-        >
-          <div className="mx-auto max-w-[1400px]">
-            <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-snow/60">
-              #2 Work
-            </p>
-            <h2 className="mt-8 max-w-[18ch] font-editorial text-[clamp(2.5rem,7vw,6rem)] uppercase leading-[0.95] tracking-tight text-snow">
-              Six systems, in operation.
-            </h2>
-            <div className="mt-16 grid grid-cols-1 gap-10 md:mt-20 md:grid-cols-[max-content_1fr]">
-              <div className="md:sticky md:top-24 md:self-start md:border-r md:border-snow/20 md:pr-10">
-                <div className="flex items-center gap-3">
-                  <span
-                    aria-hidden
-                    className="aspect-video w-12 shrink-0 border border-snow/60 bg-snow md:w-16"
-                  />
-                  <span className="font-editorial text-[28px] uppercase leading-none tracking-tight text-snow md:text-[34px]">
-                    16X9
-                  </span>
-                </div>
-                <p className="mt-6 max-w-[22ch] font-mono text-[11px] uppercase leading-relaxed tracking-[0.08em] text-snow/60">
-                  Inside the companies we build with. Running means in use today. Pilot means live with a first cohort. Building means not yet relied on.
-                </p>
-              </div>
-              <div>
-                <FrameGrid>
-                  {work.map((item) => (
-                    <FrameCell key={item.name} {...item} />
-                  ))}
-                </FrameGrid>
-                <p className="mt-14 max-w-[62ch] border-t border-snow/20 pt-5 font-mono text-[11px] uppercase leading-relaxed tracking-[0.08em] text-snow/60">
-                  Also in motion: a compliance-gated content engine and lender-network integration
-                  for a financing marketplace, and an agentic operating platform for property
-                  operators.
-                </p>
-              </div>
+        {/* Frame 4: contact */}
+        <section id="contact" className="border-t border-ink/80 px-6 py-12 md:px-10">
+          <div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-12 md:grid-cols-[0.3fr_0.7fr] md:gap-16">
+            <div>
+              <p className={`${kicker} text-graphite`}>#4 Contact</p>
+              <h2 className="mt-4 font-editorial text-[clamp(2rem,4vw,2.75rem)] uppercase leading-[0.95] tracking-tight text-ink">
+                Talk to us.
+              </h2>
+              <p className="mt-3 text-[15px] leading-[1.6] text-ink">
+                For clients, partners, founders, and builders. No form.
+              </p>
+              <p className={`${kicker} mt-8 text-graphite`}>How we work</p>
+              <ul className="mt-2">
+                {habits.map((h) => (
+                  <li key={h} className="border-t border-ink/30 pt-3 pb-3 font-mono text-[12.5px] leading-relaxed text-graphite">
+                    {h}
+                  </li>
+                ))}
+              </ul>
             </div>
-          </div>
-        </section>
-
-        {/* Mycel */}
-        <section id="mycel" className="bg-obsidian px-6 py-20 text-snow md:px-10">
-          <div className="mx-auto max-w-[1400px]">
-            <div className="grid grid-cols-1 items-stretch gap-14 md:grid-cols-[0.42fr_0.58fr] md:gap-16">
-              <Reveal className="aspect-[16/9] w-full overflow-hidden border border-snow/20 md:aspect-auto md:h-full md:w-auto">
-                <div className="h-full w-full invert">
-                  <MycelBrain />
-                </div>
-              </Reveal>
-              <Reveal delay={0.06}>
-                <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-snow/60">
-                  #3 Mycel / The platform
-                </p>
-                <h2 className="mt-7 font-editorial text-[clamp(2.25rem,6vw,3.75rem)] uppercase leading-[0.95] tracking-tight text-snow">
-                  Mycel
-                </h2>
-                <p className="mt-6 max-w-[52ch] text-[16px] leading-[1.7] text-snow md:text-[17px]">
-                  The agent platform our companies run on. We built it to compose agents from
-                  inspectable parts, run them on the model that fits, give them memory, and hold
-                  them to a standard of trust that is earned rather than declared.
-                </p>
-                <p className="mt-5 max-w-[52ch] text-[15px] leading-[1.7] text-snow/80">
-                  An agent in Mycel is a versioned composition: skills, tools, rules, guardrails,
-                  triggers. Each block starts untrusted. Clean runs move it up a 0 to 9 readiness
-                  ladder. Past the midpoint, nothing advances without a person signing off. Every
-                  run is traced. Every run is graded, and the platform proposes the next
-                  improvement for a human to accept or reject. Firms share what works with each
-                  other across a common market without sharing what is private.
-                </p>
-                <dl className="mt-10 divide-y divide-snow/20 border-t border-snow/20">
-                  {mycelSpecs.map((row) => (
-                    <div key={row.label} className="flex items-baseline justify-between gap-6 py-5">
-                      <dt className="shrink-0 font-mono text-[11px] uppercase tracking-[0.14em] text-snow/60">
-                        {row.label}
-                      </dt>
-                      <dd className="max-w-[34ch] text-right font-mono text-[12px] uppercase tracking-[0.06em] text-snow">
-                        {row.value}
-                      </dd>
-                    </div>
-                  ))}
-                  <div className="flex items-baseline justify-between gap-6 py-5">
-                    <dt className="font-mono text-[11px] uppercase tracking-[0.14em] text-snow/60">
-                      Details
-                    </dt>
-                    <dd>
-                      <Link
-                        to="/mycel"
-                        className="font-mono text-[12px] uppercase tracking-[0.06em] text-snow underline underline-offset-4 hover:text-snow/70"
-                      >
-                        Read more about Mycel →
-                      </Link>
-                    </dd>
-                  </div>
-                </dl>
-                <p className="mt-4 font-mono text-[10.5px] uppercase tracking-[0.06em] text-snow/50">
-                  Counts from the platform catalog, September 2026, rounded down.
-                </p>
-                {/* Legal copy tied to Google OAuth verification. Ships verbatim. See VOICE.md. */}
-                <p className="mt-8 max-w-[52ch] font-mono text-[10.5px] uppercase leading-relaxed tracking-[0.06em] text-snow/50">
-                  Mycel connects to Google on your behalf for sign-in and basic Workspace directory
-                  information only, not Gmail, Calendar, or Drive content.
-                </p>
-              </Reveal>
-            </div>
-          </div>
-        </section>
-
-        {/* Contact */}
-        <section id="contact" className="border-t border-ink/80 px-6 py-20 md:px-10">
-          <div className="mx-auto max-w-[1400px]">
-            <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-graphite">
-              #4 Contact
-            </p>
-            <h2 className="mt-8 max-w-[18ch] font-editorial text-[clamp(2.25rem,6vw,3.75rem)] uppercase leading-[0.95] tracking-tight text-ink">
-              Talk to us.
-            </h2>
-            <p className="mt-5 max-w-[52ch] text-[16px] leading-[1.7] text-ink md:text-[17px]">
-              If you run a company that should be running on agents, have a business worth
-              building, or build things yourself and want to do it alongside us, write to us. We
-              read everything ourselves.
-            </p>
-            <div className="mt-16 md:mt-20">
-              <Reveal>
-                <Contact />
-              </Reveal>
-            </div>
+            <Reveal>
+              <Contact />
+            </Reveal>
           </div>
         </section>
       </main>
