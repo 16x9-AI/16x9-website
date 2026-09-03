@@ -34,14 +34,14 @@ const work = [
     status: "Running",
     name: "Advisory operating layer",
     outcome:
-      "A public risk desk that publishes verified notes with footnoted sources. Twelve sector primers, from how each finance-firm type works today to fully agentic. A firm operating system of skills, agents, and tables an advisory shop runs its engagements on.",
+      "A public risk desk publishing verified notes with footnoted sources. Twelve sector primers, from how each finance-firm type works today to fully agentic. A firm operating system an advisory shop runs its engagements on.",
     art: artOutreachSystems,
   },
   {
     status: "Running",
     name: "Clinical research operations",
     outcome:
-      "A site network's daily work moving onto agents. A sponsor-development machine scans the public trial registry and scores fit. Receivables and trial-agreement billing run behind a gate. Document agents read, rename, and file the shared drive.",
+      "A site network's daily work moving onto agents. A sponsor-development machine scans the public trial registry and scores fit. Billing runs behind a gate. Document agents read, rename, and file the shared drive.",
     art: artAgentField,
   },
   {
@@ -55,7 +55,7 @@ const work = [
     status: "Running",
     name: "Self-publishing website",
     outcome:
-      "For a nationwide cleaning company. 150+ location pages, and a blog researched, composed, audited, graded, and challenged by five agents. Quality gates decide what ships. The back office is moving onto agents next, function by function.",
+      "For a nationwide cleaning company. 150+ location pages, and a blog researched, composed, audited, graded, and challenged by five agents. Quality gates decide what ships. The back office moves onto agents next.",
     art: artWebsiteGen,
   },
   {
@@ -288,6 +288,9 @@ function Index() {
                     </dd>
                   </div>
                 </dl>
+                <p className="mt-4 font-mono text-[10.5px] uppercase tracking-[0.06em] text-snow/50">
+                  Counts from the platform catalog, September 2026, rounded down.
+                </p>
                 {/* Legal copy tied to Google OAuth verification. Ships verbatim. See VOICE.md. */}
                 <p className="mt-8 max-w-[52ch] font-mono text-[10.5px] uppercase leading-relaxed tracking-[0.06em] text-snow/50">
                   Mycel connects to Google on your behalf for sign-in and basic Workspace directory

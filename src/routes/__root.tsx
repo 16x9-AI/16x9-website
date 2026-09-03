@@ -92,9 +92,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content:
           "An AI studio. We build agentic systems, then we run them.",
       },
-      { property: "og:image", content: "/og-image.svg" },
+      { property: "og:image", content: "https://16x9.ai/og-image.png" },
+      { property: "og:image:type", content: "image/png" },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
       { property: "og:locale", content: "en_US" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: "https://16x9.ai/og-image.png" },
       { name: "twitter:title", content: "16x9 | AI Studio" },
       {
         name: "twitter:description",
