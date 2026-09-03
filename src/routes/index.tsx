@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { Nav } from "@/components/site/Nav";
 import { Footer } from "@/components/site/Footer";
 import { Reveal } from "@/components/site/Reveal";
@@ -241,7 +241,7 @@ const marqueeItems = [
   `${counts.Running} running`,
   `${counts.Pilot} pilot`,
   `${counts.Building} building`,
-  "audited September 2026",
+  "audited Q3 2026",
 ];
 
 const kicker = "font-mono text-[11px] uppercase tracking-[0.14em]";
@@ -360,7 +360,7 @@ function Index() {
                   What runs, by industry.
                 </h2>
                 <p className="mt-3 max-w-[60ch] text-[13.5px] leading-[1.5] text-snow/75">
-                  Inside our companies. Audited September 2026.
+                  Inside our companies. Audited Q3 2026.
                 </p>
               </div>
               <p className="font-mono text-[11px] uppercase leading-relaxed tracking-[0.08em] text-snow/60 md:text-right">
@@ -458,16 +458,9 @@ function Index() {
                     </div>
                   ))}
                 </dl>
-                <p className="border-t border-ink/80 py-3 text-right">
-                  <Link
-                    to="/mycel"
-                    className={`font-mono text-[11px] uppercase tracking-[0.14em] text-ink underline underline-offset-4 hover:text-graphite ${focusRow}`}
-                  >
-                    What Mycel can see: Google sign-in scope <span aria-hidden>→</span>
-                  </Link>
-                </p>
+                <div className="border-t border-ink/80" />
                 <p className="mt-2 font-mono text-[10.5px] uppercase leading-relaxed tracking-[0.06em] text-graphite">
-                  Counts from the platform catalog, September 2026, rounded down.
+                  Counts from the platform catalog, Q3 2026, rounded down.
                 </p>
                 {/* Legal copy tied to Google OAuth verification. Ships verbatim, sentence case. See VOICE.md. */}
                 <p className="mt-2 max-w-[60ch] font-mono text-[11.5px] leading-relaxed text-ink/80">

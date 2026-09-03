@@ -2,7 +2,6 @@ import { Link } from "@tanstack/react-router";
 import footerHorizon from "@/assets/art/footer-horizon.svg";
 
 const linkColumns = [
-  { to: "/mycel" as const, label: "Mycel" },
   { to: "/privacy" as const, label: "Privacy" },
   { to: "/terms" as const, label: "Terms" },
 ];

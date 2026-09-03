@@ -48,4 +48,4 @@ Mycel is presented as built by 16x9. Describe it by what it does and how it is g
 
 ## What never changes
 
-The Google/Mycel compliance sentence on the homepage and the `/mycel` page is legal copy tied to OAuth verification. It ships verbatim: "Mycel connects to Google on your behalf for sign-in and basic Workspace directory information only, not Gmail, Calendar, or Drive content." Do not touch the wording without explicit sign-off. The scope list on `/mycel` is the same.
+The Google/Mycel compliance sentence on the homepage is legal copy tied to OAuth verification. It ships verbatim: "Mycel connects to Google on your behalf for sign-in and basic Workspace directory information only, not Gmail, Calendar, or Drive content." Do not touch the wording without explicit sign-off. The standalone `/mycel` scope page was removed on 2026-09-03; the privacy policy carries the scope detail.

@@ -17,7 +17,6 @@ Build: `npm run build` · Dev: `npm run dev` · Preview: `npm run preview` · Li
 ## Routes
 
 - `/` — `routes/index.tsx`. Sections in order: hero, marquee (industries), the studio (diagram + Build/Operate/Research), work (six status-tagged cards on the dark plate), Mycel (brain canvas + spec rows + the Google sentence), contact.
-- `/mycel` — what Mycel is and exactly what it can see. The Google scope list is OAuth-verification copy: verbatim, no edits without sign-off.
 - `/privacy`, `/terms` — legal. Also verification-sensitive.
 - `/intel` — NOT a router route. `vercel.json` rewrites `/intel` and `/intel/*` onto the daily AI intelligence report deployment (`16x9-ai-industry-daily-report.vercel.app`). Link to it with a plain `<a href="/intel">`, never `<Link to>`.
 - `src/routeTree.gen.ts` — generated on dev/build. Never hand-edit.
@@ -27,7 +26,7 @@ Build: `npm run build` · Dev: `npm run dev` · Preview: `npm run preview` · Li
 - **No company names on the public site.** Work is described by industry (VOICE.md, decision 2026-09-02). If a card needs a name to make sense, rewrite the card.
 - **Status tags are audited, not decorative.** `FrameCell` takes `status: "Running" | "Pilot" | "Building"`. Check Linear before changing one. The audit date is in the comment above the `work` array in `index.tsx`.
 - **Mycel counts are dated.** The spec rows carry rounded-down counts pulled from the Mycel catalog; the exact numbers and date are in the comment above `mycelSpecs`. Update both together.
-- **The Google sentence ships verbatim** on `/` and `/mycel`: "Mycel connects to Google on your behalf for sign-in and basic Workspace directory information only, not Gmail, Calendar, or Drive content."
+- **The Google sentence ships verbatim** on `/` (the standalone `/mycel` page was removed 2026-09-03 at the founders' request; the privacy policy still carries the scope detail): "Mycel connects to Google on your behalf for sign-in and basic Workspace directory information only, not Gmail, Calendar, or Drive content."
 
 ## Contact
 
