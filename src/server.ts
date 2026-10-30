@@ -1,7 +1,13 @@
 import "./lib/error-capture";
 
+import { AsyncLocalStorage } from "node:async_hooks";
+
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
+import { applySecurityHeaders, createNonce, installCspNonceStore } from "./lib/security-headers";
+
+const cspNonce = new AsyncLocalStorage<string>();
+installCspNonceStore(cspNonce);
 
 type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
@@ -12,7 +18,7 @@ let serverEntryPromise: Promise<ServerEntry> | undefined;
 async function getServerEntry(): Promise<ServerEntry> {
   if (!serverEntryPromise) {
     serverEntryPromise = import("@tanstack/react-start/server-entry").then(
-      (m) => ((m as { default?: ServerEntry }).default ?? (m as unknown as ServerEntry)),
+      (m) => (m as { default?: ServerEntry }).default ?? (m as unknown as ServerEntry),
     );
   }
   return serverEntryPromise;
@@ -68,13 +74,17 @@ async function normalizeCatastrophicSsrResponse(response: Response): Promise<Res
 
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
-    try {
-      const handler = await getServerEntry();
-      const response = await handler.fetch(request, env, ctx);
-      return await normalizeCatastrophicSsrResponse(response);
-    } catch (error) {
-      console.error(error);
-      return brandedErrorResponse();
-    }
+    const nonce = createNonce();
+    return cspNonce.run(nonce, async () => {
+      try {
+        const handler = await getServerEntry();
+        const response = await handler.fetch(request, env, ctx);
+        const normalized = await normalizeCatastrophicSsrResponse(response);
+        return applySecurityHeaders(normalized, request, nonce);
+      } catch (error) {
+        console.error(error);
+        return applySecurityHeaders(brandedErrorResponse(), request, nonce);
+      }
+    });
   },
 };

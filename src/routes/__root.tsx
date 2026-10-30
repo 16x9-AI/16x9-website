@@ -12,6 +12,7 @@ import appCss from "../styles.css?url";
 import { CookieBanner } from "@/components/site/CookieBanner";
 import { FrameShell } from "@/components/site/FrameShell";
 import { SmoothScroll } from "@/components/site/SmoothScroll";
+import { VercelInsights } from "@/components/site/VercelInsights";
 
 function NotFoundComponent() {
   return (
@@ -89,8 +90,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:title", content: "16x9 | AI Studio" },
       {
         property: "og:description",
-        content:
-          "An AI studio. We build agentic companies and run them.",
+        content: "An AI studio. We build agentic companies and run them.",
       },
       { property: "og:image", content: "https://16x9.ai/og-image.png" },
       { property: "og:image:type", content: "image/png" },
@@ -102,8 +102,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:title", content: "16x9 | AI Studio" },
       {
         name: "twitter:description",
-        content:
-          "An AI studio. We build agentic companies and run them.",
+        content: "An AI studio. We build agentic companies and run them.",
       },
     ],
     links: [
@@ -146,6 +145,7 @@ function RootComponent() {
       <FrameShell>
         <Outlet />
         <CookieBanner />
+        <VercelInsights />
       </FrameShell>
     </QueryClientProvider>
   );

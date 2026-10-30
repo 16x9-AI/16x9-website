@@ -94,10 +94,22 @@ export function getConsent(): "accepted" | "rejected" | null {
   }
 }
 
+type ConsentListener = (value: "accepted" | "rejected") => void;
+
+const consentListeners = new Set<ConsentListener>();
+
+export function subscribeConsent(listener: ConsentListener) {
+  consentListeners.add(listener);
+  return () => {
+    consentListeners.delete(listener);
+  };
+}
+
 export function setConsent(v: "accepted" | "rejected") {
   try {
     localStorage.setItem(CONSENT_KEY, v);
   } catch {
     /* ignore */
   }
+  consentListeners.forEach((listener) => listener(v));
 }
