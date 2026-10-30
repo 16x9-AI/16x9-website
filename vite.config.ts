@@ -11,7 +11,10 @@ export default defineConfig({
   plugins: [
     tsConfigPaths(),
     tanstackStart(),
-    nitroV2Plugin({ preset: "vercel" }),
+    nitroV2Plugin({
+      preset: "vercel",
+      modules: ["./src/nitro/security-headers.ts"],
+    }),
     viteReact(),
     tailwindcss(),
   ],
