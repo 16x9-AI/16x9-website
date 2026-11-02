@@ -60,6 +60,8 @@ All illustration on the homepage is generative and drawn live in `src/components
 - Structured data must describe what the page visibly says. FAQ answers come from `faqItems()` in `services-data.ts` and render on the page.
 - `public/robots.txt` allows search engines, AI answer engines, user-triggered AI fetchers, and (deliberately) training crawlers. The file says how to opt out of training only.
 - `public/llms.txt` is generated from `industries-data.ts`; regenerate it when industries or pages change. `public/sitemap.xml` lists every route with `lastmod`; add new routes there.
+- **IndexNow:** the key file is `public/f68d0a04b7ea9d1570f98e7eee754b69.txt` (public by design). After each production deploy that adds or changes pages, run `node scripts/indexnow.mjs` (`--dry-run` first). Never before the deploy is live.
+- **Search Console:** domain property `sc-domain:16x9.ai` under manuel@16x9.ai (added 2026-11-02, verify via the Cloudflare one-click flow). Submit `https://16x9.ai/sitemap.xml` once verified.
 - `vercel.json` enforces HSTS, nosniff, X-Frame-Options DENY, Referrer-Policy, Permissions-Policy and COOP. The Content Security Policy is **report-only** until a week of reports shows nothing it would wrongly block; then rename the header to `Content-Security-Policy`.
 
 ## Token-name convention
