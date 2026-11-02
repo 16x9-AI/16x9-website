@@ -1,4 +1,4 @@
-import { useId, useState, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { StatusDot } from "@/components/site/Board";
@@ -264,6 +264,11 @@ export function LevelSummary() {
 export function FunctionLedger() {
   const [industry, setIndustry] = useState("");
   const id = useId();
+  const ref = useRef<HTMLSelectElement>(null);
+  // A pick made before hydration lives only in the DOM; adopt it once React takes over.
+  useEffect(() => {
+    if (ref.current?.value) setIndustry(ref.current.value);
+  }, []);
   const pack = INDUSTRY_PACKS.find((p) => p.key === industry);
   const first = new Set(pack?.first ?? []);
   return (
@@ -274,6 +279,7 @@ export function FunctionLedger() {
         </label>
         <select
           id={`${id}-ind`}
+          ref={ref}
           value={industry}
           onChange={(e) => setIndustry(e.target.value)}
           className="cursor-pointer appearance-none border-0 border-b-2 border-ink bg-transparent px-0 pb-0.5 font-editorial text-[24px] uppercase leading-[1.1] tracking-tight text-ink [field-sizing:content] hover:border-graphite focus-visible:bg-ink/[0.06] focus-visible:outline-none"
@@ -387,6 +393,13 @@ export function StartSentence() {
   const [fn, setFn] = useState(FUNCTIONS[0].key);
   const [bill, setBill] = useState(BILLING[0].key);
   const id = useId();
+  const fnRef = useRef<HTMLSelectElement>(null);
+  const billRef = useRef<HTMLSelectElement>(null);
+  // Same as the ledger: keep a choice made before hydration.
+  useEffect(() => {
+    if (fnRef.current?.value) setFn(fnRef.current.value);
+    if (billRef.current?.value) setBill(billRef.current.value);
+  }, []);
   const f = FUNCTIONS.find((x) => x.key === fn) ?? FUNCTIONS[0];
   const b = BILLING.find((x) => x.key === bill) ?? BILLING[0];
   const select =
@@ -401,6 +414,7 @@ export function StartSentence() {
         <label htmlFor={`${id}-fn`}>Most of our team&rsquo;s hours go to </label>
         <select
           id={`${id}-fn`}
+          ref={fnRef}
           value={fn}
           onChange={(e) => setFn(e.target.value)}
           className={select}
@@ -415,6 +429,7 @@ export function StartSentence() {
         <label htmlFor={`${id}-bill`}>Our contracts bill </label>
         <select
           id={`${id}-bill`}
+          ref={billRef}
           value={bill}
           onChange={(e) => setBill(e.target.value)}
           className={select}

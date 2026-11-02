@@ -13,7 +13,7 @@ import { LEVELS, PEOPLE_LEAD } from "@/components/site/services-data";
 
 const TITLE = "Functions | 16x9";
 const DESCRIPTION =
-  "The business functions agents take on: payables, receivables, close, intake, service desk, scheduling, reporting, research, sales development, marketing, recruiting, compliance, procurement and IT. What a person keeps, and what already runs.";
+  "The business functions agents take on: payables, receivables, close, intake, service desk, scheduling, reporting, research, sales development, marketing, recruiting, compliance, procurement, legal drafting and IT. What a person keeps, and what already runs.";
 
 export const Route = createFileRoute("/services/functions")({
   head: () => ({
@@ -55,6 +55,8 @@ function FunctionsPage() {
               Most companies run on the same back office: invoices, inboxes, documents, schedules,
               reports and follow-up. Here is each function we move onto agents, the tasks inside it,
               and what a person keeps. Where it already runs in one of our own companies, we say so.
+              Work you already outsource moves first: the budget line exists and you already buy an
+              outcome.
             </p>
           }
           aside={
