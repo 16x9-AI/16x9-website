@@ -1,13 +1,11 @@
-import { QueryClient } from "@tanstack/react-query";
 import { createRouter } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
 
 export const getRouter = () => {
-  const queryClient = new QueryClient();
-
+  // No React Query: nothing on the site ran a query, so the client and provider were dead weight
+  // on every page load (removed in the PR #4 performance pass, 2026-11-02).
   const router = createRouter({
     routeTree,
-    context: { queryClient },
     scrollRestoration: true,
     defaultPreloadStaleTime: 0,
   });

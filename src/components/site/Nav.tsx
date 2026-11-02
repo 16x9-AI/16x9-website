@@ -6,10 +6,12 @@ import { Link } from "@tanstack/react-router";
 // the reader never sees a vercel.app URL. The report emits its links with the
 // /intel prefix, derived from REPORT_BASE_URL on its side — change one, change
 // the other.
-const links = [
-  { href: "/#work", label: "Work" },
-  { href: "/#mycel", label: "Mycel" },
-  { href: "/intel", label: "Intel" },
+const links: { href: string; label: string; wide?: boolean }[] = [
+  { href: "/services", label: "Services" },
+  { href: "/partners", label: "Partners" },
+  // Work and Intel drop off the bar below `sm` so five links fit a phone; both are in the footer.
+  { href: "/#work", label: "Work", wide: true },
+  { href: "/intel", label: "Intel", wide: true },
   { href: "/#contact", label: "Contact" },
 ];
 
@@ -33,7 +35,10 @@ export function Nav() {
         </Link>
         <ul className="flex items-stretch">
           {links.map((link) => (
-            <li key={link.href} className="flex border-l border-ink/80">
+            <li
+              key={link.href}
+              className={`${link.wide ? "hidden sm:flex" : "flex"} border-l border-ink/80`}
+            >
               <a
                 href={link.href}
                 className="flex items-center px-2.5 font-mono text-[11px] uppercase tracking-[0.08em] text-ink sm:tracking-[0.12em] transition-colors hover:bg-ink hover:text-background focus-visible:bg-ink focus-visible:text-background focus-visible:outline-none sm:px-5 md:px-7"

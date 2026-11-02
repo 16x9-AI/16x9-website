@@ -1,36 +1,63 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { activateAnalytics, getConsent, setConsent } from "@/lib/analytics";
+import {
+  OPEN_CONSENT_EVENT,
+  activateAnalytics,
+  consentDefaults,
+  getConsent,
+  installEventTracking,
+  setConsent,
+} from "@/lib/analytics";
 
 export function CookieBanner() {
   const [visible, setVisible] = useState(false);
   const [mounted, setMounted] = useState(false);
 
+  const show = () => {
+    setMounted(true);
+    requestAnimationFrame(() => setVisible(true));
+  };
+  const hide = () => {
+    setVisible(false);
+    window.setTimeout(() => setMounted(false), 400);
+  };
+
   useEffect(() => {
+    consentDefaults();
+    const stopTracking = installEventTracking();
+    // The footer's "Cookie preferences" reopens this banner at any time (the privacy policy
+    // promises that control).
+    window.addEventListener(OPEN_CONSENT_EVENT, show);
+
     const existing = getConsent();
-    if (existing === "accepted") {
-      activateAnalytics();
-      return;
-    }
-    if (existing === "rejected") return;
-    const t = window.setTimeout(() => {
-      setMounted(true);
-      requestAnimationFrame(() => setVisible(true));
-    }, 800);
-    return () => window.clearTimeout(t);
+    let t: number | undefined;
+    if (existing === "accepted") activateAnalytics();
+    else if (existing !== "rejected") t = window.setTimeout(show, 800);
+
+    return () => {
+      stopTracking();
+      window.removeEventListener(OPEN_CONSENT_EVENT, show);
+      if (t) window.clearTimeout(t);
+    };
   }, []);
 
   const accept = () => {
     setConsent("accepted");
-    setVisible(false);
-    window.setTimeout(() => setMounted(false), 400);
+    hide();
     activateAnalytics();
   };
 
   const reject = () => {
+    const wasAccepted = getConsent() === "accepted";
     setConsent("rejected");
-    setVisible(false);
-    window.setTimeout(() => setMounted(false), 400);
+    hide();
+    // Tags already on the page cannot be unloaded. Withdraw consent with Google and Clarity, then
+    // reload so nothing keeps running for the rest of the visit.
+    if (wasAccepted) {
+      window.gtag?.("consent", "update", { analytics_storage: "denied" });
+      window.clarity?.("consent", false);
+      window.setTimeout(() => window.location.reload(), 450);
+    }
   };
 
   if (!mounted) return null;
@@ -55,13 +82,13 @@ export function CookieBanner() {
         <div className="flex gap-2 md:shrink-0">
           <button
             onClick={reject}
-            className="inline-flex h-10 items-center border border-ink/80 bg-background px-4 font-mono text-[11px] uppercase tracking-[0.1em] text-ink hover:bg-ui-hover"
+            className="inline-flex h-11 items-center border border-ink/80 bg-background px-4 font-mono text-[11px] uppercase tracking-[0.1em] text-ink hover:bg-ui-hover"
           >
             Reject
           </button>
           <button
             onClick={accept}
-            className="inline-flex h-10 items-center border border-ink bg-ink px-4 font-mono text-[11px] uppercase tracking-[0.1em] text-background hover:bg-graphite"
+            className="inline-flex h-11 items-center border border-ink bg-ink px-4 font-mono text-[11px] uppercase tracking-[0.1em] text-background hover:bg-graphite"
           >
             Accept
           </button>

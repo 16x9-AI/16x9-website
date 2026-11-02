@@ -1,12 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { pageHead } from "@/lib/seo";
 import { Nav } from "@/components/site/Nav";
 import { Footer } from "@/components/site/Footer";
 import { Reveal } from "@/components/site/Reveal";
 import { Marquee } from "@/components/site/Marquee";
-import { MycelBrain } from "@/components/site/MycelBrain";
+import { DeferredMycelBrain } from "@/components/site/DeferredMycelBrain";
 import { Contact } from "@/components/site/Contact";
 import { Motif } from "@/components/site/Motif";
 import { CountUp } from "@/components/site/CountUp";
+import { AdvisorChat } from "@/components/site/AdvisorChat";
 import {
   BoardColumn,
   BoardRow,
@@ -16,6 +18,13 @@ import {
 } from "@/components/site/Board";
 
 export const Route = createFileRoute("/")({
+  head: () =>
+    pageHead({
+      title: "16x9 | AI Studio",
+      description:
+        "16x9 is an AI studio. We build agentic companies and run them, in clinical research, capital advisory, commercial lending, real estate, and field services, on Mycel, the agent platform we built.",
+      path: "/",
+    }),
   component: Index,
 });
 
@@ -261,6 +270,11 @@ function Index() {
               and run them.
             </h1>
 
+            {/* The one hero addition (Manny, 2026-11-02): the advisor strip, under the headline. */}
+            <div className="mt-8">
+              <AdvisorChat />
+            </div>
+
             <div className="mt-8 grid grid-cols-1 gap-10 border-t border-ink/80 pt-8 md:grid-cols-2 md:gap-10 lg:grid-cols-[1.15fr_1fr_0.95fr] lg:gap-12">
               <Reveal className="md:flex md:h-full md:flex-col">
                 <p className="max-w-[46ch] text-[16px] leading-[1.65] text-ink md:text-[17px]">
@@ -423,7 +437,7 @@ function Index() {
                 </figure>
                 <div className="mt-6 hidden aspect-video w-full overflow-hidden border border-ink/80 bg-obsidian sm:block lg:aspect-auto lg:h-[420px]">
                   <div className="h-full w-full invert">
-                    <MycelBrain />
+                    <DeferredMycelBrain />
                   </div>
                 </div>
               </Reveal>
@@ -461,7 +475,7 @@ function Index() {
                 aria-label="Systems across the studio"
               >
                 {studioRows.map((r) => (
-                  <BoardRow key={r.name} row={r} tone="light" />
+                  <BoardRow key={r.name} row={r} tone="light" heading="h3" />
                 ))}
               </ul>
             </div>

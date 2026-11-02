@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Motif } from "@/components/site/Motif";
+import { openConsentPreferences } from "@/lib/analytics";
 
 const linkColumns = [
   { to: "/privacy" as const, label: "Privacy" },
@@ -30,6 +31,36 @@ export function Footer() {
           <ul className="flex flex-col gap-3 font-mono text-[12px] uppercase tracking-[0.1em] text-snow md:items-end">
             {/* /intel is a vercel.json rewrite onto the report deployment, not a router route. */}
             <li>
+              <Link to="/services" className="transition-colors hover:text-snow/70">
+                Services
+              </Link>
+            </li>
+            <li>
+              <Link to="/services/functions" className="transition-colors hover:text-snow/70">
+                Functions
+              </Link>
+            </li>
+            <li>
+              <Link to="/industries" className="transition-colors hover:text-snow/70">
+                Industries
+              </Link>
+            </li>
+            <li>
+              <Link to="/partners" className="transition-colors hover:text-snow/70">
+                Partners
+              </Link>
+            </li>
+            <li>
+              <Link to="/scorecard" className="transition-colors hover:text-snow/70">
+                Scorecard
+              </Link>
+            </li>
+            <li>
+              <a href="/#work" className="transition-colors hover:text-snow/70">
+                Work
+              </a>
+            </li>
+            <li>
               <a href="/intel" className="transition-colors hover:text-snow/70">
                 Intel
               </a>
@@ -41,6 +72,15 @@ export function Footer() {
                 </Link>
               </li>
             ))}
+            <li>
+              <button
+                type="button"
+                onClick={openConsentPreferences}
+                className="font-mono text-[12px] uppercase tracking-[0.1em] text-snow transition-colors hover:text-snow/70"
+              >
+                Cookie preferences
+              </button>
+            </li>
           </ul>
         </div>
       </div>

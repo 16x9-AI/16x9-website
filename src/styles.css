@@ -61,7 +61,7 @@
 
   /* Pure black / white / gray scale, no hue */
   --ink: oklch(0.12 0 0);
-  --graphite: oklch(0.55 0 0);
+  --graphite: oklch(0.52 0 0); /* 0.55 measured 4.47:1 on fog; 0.52 clears WCAG AA 4.5:1 (Lighthouse, 2026-11-02) */
   --slate-brand: oklch(0.4 0 0);
   --ash: oklch(0.3 0 0);
   --fog: oklch(0.97 0 0);
