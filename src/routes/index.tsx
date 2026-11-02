@@ -22,7 +22,7 @@ export const Route = createFileRoute("/")({
     pageHead({
       title: "16x9 | AI Studio",
       description:
-        "16x9 is an AI studio. We build agentic companies and run them, in clinical research, capital advisory, commercial lending, real estate, and field services, on Mycel, the agent platform we built.",
+        "16x9 is an AI studio. We build agentic companies and run them, in clinical research, capital advisory, commercial lending, real estate, and field services.",
       path: "/",
     }),
   component: Index,
@@ -39,7 +39,7 @@ const audiences = [
   },
   {
     label: "Partners",
-    text: "You bring the operation or the market. We bring systems already running and the platform they run on.",
+    text: "You bring the operation or the market. We bring systems already running in our own companies, and the team to run them.",
     href: "#work",
   },
   {
@@ -213,24 +213,16 @@ const studioRows: BoardRowData[] = [
   },
 ];
 
-// Counts pulled from the Mycel catalog on 2026-09-02 and rounded down:
-// 649 skills, 1,214 tool integrations, 84 agents, 93 connection environments.
-const mycelSpecs = [
+// What each side does. Frontier Desk is 16x9's channel partner (Manny, 2026-11-02);
+// referrals run both ways. Keep these plain and never repeat frontierdesk.ai's own wording.
+const PARTNER_SPLIT = [
+  { label: "16x9 does", value: "The build, and running the work inside the company." },
   {
-    label: "Composition",
-    value: "Agents from versioned skills, tools, rules, guardrails, and triggers.",
+    label: "Frontier Desk does",
+    value: "The sale, the raise or the loan, with the right counterparty.",
   },
-  { label: "Catalog", value: "600+ skills, 1,000+ tool integrations, 80+ agents." },
-  {
-    label: "Models",
-    value:
-      "Multiple providers through one gateway. Pick a policy: auto, cost-effective, high-quality.",
-  },
-  { label: "Memory", value: "Episodic recall, document library, cache. Three privacy tiers." },
-  { label: "Trust", value: "Each block earns 0 to 9 from clean runs. Human sign-off above 5." },
-  { label: "Learning", value: "Every run graded. Proposed changes wait for sign-off." },
-  { label: "Tenancy", value: "Firms share building blocks across a market, never private data." },
-  { label: "Surfaces", value: "Web app, MCP server, REST API, editor harness." },
+  { label: "We send them", value: "Owners who are ready to sell, raise money or borrow." },
+  { label: "They send us", value: "Owners whose plan needs the work rebuilt first." },
 ];
 
 // The running head is computed from the data above, so it can never drift from the board.
@@ -279,8 +271,9 @@ function Index() {
               <Reveal className="md:flex md:h-full md:flex-col">
                 <p className="max-w-[46ch] text-[16px] leading-[1.65] text-ink md:text-[17px]">
                   Founders and entrepreneurs. We build systems on agents and run them inside the
-                  companies below, and for outside partners. Some of us run those companies. The
-                  work increasingly runs on Mycel, the agent platform we built.
+                  companies below, and for outside partners. Some of us run those companies. When an
+                  owner wants to sell, raise or borrow, our channel partner Frontier Desk takes it
+                  from there.
                 </p>
                 <p className="mt-6 font-mono text-[11px] uppercase leading-[1.9] tracking-[0.14em] text-graphite">
                   Clinical research ✦ Capital advisory ✦ Commercial lending
@@ -442,17 +435,17 @@ function Index() {
                 </div>
               </Reveal>
 
-              <Reveal id="mycel" delay={0.12}>
-                <p className={`${kicker} text-graphite`}>#3 The platform</p>
+              <Reveal id="partner" delay={0.12}>
+                <p className={`${kicker} text-graphite`}>#3 The channel partner</p>
                 <h2 className="mt-4 font-editorial text-[clamp(2rem,4vw,2.75rem)] uppercase leading-[0.95] tracking-tight text-ink">
-                  Mycel
+                  Frontier Desk
                 </h2>
                 <p className="mt-4 text-[15px] leading-[1.65] text-ink">
-                  Our companies are moving onto it. Internal: the people who build with us build on
-                  it, and it is not open beyond that.
+                  We build and run the work inside a company. Frontier Desk finds the buyers,
+                  lenders and investors who want what that company has, and helps close the deal.
                 </p>
                 <dl className="mt-6 grid grid-cols-1 gap-x-8 sm:grid-cols-2">
-                  {mycelSpecs.map((s) => (
+                  {PARTNER_SPLIT.map((s) => (
                     <div key={s.label} className="border-t border-ink/80 pb-4 pt-3">
                       <dt className="font-mono text-[11px] uppercase tracking-[0.14em] text-graphite">
                         {s.label}
@@ -462,8 +455,14 @@ function Index() {
                   ))}
                 </dl>
                 <div className="border-t border-ink/80" />
-                <p className="mt-2 font-mono text-[10.5px] uppercase leading-relaxed tracking-[0.06em] text-graphite">
-                  Counts from the platform catalog, Q3 2026, rounded down.
+                <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.14em] text-ink">
+                  <a
+                    href="https://www.frontierdesk.ai"
+                    className="underline underline-offset-4 hover:text-graphite"
+                  >
+                    frontierdesk.ai
+                  </a>{" "}
+                  <span aria-hidden>↗</span>
                 </p>
               </Reveal>
             </div>

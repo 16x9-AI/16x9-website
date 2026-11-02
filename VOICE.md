@@ -6,7 +6,7 @@ Rewritten 2026-09-02. The previous guide positioned 16x9 as a recruiting page fo
 
 ## What 16x9 is
 
-16x9 is an AI studio. A small team of builders and operators who build and run companies on agents. We hold stakes in the companies we build, we operate inside them, and every one of them runs on Mycel, the agent platform we built for ourselves. We work across industries on purpose. We keep a standing research allocation and publish daily intelligence on the fields we work in.
+16x9 is an AI studio. A small team of builders and operators who build and run companies on agents. We hold stakes in the companies we build, we operate inside them, and every one of them runs on software we built for ourselves. We work across industries on purpose. We keep a standing research allocation and publish daily intelligence on the fields we work in.
 
 ## Who we're talking to
 
@@ -42,9 +42,11 @@ If a sentence would embarrass an engineer who built the thing, cut it.
 
 16x9 is the aspect ratio of a wide shot. It explains why we work across industries: a pattern solved in one shows up in the next. Use this once on the page, at most, and never as a heading system. "Framers," "the frame," and "panoramic synthesis" are retired as public vocabulary.
 
-## Mycel
+## Mycel and Frontier Desk
 
-Mycel is presented as built by 16x9. Describe it by what it does and how it is governed: agents composed from versioned building blocks, every run traced, trust earned per block through use, human sign-off on promotion. State clearly that it is internal and not open. Never invent a skill, agent, or tool name. Pull counts from the platform, round them down, and date them in a code comment.
+Updated 2026-11-02 (Manny). Mycel is not named on marketing pages. Say "software we built, already running in our own companies" instead. `/terms` and `/privacy` still name Mycel, because Google OAuth verification for it points there; leave those as they are.
+
+Frontier Desk is 16x9's channel partner and the one company the site names. Frontier Desk handles the deal side (sales, raises, loans, data licensing); 16x9 builds and runs the work. Each sends the other owners. Never copy frontierdesk.ai's phrasing, and never describe deal work as ours.
 
 ## What never changes
 

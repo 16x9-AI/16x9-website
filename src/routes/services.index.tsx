@@ -15,6 +15,7 @@ import {
 } from "@/components/site/Services";
 import {
   ENGAGEMENTS,
+  FRONTIER_DESK,
   MAIL,
   OUTCOMES,
   SAMPLE,
@@ -69,7 +70,7 @@ const MORE = [
   },
   {
     to: "/partners" as const,
-    label: "Partners",
+    label: "Build with us",
     text: "Know an industry? Build a company with us and share in what it earns.",
   },
 ];
@@ -107,7 +108,7 @@ function ServicesPage() {
           <div className="mx-auto max-w-[1400px]">
             <SectionHead folio="The model" title="Two sides, one company.">
               You know the business and its customers. We bring the engineers, the operators and the
-              system that runs the AI.
+              software that runs the AI.
             </SectionHead>
             <Reveal className="mt-10 lg:ml-[240px]">
               <Splice />
@@ -230,7 +231,7 @@ function ServicesPage() {
         <section className="bg-obsidian px-6 py-12 text-snow md:px-10 md:py-16">
           <div className="mx-auto max-w-[1400px]">
             <SectionHead folio="Outcomes" title="What it changes beyond cost." tone="dark" />
-            <dl className="mt-10 grid grid-cols-1 gap-x-8 sm:grid-cols-2 lg:grid-cols-5">
+            <dl className="mt-10 grid grid-cols-1 gap-x-8 sm:grid-cols-2 lg:grid-cols-4">
               {OUTCOMES.map((o) => (
                 <div key={o.h} className="border-t border-snow/30 py-5">
                   <dt className="font-editorial text-[24px] uppercase leading-[1] tracking-tight text-snow">
@@ -243,6 +244,47 @@ function ServicesPage() {
           </div>
         </section>
 
+        {/* The channel partner: who handles the deal side */}
+        <section className="px-6 pb-12 md:px-10 md:pb-16">
+          <div className="mx-auto max-w-[1400px]">
+            <SectionHead
+              folio="Channel partner"
+              title="We run the work. Frontier Desk handles the deal."
+            >
+              Some owners want to sell, take on an investor or borrow. That is a different job, and
+              our channel partner does it.
+            </SectionHead>
+            <Reveal className="mt-10 grid grid-cols-1 border-y border-ink/80 md:ml-[240px] md:grid-cols-2">
+              <div className="py-5 md:border-r md:border-ink/30 md:pr-8">
+                <p className={`${mono} text-graphite`}>16x9</p>
+                <p className="mt-3 text-[15px] leading-[1.6] text-ink">
+                  Builds and runs the work inside the company. Partners with operators to start or
+                  grow companies, for shares or a cut of revenue.
+                </p>
+              </div>
+              <div className="border-t border-ink/30 py-5 md:border-t-0 md:pl-8">
+                <p className={`${mono} text-graphite`}>Frontier Desk</p>
+                <p className="mt-3 text-[15px] leading-[1.6] text-ink">
+                  Finds the buyers, lenders and investors who fit a company, and helps close the
+                  deal.
+                </p>
+              </div>
+            </Reveal>
+            <p className="mt-6 max-w-[64ch] text-[15px] leading-[1.65] text-ink md:ml-[240px]">
+              Owners move between us. We send them to Frontier Desk when a sale, raise or loan comes
+              up, and Frontier Desk sends us owners whose plan needs the work rebuilt. If you came
+              to us from Frontier Desk, we are the team that does the build. Any referral terms are
+              written down and shown to you.
+            </p>
+            <p className="mt-4 font-mono text-[11px] uppercase tracking-[0.14em] text-ink md:ml-[240px]">
+              <a href={FRONTIER_DESK} className="underline underline-offset-4 hover:text-graphite">
+                frontierdesk.ai
+              </a>{" "}
+              <span aria-hidden>↗</span>
+            </p>
+          </div>
+        </section>
+
         {/* Who does the work, and where to read next */}
         <section className="px-6 py-12 md:px-10 md:py-16">
           <div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-14">
@@ -251,8 +293,8 @@ function ServicesPage() {
                 Our people inside, AI underneath.
               </h2>
               <p className="mt-4 max-w-[60ch] text-[15px] leading-[1.65] text-ink">
-                Our engineers and operators work inside your company and answer for the work. Mycel,
-                the system we built, runs the AI and keeps a record of every step. A person approves
+                Our engineers and operators work inside your company and answer for the work. The
+                software we built runs the AI and keeps a record of every step. A person approves
                 before anything new goes live. If a job needs more hands or a specific system,
                 partner firms join, and the agreement names them.
               </p>

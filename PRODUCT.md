@@ -8,7 +8,7 @@ web
 
 ## What 16x9 is
 
-An AI studio that builds agentic companies with operators who already know the trade. The operator brings domain expertise, relationships and distribution. 16x9 brings forward-deployed engineers and operators, and Mycel, the orchestration system it built, to move most of the work onto agents. The company ends up lean and profitable. 16x9 partners for equity, a revenue share, or another joint-venture structure, then layers in strategic outcomes (roll-ups, a sale at a better multiple) through a partner desk.
+An AI studio that builds agentic companies with operators who already know the trade. The operator brings domain expertise, relationships and distribution. 16x9 brings forward-deployed engineers and operators, and the orchestration software it built (Mycel, not named on marketing pages), to move most of the work onto agents. The company ends up lean and profitable. 16x9 partners for equity, a revenue share, or another joint-venture structure, then layers in strategic outcomes (roll-ups, a sale at a better multiple) through its channel partner, Frontier Desk.
 
 ## Who the site serves
 
@@ -20,7 +20,7 @@ An AI studio that builds agentic companies with operators who already know the t
 
 ## Offers (shape only, no prices on the site)
 
-Transferred from Frontier Desk's operating work. Exits, lending, data licensing and capital placement stay with Frontier Desk and are referred out, unnamed.
+Transferred from Frontier Desk's operating work. Exits, lending, data licensing and capital placement stay with Frontier Desk, named as 16x9's channel partner since 2026-11-02. Referrals run both ways.
 
 1. Opportunity assessment: fixed fee, about two weeks, a baseline per process and changes ranked by margin. The company keeps it.
 2. Fixed-scope build: first one to three automations in live work, midway gate to continue, change or stop.

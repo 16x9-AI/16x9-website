@@ -16,7 +16,7 @@ Build: `npm run build` · Dev: `npm run dev` · Preview: `npm run preview` · Li
 
 ## Routes
 
-- `/` — `routes/index.tsx`. Frames in order: front page (headline, lede + email, audience index, live proof card, horizon motif), marquee (computed status tally), the board (five industry columns with motifs and status rows), the studio + figures + Mycel plate with the studio-wide strip beneath, contact (two doors).
+- `/` — `routes/index.tsx`. Frames in order: front page (headline, lede + email, audience index, live proof card, horizon motif), marquee (computed status tally), the board (five industry columns with motifs and status rows), the studio + figures + channel-partner plate (Frontier Desk) with the studio-wide strip beneath, contact (two doors).
 - `/services`, `/services/functions`, `/industries`, `/industries/$slug` (18 industries from `industries-data.ts`), `/partners`. Shared pieces in `src/components/site/Services.tsx`; offers in `services-data.ts`.
 - `/privacy`, `/terms` — legal. Also verification-sensitive.
 - `/intel` — NOT a router route. `vercel.json` rewrites `/intel` and `/intel/*` onto the daily AI intelligence report deployment (`16x9-ai-industry-daily-report.vercel.app`). Link to it with a plain `<a href="/intel">`, never `<Link to>`.
@@ -25,8 +25,9 @@ Build: `npm run build` · Dev: `npm run dev` · Preview: `npm run preview` · Li
 ## Content rules that are also code rules
 
 - **No company names on the public site.** Work is described by industry (VOICE.md, decision 2026-09-02). If a card needs a name to make sense, rewrite the card.
+- **One exception: Frontier Desk, named as 16x9's channel partner** (Manny, 2026-11-02). It owns sales, raises, loans and data licensing; 16x9 owns the build and running the work; referrals run both ways. Never repeat frontierdesk.ai's wording (its `/build` page sells a similar assessment-build-retainer path), so an owner reading both sites sees two jobs. Link it as `FRONTIER_DESK` from `services-data.ts`.
+- **Mycel is not named on marketing pages** (Manny, 2026-11-02). Only `/terms` and `/privacy` keep it, because Google OAuth verification for Mycel points there.
 - **Status tags are audited, not decorative.** `FrameCell` takes `status: "Running" | "Pilot" | "Building"`. Check Linear before changing one. The audit date is in the comment above the `work` array in `index.tsx`.
-- **Mycel counts are dated.** The spec rows carry rounded-down counts pulled from the Mycel catalog; the exact numbers and date are in the comment above `mycelSpecs`. Update both together.
 - **The Google scope disclosure lives on `/privacy` only.** Both the standalone `/mycel` page and the homepage scope sentence were removed on 2026-09-03 at Maxi's request. `/privacy` is the compliance surface for Google OAuth verification: do not edit its Google sections, and keep the footer link to it.
 
 ## Motion

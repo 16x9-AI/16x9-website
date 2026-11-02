@@ -13,13 +13,13 @@ const DESCRIPTION =
 export const Route = createFileRoute("/partners")({
   head: () =>
     pageHead({
-      title: "Partner with 16x9: build a company that runs on AI | 16x9",
+      title: "Build a company with 16x9: operator partnerships | 16x9",
       description: DESCRIPTION,
       path: "/partners",
       jsonLd: [
         breadcrumbs([
           { name: "Home", path: "/" },
-          { name: "Partners", path: "/partners" },
+          { name: "Build with us", path: "/partners" },
         ]),
       ],
     }),
@@ -48,7 +48,7 @@ const STAGES = [
   },
   {
     h: "What comes next",
-    body: "A company that runs on fewer people has options: buy competitors, raise money, or sell for a better price. A partner firm handles that when the time comes.",
+    body: "A company that runs on fewer people has options: buy competitors, raise money, or sell. When that time comes, our channel partner Frontier Desk handles the deal.",
   },
 ];
 
@@ -70,7 +70,7 @@ const DOORS = [
   },
   {
     label: "Brokers and advisers",
-    text: "You see the companies first. Bring us the ones that would sell for more with lower costs. We agree your referral terms up front.",
+    text: "You see the companies first. Introduce the owners whose operations need rebuilding, and we agree your referral terms up front. Advisers, lenders and buyers working on deals join Frontier Desk's network instead.",
     subject: "Broker introduction",
   },
 ];
