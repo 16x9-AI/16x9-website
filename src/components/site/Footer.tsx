@@ -30,6 +30,11 @@ export function Footer() {
           <ul className="flex flex-col gap-3 font-mono text-[12px] uppercase tracking-[0.1em] text-snow md:items-end">
             {/* /intel is a vercel.json rewrite onto the report deployment, not a router route. */}
             <li>
+              <Link to="/services" className="transition-colors hover:text-snow/70">
+                Services
+              </Link>
+            </li>
+            <li>
               <a href="/intel" className="transition-colors hover:text-snow/70">
                 Intel
               </a>
