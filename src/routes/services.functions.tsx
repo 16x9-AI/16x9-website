@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { breadcrumbs, pageHead } from "@/lib/seo";
 import { Nav } from "@/components/site/Nav";
 import { Footer } from "@/components/site/Footer";
 import { Reveal } from "@/components/site/Reveal";
@@ -11,21 +12,23 @@ import {
 } from "@/components/site/Services";
 import { LEVELS, PEOPLE_LEAD } from "@/components/site/services-data";
 
-const TITLE = "Functions | 16x9";
 const DESCRIPTION =
   "The work AI can take on: paying bills, billing, bookkeeping, paperwork, customer emails, scheduling, reports, research, sales follow-up, marketing, hiring, compliance, buying, contracts and IT. What a person still signs off, and what already runs.";
 
 export const Route = createFileRoute("/services/functions")({
-  head: () => ({
-    meta: [
-      { title: TITLE },
-      { name: "description", content: DESCRIPTION },
-      { property: "og:title", content: TITLE },
-      { property: "og:description", content: DESCRIPTION },
-      { property: "og:url", content: "https://16x9.ai/services/functions" },
-    ],
-    links: [{ rel: "canonical", href: "https://16x9.ai/services/functions" }],
-  }),
+  head: () =>
+    pageHead({
+      title: "What AI can do in your back office, task by task | 16x9",
+      description: DESCRIPTION,
+      path: "/services/functions",
+      jsonLd: [
+        breadcrumbs([
+          { name: "Home", path: "/" },
+          { name: "Services", path: "/services" },
+          { name: "Functions", path: "/services/functions" },
+        ]),
+      ],
+    }),
   component: FunctionsPage,
 });
 

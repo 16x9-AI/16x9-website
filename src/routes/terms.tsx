@@ -1,7 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { pageHead } from "@/lib/seo";
 import { LegalPage, legalH2, legalLink, legalP, legalUl } from "@/components/site/LegalPage";
 
 export const Route = createFileRoute("/terms")({
+  head: () =>
+    pageHead({
+      title: "Terms of service | 16x9",
+      description:
+        "The terms that govern use of the 16x9.ai website and the services 16x9 provides.",
+      path: "/terms",
+    }),
   component: TermsPage,
 });
 

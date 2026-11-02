@@ -24,12 +24,14 @@ import { createServerFn } from "@tanstack/react-start";
 // Env:
 //   MYCEL_API_BASE          Mycel API base
 //   MYCEL_16X9_API_KEY      16x9-scoped mycel_* key (1Password: "API Credentials - Mycel 16x9 site")
-//   MYCEL_16X9_ECOSYSTEM_ID 16x9 ecosystem, full UUID (required)
+//   MYCEL_16X9_ECOSYSTEM_ID 16x9 ecosystem (default: 16x9 deal universe 318b5ffd-…)
+//   MYCEL_16X9_ORG_ID       16x9 org 869d903e-d7ec-43c9-b901-e7f24bffa989 (business tables filter on it)
 //   MYCEL_16X9_ORG_ID       optional org header
 
 export const NOTE_TABLE = "x9_industry_note";
-// No default: only a short id prefix (318b5ffd) is on record, and a wrong id reads someone else's rows.
-const ECO = process.env.MYCEL_16X9_ECOSYSTEM_ID || "";
+// 16x9's own deal universe ("16x9", verified 2026-11-02). Never Frontier Desk's: the desk is
+// firewalled from FD by design (Manny, 2026-11-02).
+const ECO = process.env.MYCEL_16X9_ECOSYSTEM_ID || "318b5ffd-6706-492f-912b-37ed4bc28a55";
 const TTL = 6 * 60 * 60 * 1000; // six hours, like FD's coverage band
 const MAX_AGE_DAYS = 60;
 
@@ -92,8 +94,8 @@ async function readPublished(): Promise<Row[] | null> {
     Authorization: `Bearer ${key}`,
     Accept: "application/json",
   };
-  const org = process.env.MYCEL_16X9_ORG_ID;
-  if (org) headers["X-Mycel-Organization"] = org;
+  headers["X-Mycel-Organization"] =
+    process.env.MYCEL_16X9_ORG_ID || "869d903e-d7ec-43c9-b901-e7f24bffa989";
   try {
     const res = await fetch(`${base.replace(/\/$/, "")}/api/business-private/${NOTE_TABLE}?${qs}`, {
       headers,

@@ -1,25 +1,28 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { breadcrumbs, itemList, pageHead } from "@/lib/seo";
 import { Nav } from "@/components/site/Nav";
 import { Footer } from "@/components/site/Footer";
 import { Reveal } from "@/components/site/Reveal";
 import { CloseBand, PageFront, SectionHead, ServicesNav } from "@/components/site/Services";
 import { INDUSTRY_GROUPS, INDUSTRY_PACKS } from "@/components/site/industries-data";
 
-const TITLE = "Industries | 16x9";
 const DESCRIPTION =
   "Accounting, capital advisory, wealth management, insurance, mortgage and business lending, medical practices, real estate, property management, field services, law, engineering, agencies, staffing, manufacturing, logistics and managed IT. What AI takes off each team's plate.";
 
 export const Route = createFileRoute("/industries/")({
-  head: () => ({
-    meta: [
-      { title: TITLE },
-      { name: "description", content: DESCRIPTION },
-      { property: "og:title", content: TITLE },
-      { property: "og:description", content: DESCRIPTION },
-      { property: "og:url", content: "https://16x9.ai/industries" },
-    ],
-    links: [{ rel: "canonical", href: "https://16x9.ai/industries" }],
-  }),
+  head: () =>
+    pageHead({
+      title: "AI for accounting, healthcare, real estate and 15 more industries | 16x9",
+      description: DESCRIPTION,
+      path: "/industries",
+      jsonLd: [
+        itemList(INDUSTRY_PACKS.map((p) => ({ name: p.name, path: `/industries/${p.key}` }))),
+        breadcrumbs([
+          { name: "Home", path: "/" },
+          { name: "Industries", path: "/industries" },
+        ]),
+      ],
+    }),
   component: IndustriesPage,
 });
 

@@ -1,10 +1,11 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { breadcrumbs, clampDescription, faq, pageHead, service } from "@/lib/seo";
 import { Nav } from "@/components/site/Nav";
 import { Footer } from "@/components/site/Footer";
 import { StatusDot } from "@/components/site/Board";
-import { CloseBand, SectionHead, ServicesNav } from "@/components/site/Services";
+import { CloseBand, FaqList, SectionHead, ServicesNav } from "@/components/site/Services";
 import { INDUSTRY_PACKS, packByKey } from "@/components/site/industries-data";
-import { FUNCTION_GROUPS } from "@/components/site/services-data";
+import { FUNCTION_GROUPS, faqItems } from "@/components/site/services-data";
 import { getIndustryNotes, type IndustryNote } from "@/lib/industry-notes";
 
 export const Route = createFileRoute("/industries/$slug")({
@@ -17,19 +18,29 @@ export const Route = createFileRoute("/industries/$slug")({
   },
   head: ({ params }) => {
     const pack = packByKey(params.slug);
-    const title = pack ? `${pack.name} | 16x9` : "Industries | 16x9";
-    const description = pack ? `${pack.headline} ${pack.lede}` : "";
-    const url = `https://16x9.ai/industries/${params.slug}`;
-    return {
-      meta: [
-        { title },
-        { name: "description", content: description },
-        { property: "og:title", content: title },
-        { property: "og:description", content: description },
-        { property: "og:url", content: url },
+    if (!pack)
+      return { meta: [{ title: "Not found | 16x9" }, { name: "robots", content: "noindex" }] };
+    const path = `/industries/${pack.key}`;
+    const description = clampDescription(`${pack.headline} ${pack.lede}`);
+    return pageHead({
+      title: `AI for ${pack.name.toLowerCase()} | 16x9`,
+      description,
+      path,
+      jsonLd: [
+        service({
+          name: `AI back-office operations for ${pack.name.toLowerCase()}`,
+          description,
+          path,
+          audience: pack.name,
+        }),
+        faq(faqItems({ name: pack.name, note: pack.note })),
+        breadcrumbs([
+          { name: "Home", path: "/" },
+          { name: "Industries", path: "/industries" },
+          { name: pack.name, path },
+        ]),
       ],
-      links: [{ rel: "canonical", href: url }],
-    };
+    });
   },
   component: IndustryPage,
 });
@@ -193,6 +204,15 @@ function IndustryPage() {
             </div>
           </section>
         )}
+
+        <section className="px-6 pb-14 md:px-10">
+          <div className="mx-auto max-w-[1400px]">
+            <SectionHead folio="Questions" title="What owners ask first." />
+            <div className="mt-8 md:ml-[240px]">
+              <FaqList items={faqItems({ name: pack.name, note: pack.note })} />
+            </div>
+          </div>
+        </section>
 
         <CloseBand
           title="Show us where the hours go."

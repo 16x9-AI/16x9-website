@@ -39,16 +39,25 @@ export function StatusDot({ status, tone = "dark" }: { status: Status; tone?: To
   );
 }
 
-export function BoardRow({ row, tone = "dark" }: { row: BoardRowData; tone?: Tone }) {
+// `heading` lets a row sit under an h2 without skipping a level (the studio strip); under a
+// column's h3 it stays h4.
+export function BoardRow({
+  row,
+  tone = "dark",
+  heading = "h4",
+}: {
+  row: BoardRowData;
+  tone?: Tone;
+  heading?: "h3" | "h4";
+}) {
+  const H = heading;
   const name = tone === "dark" ? "text-snow" : "text-ink";
   const body = tone === "dark" ? "text-snow/75" : "text-graphite";
   const rule = tone === "dark" ? "border-snow/20" : "border-ink/30";
   return (
     <li className={`border-t ${rule} pt-3 pb-4`}>
       <StatusDot status={row.status} tone={tone} />
-      <h4 className={`mt-1.5 font-sans text-[14px] font-medium leading-snug ${name}`}>
-        {row.name}
-      </h4>
+      <H className={`mt-1.5 font-sans text-[14px] font-medium leading-snug ${name}`}>{row.name}</H>
       <p className={`mt-1 text-[13px] leading-[1.5] ${body}`}>{row.outcome}</p>
     </li>
   );

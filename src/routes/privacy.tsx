@@ -1,7 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { pageHead } from "@/lib/seo";
 import { LegalPage, legalH2, legalLink, legalP, legalUl } from "@/components/site/LegalPage";
 
 export const Route = createFileRoute("/privacy")({
+  head: () =>
+    pageHead({
+      title: "Privacy policy | 16x9",
+      description:
+        "How 16x9 collects, uses and protects information, including cookies, analytics and Google sign-in data.",
+      path: "/privacy",
+    }),
   component: PrivacyPage,
 });
 

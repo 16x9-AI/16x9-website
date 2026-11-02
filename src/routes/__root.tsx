@@ -12,6 +12,9 @@ import appCss from "../styles.css?url";
 import { CookieBanner } from "@/components/site/CookieBanner";
 import { FrameShell } from "@/components/site/FrameShell";
 import { SmoothScroll } from "@/components/site/SmoothScroll";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
+import { organization, website } from "@/lib/seo";
 
 function NotFoundComponent() {
   return (
@@ -75,6 +78,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "theme-color", content: "#f5f5f5" },
+      { name: "format-detection", content: "telephone=no" },
       { title: "16x9 | AI Studio" },
       {
         name: "description",
@@ -89,8 +94,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:title", content: "16x9 | AI Studio" },
       {
         property: "og:description",
-        content:
-          "An AI studio. We build agentic companies and run them.",
+        content: "An AI studio. We build agentic companies and run them.",
       },
       { property: "og:image", content: "https://16x9.ai/og-image.png" },
       { property: "og:image:type", content: "image/png" },
@@ -102,8 +106,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:title", content: "16x9 | AI Studio" },
       {
         name: "twitter:description",
-        content:
-          "An AI studio. We build agentic companies and run them.",
+        content: "An AI studio. We build agentic companies and run them.",
       },
     ],
     links: [
@@ -115,7 +118,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "icon", href: "/favicon.ico", sizes: "any" },
       { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
       { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
+      { rel: "manifest", href: "/site.webmanifest" },
     ],
+    // Who 16x9 is, for search and answer engines. Every page's own data points back to this @id.
+    scripts: [organization, website].map((d) => ({
+      type: "application/ld+json",
+      children: JSON.stringify({ "@context": "https://schema.org", ...d }),
+    })),
   }),
   shellComponent: RootShell,
   component: RootComponent,
@@ -147,6 +156,11 @@ function RootComponent() {
         <Outlet />
         <CookieBanner />
       </FrameShell>
+      {/* Cookieless page views and Core Web Vitals. No cookies and no personal data, so they run
+          for every visitor; GA4, Clarity and Identify still wait for the banner. Both need
+          Web Analytics and Speed Insights switched on in the Vercel project. */}
+      <Analytics />
+      <SpeedInsights />
     </QueryClientProvider>
   );
 }

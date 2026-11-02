@@ -1,33 +1,51 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { breadcrumbs, faq, pageHead, service } from "@/lib/seo";
 import { Nav } from "@/components/site/Nav";
 import { Footer } from "@/components/site/Footer";
 import { Reveal } from "@/components/site/Reveal";
 import { Motif } from "@/components/site/Motif";
 import {
   EngagementPath,
+  FaqList,
   LevelSummary,
   SectionHead,
   ServicesNav,
   Splice,
   StartSentence,
 } from "@/components/site/Services";
-import { MAIL, OUTCOMES, SAMPLE, STEPS, mailto } from "@/components/site/services-data";
+import {
+  ENGAGEMENTS,
+  MAIL,
+  OUTCOMES,
+  SAMPLE,
+  STEPS,
+  faqItems,
+  mailto,
+} from "@/components/site/services-data";
 
-const TITLE = "Services | 16x9";
 const DESCRIPTION =
   "Our engineers and operators put AI to work in your back office: paperwork, billing, scheduling, customer emails. Start with a two-week assessment, or partner with us for a share of what the company earns.";
 
 export const Route = createFileRoute("/services/")({
-  head: () => ({
-    meta: [
-      { title: TITLE },
-      { name: "description", content: DESCRIPTION },
-      { property: "og:title", content: TITLE },
-      { property: "og:description", content: DESCRIPTION },
-      { property: "og:url", content: "https://16x9.ai/services" },
-    ],
-    links: [{ rel: "canonical", href: "https://16x9.ai/services" }],
-  }),
+  head: () =>
+    pageHead({
+      title: "AI for back-office work: services and how we engage | 16x9",
+      description: DESCRIPTION,
+      path: "/services",
+      jsonLd: [
+        service({
+          name: "AI back-office operations",
+          description: DESCRIPTION,
+          path: "/services",
+          offers: ENGAGEMENTS.map((e) => ({ name: e.name, description: e.body })),
+        }),
+        faq(faqItems()),
+        breadcrumbs([
+          { name: "Home", path: "/" },
+          { name: "Services", path: "/services" },
+        ]),
+      ],
+    }),
   component: ServicesPage,
 });
 
@@ -252,6 +270,15 @@ function ServicesPage() {
                 </li>
               ))}
             </ul>
+          </div>
+        </section>
+
+        <section className="px-6 pb-14 md:px-10">
+          <div className="mx-auto max-w-[1400px]">
+            <SectionHead folio="Questions" title="What owners ask first." />
+            <div className="mt-8 md:ml-[240px]">
+              <FaqList items={faqItems()} />
+            </div>
           </div>
         </section>
 

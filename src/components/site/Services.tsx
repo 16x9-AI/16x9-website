@@ -513,3 +513,25 @@ export function CloseBand({
     </section>
   );
 }
+
+/** Plain questions and answers. Native details/summary: works without JavaScript and on any phone. */
+export function FaqList({ items }: { items: { q: string; a: string }[] }) {
+  return (
+    <div className="border-b border-ink/80">
+      {items.map((it) => (
+        <details key={it.q} className="group border-t border-ink/30">
+          <summary className="flex cursor-pointer list-none items-baseline justify-between gap-6 px-1 py-4 text-[17px] font-medium leading-snug text-ink hover:bg-ink/[0.03] focus-visible:bg-ink/[0.06] focus-visible:outline-none [&::-webkit-details-marker]:hidden">
+            {it.q}
+            <span
+              aria-hidden
+              className="font-mono text-[14px] text-graphite group-open:rotate-45 transition-transform"
+            >
+              +
+            </span>
+          </summary>
+          <p className="max-w-[70ch] px-1 pb-5 text-[15px] leading-[1.65] text-ink">{it.a}</p>
+        </details>
+      ))}
+    </div>
+  );
+}

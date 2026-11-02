@@ -1,4 +1,46 @@
+# 16x9.ai robots policy. Updated 2026-11-02.
+#
+# Goal: be findable in search engines AND in AI answer engines (ChatGPT, Claude, Perplexity,
+# Google AI Overviews, Copilot). Every search, answer and user-triggered fetcher is allowed.
+#
+# Training crawlers are also allowed, on purpose: this is a marketing site, and being known to
+# the models is worth more than guarding the copy. To opt out of model training only, change the
+# "Allow: /" under the TRAINING group to "Disallow: /". Search visibility is unaffected.
+
+# Search engines
+User-agent: Googlebot
+User-agent: Bingbot
+User-agent: DuckDuckBot
+User-agent: Applebot
+Allow: /
+
+# AI search and answer engines (cited answers)
+User-agent: OAI-SearchBot
+User-agent: Claude-SearchBot
+User-agent: PerplexityBot
+User-agent: DuckAssistBot
+Allow: /
+
+# Fetches a person asked an AI assistant to make
+User-agent: ChatGPT-User
+User-agent: Claude-User
+User-agent: Perplexity-User
+User-agent: MistralAI-User
+Allow: /
+
+# TRAINING: model training and grounding (see note above)
+User-agent: GPTBot
+User-agent: ClaudeBot
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+User-agent: CCBot
+User-agent: meta-externalagent
+Allow: /
+
+# Everyone else
 User-agent: *
 Allow: /
+# Server-function endpoints carry no content.
+Disallow: /_serverFn/
 
 Sitemap: https://16x9.ai/sitemap.xml

@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Motif } from "@/components/site/Motif";
+import { openConsentPreferences } from "@/lib/analytics";
 
 const linkColumns = [
   { to: "/privacy" as const, label: "Privacy" },
@@ -66,6 +67,15 @@ export function Footer() {
                 </Link>
               </li>
             ))}
+            <li>
+              <button
+                type="button"
+                onClick={openConsentPreferences}
+                className="font-mono text-[12px] uppercase tracking-[0.1em] text-snow transition-colors hover:text-snow/70"
+              >
+                Cookie preferences
+              </button>
+            </li>
           </ul>
         </div>
       </div>

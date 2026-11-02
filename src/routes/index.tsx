@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { pageHead } from "@/lib/seo";
 import { Nav } from "@/components/site/Nav";
 import { Footer } from "@/components/site/Footer";
 import { Reveal } from "@/components/site/Reveal";
@@ -16,6 +17,13 @@ import {
 } from "@/components/site/Board";
 
 export const Route = createFileRoute("/")({
+  head: () =>
+    pageHead({
+      title: "16x9 | AI Studio",
+      description:
+        "16x9 is an AI studio. We build agentic companies and run them, in clinical research, capital advisory, commercial lending, real estate, and field services, on Mycel, the agent platform we built.",
+      path: "/",
+    }),
   component: Index,
 });
 
@@ -461,7 +469,7 @@ function Index() {
                 aria-label="Systems across the studio"
               >
                 {studioRows.map((r) => (
-                  <BoardRow key={r.name} row={r} tone="light" />
+                  <BoardRow key={r.name} row={r} tone="light" heading="h3" />
                 ))}
               </ul>
             </div>

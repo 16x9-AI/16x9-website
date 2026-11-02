@@ -1,0 +1,47 @@
+# 16x9
+
+> 16x9 is an AI studio. We build and run companies with people who know their industry. Our engineers and operators work inside a company and put AI to work on the routine back-office work behind every sale: paperwork, billing, scheduling, customer emails and reports. A person signs off on anything that goes to a customer, a regulator or the books.
+
+By AI we mean software that does a task from start to finish, not a chatbot you type into. 16x9 runs this on Mycel, the system it built for running AI at work.
+
+## How we work
+
+- [Services](https://16x9.ai/services): five ways to engage, from a two-week assessment to running the back office for a share of the extra profit. Prices are set after the first conversation.
+- [Functions](https://16x9.ai/services/functions): every kind of work AI can take on, what a person still signs off, and what already runs in 16x9's own companies.
+- [Partners](https://16x9.ai/partners): people who know an industry can build a company with 16x9 for shares or a cut of revenue.
+
+## Industries
+
+- [Accounting and tax firms](https://16x9.ai/industries/accounting): Client document chasing, bookkeeping prep, reconciliations, tax organizers.
+- [Capital advisory firms](https://16x9.ai/industries/capital-advisory): Buyer lists, teasers and CIM first drafts, data room upkeep, deal follow-up.
+- [Wealth management firms](https://16x9.ai/industries/wealth): Meeting prep, new-account paperwork, transfers, CRM notes, client reviews.
+- [Insurance carriers and agencies](https://16x9.ai/industries/insurance): Submissions, quote comparison, renewals, certificates, standard claims.
+- [Mortgage lenders and brokers](https://16x9.ai/industries/mortgage): Document collection, conditions, verifications, borrower updates.
+- [Business lenders and loan brokers](https://16x9.ai/industries/lending): Prequalification, application packages, compliance, lead follow-up.
+- [Medical practices and clinics](https://16x9.ai/industries/medical): Intake, eligibility, prior authorizations, coding, claims follow-up.
+- [Real estate brokerages](https://16x9.ai/industries/realestate): Lead follow-up, transaction coordination, compliance file review.
+- [Property managers](https://16x9.ai/industries/property-management): Applications, leasing, work orders, rent collection, owner reports.
+- [Cleaning, HVAC and field services](https://16x9.ai/industries/home-services): Scheduling, dispatch, crew assignment, quotes, invoicing.
+- [Law firms](https://16x9.ai/industries/legal): Intake, conflict checks, first drafts, deadlines, billing.
+- [Engineering and consulting firms](https://16x9.ai/industries/engineering): Proposals, RFIs, submittals, project reports.
+- [Marketing agencies](https://16x9.ai/industries/agencies): Client reports, content drafts, scheduling, campaign tracking.
+- [Staffing and recruiting firms](https://16x9.ai/industries/staffing): Sourcing, screening, scheduling, onboarding, timesheets.
+- [Manufacturers and distributors](https://16x9.ai/industries/manufacturing): Quotes from RFQs, order entry, supplier invoices, ship-date updates.
+- [Freight and logistics companies](https://16x9.ai/industries/logistics): Load tracking, carrier paperwork, billing, customer updates.
+- [Managed IT and security providers](https://16x9.ai/industries/msp): Ticket triage, alert review, patching, onboarding, compliance evidence.
+- [Anyone with an outsourced back office](https://16x9.ai/industries/outsourced): Work you already outsource moves first: the budget line exists and you already buy an outcome.
+
+## Proof
+
+- [What runs in our own companies](https://16x9.ai/#work): systems running, in pilot or being built in 16x9's own businesses, audited Q3 2026.
+- [Daily AI-industry report](https://16x9.ai/intel): about 1,800 stories from 50 sources, ranked and published every morning.
+
+## Contact
+
+- Email: info@16x9.ai
+- [LinkedIn](https://www.linkedin.com/company/16x9ai)
+
+## Optional
+
+- [Privacy policy](https://16x9.ai/privacy)
+- [Terms of service](https://16x9.ai/terms)

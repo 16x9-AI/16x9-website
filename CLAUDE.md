@@ -17,6 +17,7 @@ Build: `npm run build` · Dev: `npm run dev` · Preview: `npm run preview` · Li
 ## Routes
 
 - `/` — `routes/index.tsx`. Frames in order: front page (headline, lede + email, audience index, live proof card, horizon motif), marquee (computed status tally), the board (five industry columns with motifs and status rows), the studio + figures + Mycel plate with the studio-wide strip beneath, contact (two doors).
+- `/services`, `/services/functions`, `/industries`, `/industries/$slug` (18 industries from `industries-data.ts`), `/partners`. Shared pieces in `src/components/site/Services.tsx`; offers in `services-data.ts`.
 - `/privacy`, `/terms` — legal. Also verification-sensitive.
 - `/intel` — NOT a router route. `vercel.json` rewrites `/intel` and `/intel/*` onto the daily AI intelligence report deployment (`16x9-ai-industry-daily-report.vercel.app`). Link to it with a plain `<a href="/intel">`, never `<Link to>`.
 - `src/routeTree.gen.ts` — generated on dev/build. Never hand-edit.
@@ -42,11 +43,24 @@ All illustration on the homepage is generative and drawn live in `src/components
 
 ## Contact
 
-`src/components/site/Contact.tsx` renders two doors: `mailto:info@16x9.ai` and the LinkedIn company page. There is no form and no server function. `LINKEDIN_URL` is a constant at the top of that file; confirm it before deploy (unverified as of 2026-09-02).
+`src/components/site/Contact.tsx` renders two doors: `mailto:info@16x9.ai` and the LinkedIn company page. There is no form. The only server function is the industry-notes reader (`src/lib/industry-notes.ts`), inert until its Mycel env vars are set. `LINKEDIN_URL` is a constant at the top of that file; confirm it before deploy (unverified as of 2026-09-02).
 
 ## Analytics & consent
 
-`activateAnalytics()` in `src/lib/analytics.ts` loads GA4, Microsoft Clarity, and an Identify.id pixel, only after the user accepts cookies in `CookieBanner`. Consent is persisted under `localStorage["cookie_consent_v1"]`. IDs are blank and each loader no-ops when unset. **Never load analytics before consent.** Custom events: `trackEvent("event_name", {...})`.
+- **Cookieless, every visitor:** Vercel Web Analytics and Speed Insights (`<Analytics />`, `<SpeedInsights />` in `__root.tsx`). No cookies, no personal data. Both must be switched on in the Vercel project or their scripts 404 harmlessly.
+- **After Accept only:** GA4 (`G-6YXCQ374JR`), Microsoft Clarity, and the Identify.id visitor-identification pixel, loaded by `activateAnalytics()` in `src/lib/analytics.ts`. The IDs are set in `ANALYTICS_CONFIG` (the old note saying they were blank was wrong).
+- **Consent Mode v2:** `consentDefaults()` sets everything denied on every page; Accept sends an update (analytics granted, ad signals stay denied). Reject after an earlier Accept withdraws consent and reloads.
+- **Global Privacy Control:** when `navigator.globalPrivacyControl` is true, the Identify.id pixel never loads, even after Accept (CPRA treats GPC as an opt-out of sale or sharing).
+- **Cookie preferences:** the footer button reopens the banner (`openConsentPreferences()`); the privacy policy promises this control.
+- **Events:** one delegated listener (`installEventTracking()`): `generate_lead` on any mailto (the subject line names the door), `click` on outbound links, `select_content` on the industry filter and the hours sentence. Use `trackEvent` for anything new; never load analytics before consent.
+
+## SEO, answer engines and headers
+
+- `src/lib/seo.ts` builds every route's head: title, description, canonical, Open Graph, Twitter, and JSON-LD. TanStack dedupes `title`/`meta` (deepest route wins) but not links or scripts, so canonical and JSON-LD live on each route, never in the root. The root carries only Organization and WebSite data.
+- Structured data must describe what the page visibly says. FAQ answers come from `faqItems()` in `services-data.ts` and render on the page.
+- `public/robots.txt` allows search engines, AI answer engines, user-triggered AI fetchers, and (deliberately) training crawlers. The file says how to opt out of training only.
+- `public/llms.txt` is generated from `industries-data.ts`; regenerate it when industries or pages change. `public/sitemap.xml` lists every route with `lastmod`; add new routes there.
+- `vercel.json` enforces HSTS, nosniff, X-Frame-Options DENY, Referrer-Policy, Permissions-Policy and COOP. The Content Security Policy is **report-only** until a week of reports shows nothing it would wrongly block; then rename the header to `Content-Security-Policy`.
 
 ## Token-name convention
 

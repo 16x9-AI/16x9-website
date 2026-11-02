@@ -468,3 +468,37 @@ export const PEOPLE_LEAD = [
   "Clinical and legal judgment",
   "Crisis response",
 ];
+
+/**
+ * Questions owners ask before a first call. Shown on the page and mirrored as FAQPage data, so
+ * answer engines can quote them. Every answer restates the offer above; nothing new is promised.
+ */
+export function faqItems(industry?: { name: string; note?: string }) {
+  const who = industry ? industry.name.toLowerCase() : "your business";
+  return [
+    {
+      q: "Will this replace my staff?",
+      a: "It takes over the repetitive part of their week: the forms, the follow-up, the matching and the reports. Most owners use that time to serve more customers without hiring at the same pace. Who you employ stays your decision.",
+    },
+    {
+      q: "Is our data safe?",
+      a: `Before any work starts, a written agreement says what we can access and who can see it. Every step the AI takes is logged.${industry?.note ? ` ${industry.note}` : ""}`,
+    },
+    {
+      q: "How long before something is running?",
+      a: "The assessment takes about two weeks. The first tasks then run inside your real work within six to eight weeks, and halfway through you decide whether to continue.",
+    },
+    {
+      q: "What does it cost?",
+      a: "It depends on the work. The assessment is a fixed fee agreed before we start. After that you choose a fixed price for a build, a monthly retainer, or paying us from the extra profit.",
+    },
+    {
+      q: "Do we have to change our software?",
+      a: `Usually not. We work with the systems ${who === "your business" ? "you" : who} already use.`,
+    },
+    {
+      q: "What if the AI gets something wrong?",
+      a: "Anything that goes to a customer, a regulator or your books is checked by a person first, and every step is logged so a mistake can be traced and fixed.",
+    },
+  ];
+}

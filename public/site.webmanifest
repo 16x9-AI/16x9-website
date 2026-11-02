@@ -1,0 +1,14 @@
+{
+  "name": "16x9",
+  "short_name": "16x9",
+  "description": "An AI studio. We build and run companies with people who know their industry.",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#f5f5f5",
+  "theme_color": "#f5f5f5",
+  "icons": [
+    { "src": "/favicon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "/favicon.svg", "type": "image/svg+xml", "sizes": "any" }
+  ]
+}

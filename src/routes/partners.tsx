@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { breadcrumbs, pageHead } from "@/lib/seo";
 import { Nav } from "@/components/site/Nav";
 import { Footer } from "@/components/site/Footer";
 import { Reveal } from "@/components/site/Reveal";
@@ -6,21 +7,22 @@ import { Motif } from "@/components/site/Motif";
 import { CloseBand, PageFront, SectionHead, ServicesNav, Splice } from "@/components/site/Services";
 import { mailto } from "@/components/site/services-data";
 
-const TITLE = "Partners | 16x9";
 const DESCRIPTION =
   "16x9 partners with people who know an industry. You bring the customers and the know-how. We build and run the business with AI, and we share in what it earns.";
 
 export const Route = createFileRoute("/partners")({
-  head: () => ({
-    meta: [
-      { title: TITLE },
-      { name: "description", content: DESCRIPTION },
-      { property: "og:title", content: TITLE },
-      { property: "og:description", content: DESCRIPTION },
-      { property: "og:url", content: "https://16x9.ai/partners" },
-    ],
-    links: [{ rel: "canonical", href: "https://16x9.ai/partners" }],
-  }),
+  head: () =>
+    pageHead({
+      title: "Partner with 16x9: build a company that runs on AI | 16x9",
+      description: DESCRIPTION,
+      path: "/partners",
+      jsonLd: [
+        breadcrumbs([
+          { name: "Home", path: "/" },
+          { name: "Partners", path: "/partners" },
+        ]),
+      ],
+    }),
   component: PartnersPage,
 });
 
