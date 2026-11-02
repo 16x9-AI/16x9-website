@@ -32,7 +32,8 @@ const MAX_CHARS = 800;
 const WINDOW_MS = 10 * 60 * 1000;
 const PER_WINDOW = 8;
 const POLL_MS = 1000;
-const DEADLINE_MS = 25_000;
+// Test runs took 13 to 22 s end to end (2026-11-02); the Vercel function limit is raised to 60 s in vite.config.ts.
+const DEADLINE_MS = 45_000;
 
 export type Turn = { role: "visitor" | "advisor"; text: string };
 export type AdvisorReply =
@@ -86,6 +87,20 @@ function allowed(visitor: string, now = Date.now()): boolean {
   hits.set(visitor, recent);
   dayCount++;
   return true;
+}
+
+/**
+ * Last-line cleanup on the reply. The model kept using em dashes in testing despite the rule in its
+ * prompt, so they are replaced here too, along with any markdown heading marks. Capped in length.
+ */
+export function tidy(text: string): string {
+  return text
+    .replace(/\s*[\u2014\u2013]\s*/g, ", ")
+    .replace(/\s+--\s+/g, ", ")
+    .replace(/^#+\s*/gm, "")
+    .replace(/,\s*,/g, ",")
+    .trim()
+    .slice(0, 1500);
 }
 
 /** The final reply text in a finished run, wherever the platform puts it. */
@@ -201,7 +216,7 @@ export const askAdvisor = createServerFn({ method: "POST" })
           return { ok: false, reason: "error" };
         if (["completed", "succeeded", "success", "done", "finished"].includes(status)) {
           const text = replyText(detail);
-          return text ? { ok: true, text: text.slice(0, 1500) } : { ok: false, reason: "error" };
+          return text ? { ok: true, text: tidy(text) } : { ok: false, reason: "error" };
         }
       }
       return { ok: false, reason: "error" };

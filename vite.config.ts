@@ -11,7 +11,8 @@ export default defineConfig({
   plugins: [
     tsConfigPaths(),
     tanstackStart(),
-    nitroV2Plugin({ preset: "vercel" }),
+    // maxDuration: the homepage advisor relay polls a Mycel run that took 13 to 22 s in testing.
+    nitroV2Plugin({ preset: "vercel", vercel: { functions: { maxDuration: 60 } } }),
     viteReact(),
     tailwindcss(),
   ],
