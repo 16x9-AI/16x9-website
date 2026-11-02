@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
+import { Link } from "@tanstack/react-router";
 import { Motif, type MotifKind } from "@/components/site/Motif";
+import { caseByKey } from "@/components/site/work-data";
 
 // The board: five newspaper columns, one per industry, on the dark plate.
 // Each row is one system with its status printed as it is. No numbering:
@@ -63,6 +65,10 @@ export function BoardRow({
   );
 }
 
+// A column links to its case study when one exists (/work/<industry-slug>), so the board data in
+// routes/index.tsx needs no extra field.
+const slugOf = (industry: string) => industry.toLowerCase().replace(/[^a-z]+/g, "-");
+
 export function BoardColumn({ col }: { col: BoardColumnData }) {
   return (
     <div className="group flex flex-col">
@@ -85,6 +91,15 @@ export function BoardColumn({ col }: { col: BoardColumnData }) {
         <p className="border-t border-snow/20 pt-3 font-mono text-[10.5px] uppercase leading-relaxed tracking-[0.06em] text-snow/55">
           {col.also}
         </p>
+      )}
+      {caseByKey(slugOf(col.industry)) && (
+        <Link
+          to="/work/$slug"
+          params={{ slug: slugOf(col.industry) }}
+          className="mt-auto inline-flex items-center gap-2 border-t border-snow/20 pt-3 font-mono text-[11px] uppercase tracking-[0.12em] text-snow underline-offset-4 hover:underline focus-visible:underline focus-visible:outline-none"
+        >
+          Read the case study <span aria-hidden>→</span>
+        </Link>
       )}
     </div>
   );

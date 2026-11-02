@@ -63,6 +63,11 @@ const MORE = [
     text: "Eighteen industries, each described in its own words.",
   },
   {
+    to: "/scorecard" as const,
+    label: "Scorecard",
+    text: "Two minutes: grade the work that eats your week and see the hours at stake.",
+  },
+  {
     to: "/partners" as const,
     label: "Partners",
     text: "Know an industry? Build a company with us and share in what it earns.",

@@ -12,11 +12,13 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PartnersRouteImport } from './routes/partners'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as ScorecardRouteImport } from './routes/scorecard'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as IndustriesIndexRouteImport } from './routes/industries.index'
 import { Route as IndustriesSlugRouteImport } from './routes/industries.$slug'
 import { Route as ServicesIndexRouteImport } from './routes/services.index'
 import { Route as ServicesFunctionsRouteImport } from './routes/services.functions'
+import { Route as WorkSlugRouteImport } from './routes/work.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -31,6 +33,11 @@ const PartnersRoute = PartnersRouteImport.update({
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ScorecardRoute = ScorecardRouteImport.update({
+  id: '/scorecard',
+  path: '/scorecard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TermsRoute = TermsRouteImport.update({
@@ -58,14 +65,21 @@ const ServicesFunctionsRoute = ServicesFunctionsRouteImport.update({
   path: '/services/functions',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WorkSlugRoute = WorkSlugRouteImport.update({
+  id: '/work/$slug',
+  path: '/work/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/partners': typeof PartnersRoute
   '/privacy': typeof PrivacyRoute
+  '/scorecard': typeof ScorecardRoute
   '/terms': typeof TermsRoute
   '/industries/$slug': typeof IndustriesSlugRoute
   '/services/functions': typeof ServicesFunctionsRoute
+  '/work/$slug': typeof WorkSlugRoute
   '/industries/': typeof IndustriesIndexRoute
   '/services/': typeof ServicesIndexRoute
 }
@@ -73,9 +87,11 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/partners': typeof PartnersRoute
   '/privacy': typeof PrivacyRoute
+  '/scorecard': typeof ScorecardRoute
   '/terms': typeof TermsRoute
   '/industries/$slug': typeof IndustriesSlugRoute
   '/services/functions': typeof ServicesFunctionsRoute
+  '/work/$slug': typeof WorkSlugRoute
   '/industries': typeof IndustriesIndexRoute
   '/services': typeof ServicesIndexRoute
 }
@@ -84,9 +100,11 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/partners': typeof PartnersRoute
   '/privacy': typeof PrivacyRoute
+  '/scorecard': typeof ScorecardRoute
   '/terms': typeof TermsRoute
   '/industries/$slug': typeof IndustriesSlugRoute
   '/services/functions': typeof ServicesFunctionsRoute
+  '/work/$slug': typeof WorkSlugRoute
   '/industries/': typeof IndustriesIndexRoute
   '/services/': typeof ServicesIndexRoute
 }
@@ -96,9 +114,11 @@ export interface FileRouteTypes {
     | '/'
     | '/partners'
     | '/privacy'
+    | '/scorecard'
     | '/terms'
     | '/industries/$slug'
     | '/services/functions'
+    | '/work/$slug'
     | '/industries/'
     | '/services/'
   fileRoutesByTo: FileRoutesByTo
@@ -106,9 +126,11 @@ export interface FileRouteTypes {
     | '/'
     | '/partners'
     | '/privacy'
+    | '/scorecard'
     | '/terms'
     | '/industries/$slug'
     | '/services/functions'
+    | '/work/$slug'
     | '/industries'
     | '/services'
   id:
@@ -116,9 +138,11 @@ export interface FileRouteTypes {
     | '/'
     | '/partners'
     | '/privacy'
+    | '/scorecard'
     | '/terms'
     | '/industries/$slug'
     | '/services/functions'
+    | '/work/$slug'
     | '/industries/'
     | '/services/'
   fileRoutesById: FileRoutesById
@@ -127,9 +151,11 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   PartnersRoute: typeof PartnersRoute
   PrivacyRoute: typeof PrivacyRoute
+  ScorecardRoute: typeof ScorecardRoute
   TermsRoute: typeof TermsRoute
   IndustriesSlugRoute: typeof IndustriesSlugRoute
   ServicesFunctionsRoute: typeof ServicesFunctionsRoute
+  WorkSlugRoute: typeof WorkSlugRoute
   IndustriesIndexRoute: typeof IndustriesIndexRoute
   ServicesIndexRoute: typeof ServicesIndexRoute
 }
@@ -155,6 +181,13 @@ declare module '@tanstack/react-router' {
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/scorecard': {
+      id: '/scorecard'
+      path: '/scorecard'
+      fullPath: '/scorecard'
+      preLoaderRoute: typeof ScorecardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/terms': {
@@ -192,6 +225,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicesFunctionsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/work/$slug': {
+      id: '/work/$slug'
+      path: '/work/$slug'
+      fullPath: '/work/$slug'
+      preLoaderRoute: typeof WorkSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -199,9 +239,11 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   PartnersRoute: PartnersRoute,
   PrivacyRoute: PrivacyRoute,
+  ScorecardRoute: ScorecardRoute,
   TermsRoute: TermsRoute,
   IndustriesSlugRoute: IndustriesSlugRoute,
   ServicesFunctionsRoute: ServicesFunctionsRoute,
+  WorkSlugRoute: WorkSlugRoute,
   IndustriesIndexRoute: IndustriesIndexRoute,
   ServicesIndexRoute: ServicesIndexRoute,
 }

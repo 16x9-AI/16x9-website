@@ -129,4 +129,34 @@
     <lastmod>2026-11-02</lastmod>
     <priority>0.3</priority>
   </url>
+  <url>
+    <loc>https://16x9.ai/scorecard</loc>
+    <lastmod>2026-11-02</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://16x9.ai/work/clinical-research</loc>
+    <lastmod>2026-11-02</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://16x9.ai/work/real-estate</loc>
+    <lastmod>2026-11-02</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://16x9.ai/work/field-services</loc>
+    <lastmod>2026-11-02</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://16x9.ai/work/capital-advisory</loc>
+    <lastmod>2026-11-02</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://16x9.ai/work/commercial-lending</loc>
+    <lastmod>2026-11-02</lastmod>
+    <priority>0.8</priority>
+  </url>
 </urlset>

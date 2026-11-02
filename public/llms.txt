@@ -33,6 +33,13 @@ By AI we mean software that does a task from start to finish, not a chatbot you 
 
 ## Proof
 
+- [Scorecard](https://16x9.ai/scorecard): a two-minute check that grades the work that eats a team's week on five plain tests and shows the hours at stake. Runs in the browser.
+- [Case study: clinical research](https://16x9.ai/work/clinical-research)
+- [Case study: real estate](https://16x9.ai/work/real-estate)
+- [Case study: field services](https://16x9.ai/work/field-services)
+- [Case study: capital advisory](https://16x9.ai/work/capital-advisory)
+- [Case study: commercial lending](https://16x9.ai/work/commercial-lending)
+
 - [What runs in our own companies](https://16x9.ai/#work): systems running, in pilot or being built in 16x9's own businesses, audited Q3 2026.
 - [Daily AI-industry report](https://16x9.ai/intel): about 1,800 stories from 50 sources, ranked and published every morning.
 
