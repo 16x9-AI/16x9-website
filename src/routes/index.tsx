@@ -8,6 +8,7 @@ import { MycelBrain } from "@/components/site/MycelBrain";
 import { Contact } from "@/components/site/Contact";
 import { Motif } from "@/components/site/Motif";
 import { CountUp } from "@/components/site/CountUp";
+import { AdvisorChat } from "@/components/site/AdvisorChat";
 import {
   BoardColumn,
   BoardRow,
@@ -268,6 +269,11 @@ function Index() {
               We build agentic companies <br className="hidden md:block" />
               and run them.
             </h1>
+
+            {/* The one hero addition (Manny, 2026-11-02): the advisor strip, under the headline. */}
+            <div className="mt-8">
+              <AdvisorChat />
+            </div>
 
             <div className="mt-8 grid grid-cols-1 gap-10 border-t border-ink/80 pt-8 md:grid-cols-2 md:gap-10 lg:grid-cols-[1.15fr_1fr_0.95fr] lg:gap-12">
               <Reveal className="md:flex md:h-full md:flex-col">
