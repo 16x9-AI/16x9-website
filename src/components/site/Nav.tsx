@@ -8,7 +8,7 @@ import { Link } from "@tanstack/react-router";
 // the other.
 const links: { href: string; label: string; wide?: boolean }[] = [
   { href: "/services", label: "Services" },
-  { href: "/partners", label: "Partners" },
+  { href: "/partners", label: "Build with us" },
   // Work and Intel drop off the bar below `sm` so five links fit a phone; both are in the footer.
   { href: "/#work", label: "Work", wide: true },
   { href: "/intel", label: "Intel", wide: true },

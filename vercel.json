@@ -57,5 +57,12 @@
       "source": "/intel/:path*",
       "destination": "https://16x9-ai-industry-daily-report.vercel.app/:path*"
     }
+  ],
+  "redirects": [
+    {
+      "source": "/work/commercial-lending",
+      "destination": "/",
+      "permanent": true
+    }
   ]
 }

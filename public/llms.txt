@@ -2,7 +2,9 @@
 
 > 16x9 is an AI studio. We build and run companies with people who know their industry. Our engineers and operators work inside a company and put AI to work on the routine back-office work behind every sale: paperwork, billing, scheduling, customer emails and reports. A person signs off on anything that goes to a customer, a regulator or the books.
 
-By AI we mean software that does a task from start to finish, not a chatbot you type into. 16x9 runs this on Mycel, the system it built for running AI at work.
+By AI we mean software that does a task from start to finish, not a chatbot you type into. 16x9 runs this on software it built and already uses in its own companies.
+
+Channel partner: [Frontier Desk](https://www.frontierdesk.ai) handles sales, raises and loans: it finds the buyers, lenders and investors who fit a company. 16x9 builds and runs the work inside the company. Each sends the other the owners who need the other's work.
 
 ## How we work
 
@@ -38,7 +40,6 @@ By AI we mean software that does a task from start to finish, not a chatbot you 
 - [Case study: real estate](https://16x9.ai/work/real-estate)
 - [Case study: field services](https://16x9.ai/work/field-services)
 - [Case study: capital advisory](https://16x9.ai/work/capital-advisory)
-- [Case study: commercial lending](https://16x9.ai/work/commercial-lending)
 
 - [What runs in our own companies](https://16x9.ai/#work): systems running, in pilot or being built in 16x9's own businesses, audited Q3 2026.
 - [Daily AI-industry report](https://16x9.ai/intel): about 1,800 stories from 50 sources, ranked and published every morning.

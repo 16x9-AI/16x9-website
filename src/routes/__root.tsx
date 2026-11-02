@@ -83,9 +83,9 @@ export const Route = createRootRoute({
       {
         name: "description",
         content:
-          "16x9 is an AI studio. We build agentic companies and run them, in clinical research, capital advisory, commercial lending, real estate, and field services, on Mycel, the agent platform we built.",
+          "16x9 is an AI studio. We build agentic companies and run them, in clinical research, capital advisory, commercial lending, real estate, and field services.",
       },
-      { name: "keywords", content: "16x9, AI studio, agents, Mycel, agent platform" },
+      { name: "keywords", content: "16x9, AI studio, AI operations, operator partnerships, Frontier Desk channel partner" },
       { name: "author", content: "16x9" },
       { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1" },
       { property: "og:type", content: "website" },

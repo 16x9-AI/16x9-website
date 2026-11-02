@@ -221,7 +221,11 @@ function CasePage() {
         </section>
 
         <CloseBand
-          title="We run this ourselves. We can run it for you."
+          title={
+            c.builtFor
+              ? "We built this for a partner. We can build it for you."
+              : "We run this ourselves. We can run it for you."
+          }
           body="Tell us what your company does and where the hours go. The first conversation is about your work, not our software."
           subject={`Case study: ${c.industry}`}
         />

@@ -204,7 +204,7 @@ const SERVICE_PAGES = [
   { to: "/services", label: "Overview" },
   { to: "/services/functions", label: "Functions" },
   { to: "/industries", label: "Industries" },
-  { to: "/partners", label: "Partners" },
+  { to: "/partners", label: "Build with us" },
   { to: "/scorecard", label: "Scorecard" },
 ] as const;
 

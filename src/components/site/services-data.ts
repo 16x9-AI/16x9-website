@@ -4,9 +4,14 @@ import type { Status } from "@/components/site/Board";
 // can never drift. Product truth is in PRODUCT.md; copy rules in VOICE.md.
 //
 // Transferred 2026-11-01 from Frontier Desk's operating work (offer spec v3,
-// Team Reference v2, the FDO GTM draft). Exits, lending, data licensing and
-// capital placement stay with that desk and are referred out, unnamed.
-// No prices on the site: each engagement names its form, never a figure.
+// Team Reference v2, the FDO GTM draft). Since 2026-11-02 Frontier Desk is named
+// as 16x9's channel partner (Manny): it owns sales, raises, loans and data
+// licensing; 16x9 owns the build and the running of the work. Referrals run
+// both ways. Copy here must not repeat frontierdesk.ai/build's wording, so an
+// owner who reads both sites sees two different jobs. No prices, no figures.
+// Mycel is not named on marketing pages; /terms and /privacy keep it (Google OAuth).
+
+export const FRONTIER_DESK = "https://www.frontierdesk.ai";
 
 export const MAIL = "info@16x9.ai";
 
@@ -22,8 +27,8 @@ export const THEY_BRING = [
 ];
 export const WE_BRING = [
   "Engineers and operators who work inside the company",
-  "Mycel, the system we built to run AI at work",
-  "Tools already running in our own companies",
+  "Software we built, already running in our own companies",
+  "A channel partner, Frontier Desk, for when a sale, raise or loan comes up",
 ];
 
 export type Engagement = {
@@ -41,24 +46,23 @@ export const ENGAGEMENTS: Engagement[] = [
   {
     key: "assess",
     name: "Opportunity assessment",
-    form: "Fixed fee · about two weeks",
-    body: "We sit with your team and measure where the hours go: how long each task takes, what it costs, how often it goes wrong. Then we list what AI can take on, biggest saving first, and price the first piece.",
-    keeps: "The measurements and the plan, whether or not you go on.",
+    form: "Fixed fee · two weeks, give or take",
+    body: "We spend two weeks alongside your team, timing each task and counting what goes wrong. You get a list of what AI can take over, ordered by the hours it frees, and a price for the first piece.",
+    keeps: "The numbers and the list are yours either way.",
   },
   {
     key: "build",
     name: "Fixed-scope build",
     form: "Fixed price · six to eight weeks",
-    body: "We set up AI on the first one to three tasks, inside your real daily work. You watch it run every week. Halfway through you decide: keep going, change course, or stop.",
-    keeps:
-      "The working setup, a before-and-after measurement, and written instructions for your team.",
+    body: "We put AI on the first few tasks in the middle of the real work, not in a demo. You see it handle live jobs from the first weeks, and at the halfway mark you choose to carry on, change the plan or stop.",
+    keeps: "Tasks that run, the before-and-after numbers, and a manual your team can follow.",
   },
   {
     key: "team",
     name: "Our team inside yours",
     form: "Monthly retainer",
-    body: "Our engineers and operators work inside your company and move one task after another onto AI. Your people decide what needs their sign-off.",
-    keeps: "Everything we build. You do not rent it back from us.",
+    body: "Our engineers and operators join your team and keep moving work onto AI, one task at a time. Your managers decide what still needs a person's sign-off.",
+    keeps: "What we build belongs to the company. Nothing is leased back.",
   },
   {
     key: "operate",
@@ -131,22 +135,22 @@ export const BILLING: Billing[] = [
   {
     key: "fixed",
     phrase: "per user, device or month",
-    note: "Every hour software takes off this work stays with you as margin, because the price of each contract does not move.",
+    note: "Your price stays the same, so every hour AI handles is profit you keep.",
   },
   {
     key: "project",
     phrase: "a fixed price per project",
-    note: "The saving shows in the margin on each project you price after the change, and gives you room to bid lower when you choose to.",
+    note: "Each new project you quote carries the lower cost, so you choose: keep the extra margin or win more bids.",
   },
   {
     key: "hourly",
     phrase: "by the hour",
-    note: "The saving passes to your customers as fewer billed hours unless the contracts change, so the assessment looks at how you bill as well as the work.",
+    note: "Fewer hours means smaller invoices unless the contracts change. The assessment checks how you bill before it counts any saving.",
   },
   {
     key: "mixed",
     phrase: "in a mix of ways",
-    note: "The assessment splits the saving by how each contract bills, so you see how much of it stays with you.",
+    note: "The assessment sorts each contract by how it bills, so you can see which savings you keep.",
   },
 ];
 
@@ -161,39 +165,35 @@ export const OUTCOMES = [
     body: "The same team serves more customers, so the next contract no longer waits on the next hire.",
   },
   {
-    h: "Competing with bigger players",
-    body: "Investor-backed groups are buying companies like yours, cutting costs with software and underbidding you. With the same tools, you can bid where they bid.",
+    h: "Holding your ground",
+    body: "Bigger, investor-backed competitors already run lean on software. Running the same way lets you keep your prices and your customers.",
   },
   {
-    h: "Room to borrow",
-    body: "Banks lend against cash flow. When the same work costs less to deliver, there is more cash to support a loan.",
-  },
-  {
-    h: "A sale, on your timing",
-    body: "Buyers pay more once lower costs show up in a full year of results. If selling, raising money or borrowing is the goal, a partner firm handles that side, and we say so up front.",
+    h: "Ready for the next step",
+    body: "When selling, raising money or borrowing comes up, our channel partner Frontier Desk handles it. We keep the operation steady and the records clean while they work.",
   },
 ];
 
 export const STEPS = [
   {
     when: "Weeks 1–2",
-    body: "The assessment. We measure how the work runs today, list what AI can take on, and price the first piece.",
+    body: "Two weeks of timing the work as it runs now. You get the list and a price for the first piece.",
   },
   {
     when: "Weeks 3–10",
-    body: "AI set up on the first one to three tasks, inside your real work. You see it run every week.",
+    body: "The first tasks move onto AI inside live work. Every week you see what it handled.",
   },
   {
     when: "Midway",
-    body: "You continue, change the scope or stop, and pay for the work done to that point.",
+    body: "Your call: carry on, change the plan or stop. You pay only for what was done.",
   },
   {
     when: "End of build",
-    body: "We measure again and compare with where you started. Your team gets written instructions.",
+    body: "We time the work again against the starting numbers and hand your team the manual.",
   },
   {
     when: "After",
-    body: "Our team moves more tasks onto AI, or we take over the back office for a share of the extra profit.",
+    body: "We stay on: more tasks each month, or the whole back office for a share of the extra profit.",
   },
 ];
 
@@ -214,7 +214,7 @@ export const SAMPLE = {
     "Order confirmations and ship-date updates sent to customers as the work moves through the floor.",
   ],
   result:
-    "Cost and turnaround per quote and per order, before and after, with the method and the records behind it. The owner prices the next bids from it.",
+    "What each quote and each order costs and how long it takes, before and after, with the working shown. The owner quotes the next job from those numbers.",
 };
 
 // ---------------------------------------------------------------------------
@@ -495,6 +495,10 @@ export function faqItems(industry?: { name: string; note?: string }) {
     {
       q: "Do we have to change our software?",
       a: `Usually not. We work with the systems ${who === "your business" ? "you" : who} already use.`,
+    },
+    {
+      q: "What about selling, raising money or borrowing?",
+      a: "That is our channel partner's work. Frontier Desk finds the buyers, lenders and investors who fit a company and helps close the deal. We send owners there when it comes up, and Frontier Desk sends us owners whose plan needs the work rebuilt. Any referral terms are written down and shown to you.",
     },
     {
       q: "What if the AI gets something wrong?",

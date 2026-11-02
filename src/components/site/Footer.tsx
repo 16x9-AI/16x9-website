@@ -47,7 +47,7 @@ export function Footer() {
             </li>
             <li>
               <Link to="/partners" className="transition-colors hover:text-snow/70">
-                Partners
+                Build with us
               </Link>
             </li>
             <li>
@@ -63,6 +63,14 @@ export function Footer() {
             <li>
               <a href="/intel" className="transition-colors hover:text-snow/70">
                 Intel
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://www.frontierdesk.ai"
+                className="transition-colors hover:text-snow/70"
+              >
+                Frontier Desk, channel partner ↗
               </a>
             </li>
             {linkColumns.map((link) => (

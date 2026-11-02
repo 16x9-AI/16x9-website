@@ -10,8 +10,10 @@ import type { Status } from "@/components/site/Board";
 //   - Only counts a source confirms and that are safe to publish. No money, clients, partners,
 //     people, patients or deal figures. Unconfirmed figures (location-page counts, "one practice
 //     live", unit counts) are left out until re-measured.
-//   - The capital-advisory and lending pages never mention the network they belong to
-//     (firewall, Manny 2026-11-02), never describe commercial traction, never state ownership.
+//   - Capital advisory is the research desk 16x9 built for its channel partner, Frontier Desk,
+//     and says so (Manny 2026-11-02). It never describes commercial traction or ownership.
+//   - The commercial-lending case was removed 2026-11-02 (Manny: leave out); /work/commercial-lending
+//     redirects home in vercel.json.
 
 export type CaseStudy = {
   key: string;
@@ -28,6 +30,8 @@ export type CaseStudy = {
   numbers?: { value: string; label: string }[];
   /** Said plainly when the record is thin. */
   caveat?: string;
+  /** Set when 16x9 built the work for a partner rather than running it in its own company. */
+  builtFor?: string;
 };
 
 export const CASE_STUDIES: CaseStudy[] = [
@@ -180,8 +184,9 @@ export const CASE_STUDIES: CaseStudy[] = [
     industry: "Capital advisory",
     industryKey: "capital-advisory",
     headline:
-      "Advisory firms on one research desk: public facts collected every day, checked, and signed off by a person.",
-    oneLine: "M&A, debt and real-estate advisory firms on one intelligence layer.",
+      "Built for our channel partner, Frontier Desk: one research desk for advisory firms, with public facts collected every day, checked, and signed off by a person.",
+    oneLine: "The research desk we built for our channel partner, Frontier Desk.",
+    builtFor: "Frontier Desk",
     startingPoint:
       "Advisory teams read filings, news and lender activity by hand. Each firm kept its own notes, so the same research was repeated and some of it could not be traced back to a source. The rule from day one: a missing number is better than a wrong one.",
     built: [
@@ -231,64 +236,6 @@ export const CASE_STUDIES: CaseStudy[] = [
     numbers: [
       { value: "6 · 3 · 4", label: "skills, AI helpers and tables in the firm kit" },
       { value: "2", label: "sources every published note must cite, at minimum" },
-    ],
-  },
-  {
-    key: "commercial-lending",
-    industry: "Commercial lending",
-    industryKey: "lending",
-    headline:
-      "Business owners matched to capital, with no hard credit pull to find out where they stand.",
-    oneLine: "Businesses matched to capital, no hard credit pull first.",
-    startingPoint:
-      "Owners who need financing face a maze of loan types and a hard credit pull before they learn anything. The company built a readiness check, a plain-language advisor and a library of guides, so an owner sees where they stand first. A soft check runs only when the owner asks to see real offers.",
-    built: [
-      {
-        name: "Readiness check",
-        status: "Running",
-        what: "Scores a business on seven weighted factors and shows the owner what drives the result.",
-      },
-      {
-        name: "Advisor chat",
-        status: "Running",
-        what: "Asks about the business and its goal, then points to a financing structure that fits. It never promises approval or quotes a rate, and it is re-tested against fixed cases on every change.",
-      },
-      {
-        name: "Compliance-checked content",
-        status: "Running",
-        what: "Drafts tied to a registry of sources. A check blocks any claim without a source before anything publishes.",
-      },
-      {
-        name: "Signal collectors",
-        status: "Running",
-        what: "Federal notices and disaster declarations open timely drafts, such as what disaster-relief financing means for local owners.",
-      },
-      {
-        name: "Lender-network connection",
-        status: "Building",
-        what: "Applications created and tracked with a lending partner. Sensitive details are entered on the partner's own secure pages, so the company never stores them.",
-      },
-    ],
-    howItRuns: [
-      "Public sources, such as federal notices and disaster declarations, open a topic.",
-      "AI drafts from the source registry, and the check blocks any unsourced claim.",
-      "An owner reads, takes the readiness check and talks to the advisor.",
-      "The advisor starts the application, and every status change flows back to the owner.",
-      "A person at the lending partner makes every credit decision.",
-    ],
-    peopleDecide: [
-      "Whether a draft is accurate and ready to publish.",
-      "Which lenders and financing structures are offered.",
-      "Whether an owner is introduced onward, and only with the owner's consent.",
-      "Every credit decision.",
-    ],
-    next: [
-      "Finish the lender-network connection.",
-      "Switch the content schedules back on together, once every piece is re-checked.",
-    ],
-    numbers: [
-      { value: "7", label: "factors in the readiness check" },
-      { value: "8", label: "financing structures explained in plain words" },
     ],
   },
 ];
