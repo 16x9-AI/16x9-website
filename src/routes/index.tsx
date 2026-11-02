@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { Nav } from "@/components/site/Nav";
 import { Footer } from "@/components/site/Footer";
 import { Reveal } from "@/components/site/Reveal";
@@ -14,40 +14,34 @@ import {
   type BoardRowData,
   type Status,
 } from "@/components/site/Board";
-import { EngagementPath, IndustryIndex, SectionHead, Splice } from "@/components/site/Services";
-import { MAIL, mailto } from "@/components/site/services-data";
 
 export const Route = createFileRoute("/")({
   component: Index,
 });
 
-// Who we work with. One door per reader, second person, one sentence, one subject line,
-// so the first email already says who is writing.
-const doors = [
+const MAIL = "info@16x9.ai";
+
+// Who we work with. One row per audience, second person, one sentence, one destination.
+const audiences = [
   {
-    label: "Owners",
-    text: "Your company runs on old systems or an outsourced back office, and the margin should be higher.",
-    subject: "An opportunity assessment",
+    label: "Clients",
+    text: "Your operations move onto agents one function at a time, behind gates your people set. We build the system and stay to run it.",
+    href: "#work",
   },
   {
-    label: "Operators and founders",
-    text: "You know a trade and its customers. You want to build or lead a company that runs on agents.",
-    subject: "Operator partnership",
-  },
-  {
-    label: "Holding companies and investors",
-    text: "You own several companies and want one operating layer under all of them.",
-    subject: "Portfolio operations",
-  },
-  {
-    label: "Brokers and advisers",
-    text: "You see the companies first. Bring us the ones that should run leaner before they sell.",
-    subject: "Broker introduction",
+    label: "Partners",
+    text: "You bring the operation or the market. We bring systems already running and the platform they run on.",
+    href: "#work",
   },
   {
     label: "Builders",
-    text: "You build agents and want to work at this level. Send what you have shipped.",
-    subject: "Working at 16x9",
+    text: `You build on the platform the companies are moving onto. Every run you ship is graded. Send what you have shipped to ${MAIL}.`,
+    href: `mailto:${MAIL}?subject=Working%20at%2016x9`,
+  },
+  {
+    label: "Business owners",
+    text: "You own a business that should run on agents. We build the system and stay to run it with you.",
+    href: "#contact",
   },
 ];
 
@@ -250,7 +244,7 @@ const marqueeItems = [
   "audited Q3 2026",
 ];
 
-const mono = "font-mono text-[11px] uppercase tracking-[0.14em]";
+const kicker = "font-mono text-[11px] uppercase tracking-[0.14em]";
 const focusRow = "focus-visible:outline-none focus-visible:bg-ink/[0.04]";
 
 function Index() {
@@ -259,47 +253,68 @@ function Index() {
       <Nav />
       <main>
         {/* Frame 1: the front page */}
-        <section className="px-6 pb-6 pt-10 md:px-10 md:pt-14">
+        <section className="px-6 pb-6 pt-10 md:px-10 md:pt-12">
           <div className="mx-auto w-full max-w-[1400px]">
-            <h1 className="max-w-[24ch] text-balance font-editorial text-[clamp(2.75rem,7vw,6rem)] uppercase leading-[0.9] tracking-[-0.01em] text-ink">
-              We build agentic companies with the people who know the trade.
+            <p className={`${kicker} text-graphite`}>16x9 / AI studio</p>
+            <h1 className="mt-5 text-balance font-editorial text-[clamp(2.5rem,6.4vw,5rem)] uppercase leading-[0.92] tracking-tight text-ink">
+              We build agentic companies <br className="hidden md:block" />
+              and run them.
             </h1>
 
-            <div className="mt-10 grid grid-cols-1 gap-10 border-t border-ink/80 pt-8 md:grid-cols-2 lg:grid-cols-[0.95fr_1.45fr_0.8fr] lg:gap-10">
+            <div className="mt-8 grid grid-cols-1 gap-10 border-t border-ink/80 pt-8 md:grid-cols-2 md:gap-10 lg:grid-cols-[1.15fr_1fr_0.95fr] lg:gap-12">
               <Reveal className="md:flex md:h-full md:flex-col">
-                <p className="max-w-[44ch] text-[17px] leading-[1.6] text-ink md:text-[18px]">
-                  You bring the trade, the customers and the distribution. We bring forward-deployed
-                  engineers and operators, and Mycel, the orchestration system we built to run the
-                  work. We partner for equity or a share of revenue, and we stay to run it.
+                <p className="max-w-[46ch] text-[16px] leading-[1.65] text-ink md:text-[17px]">
+                  Founders and entrepreneurs. We build systems on agents and run them inside the
+                  companies below, and for outside partners. Some of us run those companies. The
+                  work increasingly runs on Mycel, the agent platform we built.
                 </p>
-                <div className="mt-8 flex flex-wrap gap-3 md:mt-auto md:pt-8">
-                  <Link
-                    to="/services"
-                    className="inline-flex items-center gap-3 bg-ink px-5 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-background transition-colors hover:bg-ash focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
-                  >
-                    How we work <span aria-hidden>→</span>
-                  </Link>
+                <p className="mt-6 font-mono text-[11px] uppercase leading-[1.9] tracking-[0.14em] text-graphite">
+                  Clinical research ✦ Capital advisory ✦ Commercial lending
+                  <br />
+                  Real estate ✦ Field services
+                </p>
+                <p className="mt-6 text-[14px] leading-relaxed text-ink md:mt-auto">
+                  <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-graphite">
+                    Clients, partners, builders, business owners
+                  </span>
+                  <br />
+                  Write to{" "}
                   <a
                     href={`mailto:${MAIL}`}
-                    className="inline-flex items-center border border-ink px-5 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-ink transition-colors hover:bg-ink hover:text-background focus-visible:bg-ink focus-visible:text-background focus-visible:outline-none"
+                    className="underline underline-offset-4 hover:text-graphite"
                   >
                     {MAIL}
                   </a>
-                </div>
+                </p>
               </Reveal>
 
-              <Reveal
-                delay={0.06}
-                className="md:col-span-2 md:row-start-2 lg:col-span-1 lg:row-start-auto"
-              >
-                <Splice />
+              <Reveal delay={0.06}>
+                <p className={`${kicker} text-graphite`}>Who we work with</p>
+                <ul className="mt-3" aria-label="Who we work with">
+                  {audiences.map((a) => (
+                    <li key={a.label} className="border-t border-ink/30">
+                      <a
+                        href={a.href}
+                        className={`group block py-3 hover:bg-ink/[0.03] ${focusRow}`}
+                      >
+                        <span className="flex items-baseline justify-between font-mono text-[11px] uppercase tracking-[0.14em] text-graphite">
+                          <span>{a.label}</span>
+                          <span aria-hidden className="text-ink/50 group-hover:text-ink">
+                            {a.href.startsWith("mailto:") ? "→" : "↓"}
+                          </span>
+                        </span>
+                        <span className="mt-1 block text-[13.5px] leading-[1.5] text-ink">
+                          {a.text}
+                        </span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
               </Reveal>
 
-              <Reveal
-                delay={0.12}
-                className="md:col-start-2 md:row-start-1 lg:col-start-auto lg:row-start-auto"
-              >
-                <a href="/intel" className={`group block ${focusRow}`}>
+              <Reveal delay={0.12} className="md:col-span-2 lg:col-span-1">
+                <p className={`${kicker} text-graphite`}>Published this morning</p>
+                <a href="/intel" className={`group mt-3 block ${focusRow}`}>
                   <div className="hidden aspect-video w-full overflow-hidden border border-ink/80 text-ink sm:block">
                     <Motif kind="lines" />
                   </div>
@@ -308,16 +323,16 @@ function Index() {
                   </p>
                   <p className="mt-1 text-[13.5px] leading-[1.5] text-graphite">
                     About 1,800 stories from 50 sources, ranked to 30, scored, and published by
-                    agents every morning.
+                    agents.
                   </p>
                   <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.14em] text-ink underline underline-offset-4 group-hover:text-graphite">
-                    Today&apos;s edition <span aria-hidden>→</span>
+                    Read today&apos;s edition at /intel <span aria-hidden>→</span>
                   </p>
                 </a>
               </Reveal>
             </div>
 
-            <div className="mt-8 hidden border-t border-ink/30 sm:block">
+            <div className="mt-6 hidden border-t border-ink/30 sm:block">
               <div className="mt-3 h-10 w-full text-ink md:h-12">
                 <Motif kind="horizon" />
               </div>
@@ -327,67 +342,52 @@ function Index() {
 
         <Marquee items={marqueeItems} />
 
-        {/* Frame 2: the ways in, on the dark plate */}
-        <section id="services" className="bg-obsidian px-6 py-10 text-snow md:px-10 md:py-14">
+        {/* Frame 2: the board */}
+        <section id="work" className="bg-obsidian px-6 py-8 text-snow md:px-10 md:py-10">
           <div className="mx-auto max-w-[1400px]">
-            <SectionHead folio="Services" title="Five ways in." tone="dark">
-              Start with a measured assessment, or start as partners. Each step leaves the company
-              with something it keeps. No prices here: each one is set in scoping.
-            </SectionHead>
-            <Reveal className="mt-10">
-              <EngagementPath />
-            </Reveal>
-            <p className="mt-6 font-mono text-[11px] uppercase tracking-[0.14em] text-snow/60">
-              <Link
-                to="/services"
-                className="text-snow underline underline-offset-4 hover:text-snow/70"
-              >
-                What each engagement contains, and a sample build plan
-              </Link>{" "}
-              <span aria-hidden>→</span>
-            </p>
-          </div>
-        </section>
-
-        {/* Frame 3: who it is for */}
-        <section id="industries" className="px-6 py-12 md:px-10 md:py-16">
-          <div className="mx-auto max-w-[1400px]">
-            <SectionHead folio="Industries" title="Companies that run on a back office.">
-              The candidates are companies where people still do most of the work behind each sale:
-              the paperwork, the follow-up, the matching and the reports. That work goes first.
-            </SectionHead>
-            <Reveal className="mt-10">
-              <IndustryIndex />
-            </Reveal>
-          </div>
-        </section>
-
-        {/* Frame 4: the proof, what already runs */}
-        <section id="work" className="bg-obsidian px-6 py-10 text-snow md:px-10 md:py-14">
-          <div className="mx-auto max-w-[1400px]">
-            <SectionHead folio="Proof" title="What runs in our own companies." tone="dark">
-              We build on ourselves first. Audited Q3 2026.
-            </SectionHead>
-            <p className="mt-6 font-mono text-[11px] uppercase leading-relaxed tracking-[0.08em] text-snow/60 md:ml-[240px]">
-              Running: in use today. Pilot: proven in a first run, not yet in daily use. Building:
-              not yet relied on.
-            </p>
-            <div className="mt-10 grid grid-cols-1 gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+            <div className="grid grid-cols-1 items-end gap-6 md:grid-cols-[1fr_auto]">
+              <div>
+                <p className={`${kicker} text-snow/60`}>#1 Work</p>
+                <h2 className="mt-4 font-editorial text-[clamp(2.25rem,4.5vw,3.5rem)] uppercase leading-[0.95] tracking-tight text-snow">
+                  What runs, by industry.
+                </h2>
+                <p className="mt-3 max-w-[60ch] text-[13.5px] leading-[1.5] text-snow/75">
+                  Inside our companies. Audited Q3 2026.
+                </p>
+              </div>
+              <p className="font-mono text-[11px] uppercase leading-relaxed tracking-[0.08em] text-snow/60 md:text-right">
+                Running: in use today.
+                <br />
+                Pilot: proven in a first run, not yet in daily use.
+                <br />
+                Building: not yet relied on.
+              </p>
+            </div>
+            <div className="mt-8 grid grid-cols-1 gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
               {board.map((col, i) => (
                 <Reveal key={col.industry} delay={i * 0.04} className="flex">
                   <BoardColumn col={col} />
                 </Reveal>
               ))}
             </div>
+            <p className="mt-8 border-t border-snow/20 pt-4 font-mono text-[11px] uppercase tracking-[0.14em] text-snow/60">
+              To run any of this in your company:{" "}
+              <a
+                href={`mailto:${MAIL}`}
+                className="text-snow underline underline-offset-4 hover:text-snow/70"
+              >
+                {MAIL}
+              </a>
+            </p>
           </div>
         </section>
 
-        {/* Frame 5: the studio and the platform, one plate */}
-        <section className="px-6 py-12 md:px-10 md:py-16">
+        {/* Frame 3: the studio and the platform, one plate */}
+        <section className="border-t border-ink/80 px-6 py-12 md:px-10">
           <div className="mx-auto max-w-[1400px]">
             <div className="grid grid-cols-1 gap-12 lg:grid-cols-[0.95fr_0.75fr_1.1fr] lg:gap-10">
-              <Reveal id="studio" className="border-t border-ink/80 pt-4">
-                <p className={`${mono} text-graphite`}>The studio</p>
+              <Reveal id="studio">
+                <p className={`${kicker} text-graphite`}>#2 The studio</p>
                 <h2 className="mt-4 font-editorial text-[30px] uppercase leading-[1.02] tracking-tight text-ink md:text-[34px]">
                   Across industries on purpose.
                 </h2>
@@ -403,7 +403,9 @@ function Index() {
                       key={p.label}
                       className="grid grid-cols-[92px_1fr] gap-4 border-b border-ink/30 py-3"
                     >
-                      <dt className={`${mono} text-graphite`}>{p.label}</dt>
+                      <dt className="font-mono text-[11px] uppercase tracking-[0.14em] text-graphite">
+                        {p.label}
+                      </dt>
                       <dd className="text-[13.5px] leading-[1.55] text-ink">{p.body}</dd>
                     </div>
                   ))}
@@ -426,20 +428,21 @@ function Index() {
                 </div>
               </Reveal>
 
-              <Reveal id="mycel" delay={0.12} className="border-t border-ink/80 pt-4">
-                <p className={`${mono} text-graphite`}>The platform</p>
+              <Reveal id="mycel" delay={0.12}>
+                <p className={`${kicker} text-graphite`}>#3 The platform</p>
                 <h2 className="mt-4 font-editorial text-[clamp(2rem,4vw,2.75rem)] uppercase leading-[0.95] tracking-tight text-ink">
                   Mycel
                 </h2>
                 <p className="mt-4 text-[15px] leading-[1.65] text-ink">
-                  The orchestration system we build engagements on, and the one our companies are
-                  moving onto. Internal: the people who build with us build on it, and it is not
-                  open beyond that.
+                  Our companies are moving onto it. Internal: the people who build with us build on
+                  it, and it is not open beyond that.
                 </p>
                 <dl className="mt-6 grid grid-cols-1 gap-x-8 sm:grid-cols-2">
                   {mycelSpecs.map((s) => (
                     <div key={s.label} className="border-t border-ink/80 pb-4 pt-3">
-                      <dt className={`${mono} text-graphite`}>{s.label}</dt>
+                      <dt className="font-mono text-[11px] uppercase tracking-[0.14em] text-graphite">
+                        {s.label}
+                      </dt>
                       <dd className="mt-1 text-[12.5px] leading-[1.5] text-ink">{s.value}</dd>
                     </div>
                   ))}
@@ -451,8 +454,8 @@ function Index() {
               </Reveal>
             </div>
 
-            <div className="mt-12 border-t border-ink/80 pt-4">
-              <p className={`${mono} text-graphite`}>Across the studio</p>
+            <div className="mt-10 border-t border-ink/80 pt-4">
+              <p className={`${kicker} text-graphite`}>Across the studio</p>
               <ul
                 className="mt-2 grid grid-cols-1 gap-x-8 sm:grid-cols-3"
                 aria-label="Systems across the studio"
@@ -465,35 +468,21 @@ function Index() {
           </div>
         </section>
 
-        {/* Frame 6: contact, one door per reader */}
-        <section id="contact" className="px-6 pb-14 pt-4 md:px-10">
-          <div className="mx-auto max-w-[1400px]">
-            <SectionHead folio="Contact" title="Talk to us." />
-            <div className="mt-10 grid grid-cols-1 gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
-              <ul aria-label="Who we work with" className="border-b border-ink/80">
-                {doors.map((d) => (
-                  <li key={d.label} className="border-t border-ink/30">
-                    <a
-                      href={mailto(d.subject)}
-                      className="group grid grid-cols-1 gap-1 px-1 py-4 transition-colors hover:bg-ink hover:text-background focus-visible:bg-ink focus-visible:text-background focus-visible:outline-none sm:grid-cols-[220px_1fr_auto] sm:items-baseline sm:gap-6"
-                    >
-                      <span
-                        className={`${mono} text-graphite group-hover:text-background/70 group-focus-visible:text-background/70`}
-                      >
-                        {d.label}
-                      </span>
-                      <span className="text-[15px] leading-[1.5]">{d.text}</span>
-                      <span aria-hidden className="hidden font-mono text-[12px] sm:block">
-                        →
-                      </span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-              <Reveal>
-                <Contact />
-              </Reveal>
+        {/* Frame 4: contact */}
+        <section id="contact" className="border-t border-ink/80 px-6 py-12 md:px-10">
+          <div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-10 lg:grid-cols-[0.3fr_0.7fr] lg:gap-16">
+            <div>
+              <p className={`${kicker} text-graphite`}>#4 Contact</p>
+              <h2 className="mt-4 font-editorial text-[clamp(2rem,4vw,2.75rem)] uppercase leading-[0.95] tracking-tight text-ink">
+                Talk to us.
+              </h2>
+              <p className="mt-3 max-w-[40ch] text-[15px] leading-[1.6] text-ink">
+                For clients, partners, builders, and business owners.
+              </p>
             </div>
+            <Reveal>
+              <Contact />
+            </Reveal>
           </div>
         </section>
       </main>

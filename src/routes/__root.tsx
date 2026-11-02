@@ -79,7 +79,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "16x9 is an AI studio. We build agentic companies with operators who know the trade: forward-deployed engineers and operators move the back office onto agents, on Mycel, the orchestration system we built.",
+          "16x9 is an AI studio. We build agentic companies and run them, in clinical research, capital advisory, commercial lending, real estate, and field services, on Mycel, the agent platform we built.",
       },
       { name: "keywords", content: "16x9, AI studio, agents, Mycel, agent platform" },
       { name: "author", content: "16x9" },
@@ -89,7 +89,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:title", content: "16x9 | AI Studio" },
       {
         property: "og:description",
-        content: "We build agentic companies with the people who know the trade.",
+        content:
+          "An AI studio. We build agentic companies and run them.",
       },
       { property: "og:image", content: "https://16x9.ai/og-image.png" },
       { property: "og:image:type", content: "image/png" },
@@ -101,7 +102,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:title", content: "16x9 | AI Studio" },
       {
         name: "twitter:description",
-        content: "We build agentic companies with the people who know the trade.",
+        content:
+          "An AI studio. We build agentic companies and run them.",
       },
     ],
     links: [

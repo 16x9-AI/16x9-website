@@ -1,21 +1,23 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Nav } from "@/components/site/Nav";
 import { Footer } from "@/components/site/Footer";
 import { Reveal } from "@/components/site/Reveal";
 import { Motif } from "@/components/site/Motif";
 import {
   EngagementPath,
-  IndustryIndex,
+  LevelSummary,
   SectionHead,
+  ServicesNav,
+  Splice,
   StartSentence,
 } from "@/components/site/Services";
-import { FUNCTIONS, MAIL, OUTCOMES, SAMPLE, STEPS, mailto } from "@/components/site/services-data";
+import { MAIL, OUTCOMES, SAMPLE, STEPS, mailto } from "@/components/site/services-data";
 
 const TITLE = "Services | 16x9";
 const DESCRIPTION =
   "Forward-deployed engineers and operators move a company's back office onto agents. Start with a fixed-fee opportunity assessment, or partner for equity or a share of revenue.";
 
-export const Route = createFileRoute("/services")({
+export const Route = createFileRoute("/services/")({
   head: () => ({
     meta: [
       { title: TITLE },
@@ -31,12 +33,31 @@ export const Route = createFileRoute("/services")({
 
 const mono = "font-mono text-[11px] uppercase tracking-[0.14em]";
 
+const MORE = [
+  {
+    to: "/services/functions" as const,
+    label: "Functions",
+    text: "Every function we move onto agents, what a person keeps, and what already runs in our own companies.",
+  },
+  {
+    to: "/industries" as const,
+    label: "Industries",
+    text: "Nine industries and the work that moves first in each.",
+  },
+  {
+    to: "/partners" as const,
+    label: "Partners",
+    text: "Know a trade? Build the company with us, for equity or a share of revenue.",
+  },
+];
+
 function ServicesPage() {
   return (
     <>
       <Nav />
+      <ServicesNav />
       <main>
-        {/* The front: what the page is about, and the sentence the reader completes */}
+        {/* The front */}
         <section className="px-6 pb-12 pt-10 md:px-10 md:pt-14">
           <div className="mx-auto max-w-[1400px]">
             <h1 className="max-w-[24ch] text-balance font-editorial text-[clamp(2.75rem,7vw,6rem)] uppercase leading-[0.9] tracking-[-0.01em] text-ink">
@@ -56,6 +77,19 @@ function ServicesPage() {
           </div>
         </section>
 
+        {/* The model: both sides of the partnership */}
+        <section className="px-6 pb-14 md:px-10">
+          <div className="mx-auto max-w-[1400px]">
+            <SectionHead folio="The model" title="Two sides, one company.">
+              You bring the trade, the customers and the distribution. We bring forward-deployed
+              engineers and operators, and Mycel, the orchestration system we built to run the work.
+            </SectionHead>
+            <Reveal className="mt-10 lg:ml-[240px]">
+              <Splice />
+            </Reveal>
+          </div>
+        </section>
+
         <section className="px-6 pb-14 md:px-10">
           <div className="mx-auto max-w-[1400px]">
             <SectionHead folio="Where we start" title="Tell us where the hours go." />
@@ -65,7 +99,7 @@ function ServicesPage() {
           </div>
         </section>
 
-        {/* The engagements, in full */}
+        {/* The engagements */}
         <section id="engagements" className="bg-obsidian px-6 py-12 text-snow md:px-10 md:py-16">
           <div className="mx-auto max-w-[1400px]">
             <SectionHead folio="Engagements" title="Five ways in." tone="dark">
@@ -79,22 +113,26 @@ function ServicesPage() {
           </div>
         </section>
 
-        {/* What moves first */}
+        {/* What agents take on, in three levels */}
         <section className="px-6 py-12 md:px-10 md:py-16">
           <div className="mx-auto max-w-[1400px]">
-            <SectionHead folio="Functions" title="The work that moves first.">
-              Work that follows a checklist, repeats every day, and lives in email, spreadsheets and
-              an old system of record. Agents take the volume. People keep the exceptions and the
-              decisions.
+            <SectionHead folio="Functions" title="What agents take on.">
+              Ranked by five tests: how much volume, how clear the rules, whether the inputs are
+              already digital, whether the answer can be checked against a source, and whether a
+              mistake can be caught before it does harm.
             </SectionHead>
-            <dl className="mt-10 grid grid-cols-1 gap-x-10 border-b border-ink/80 sm:grid-cols-2 lg:grid-cols-3">
-              {FUNCTIONS.map((f) => (
-                <div key={f.key} className="border-t border-ink/30 py-5">
-                  <dt className="text-[17px] font-medium leading-snug text-ink">{f.name}</dt>
-                  <dd className="mt-1.5 text-[14px] leading-[1.6] text-graphite">{f.body}</dd>
-                </div>
-              ))}
-            </dl>
+            <Reveal className="mt-10">
+              <LevelSummary />
+            </Reveal>
+            <p className="mt-6 font-mono text-[11px] uppercase tracking-[0.14em] text-ink">
+              <Link
+                to="/services/functions"
+                className="underline underline-offset-4 hover:text-graphite"
+              >
+                Every function, task by task
+              </Link>{" "}
+              <span aria-hidden>→</span>
+            </p>
           </div>
         </section>
 
@@ -180,21 +218,11 @@ function ServicesPage() {
           </div>
         </section>
 
+        {/* Who does the work, and where to read next */}
         <section className="px-6 py-12 md:px-10 md:py-16">
-          <div className="mx-auto max-w-[1400px]">
-            <SectionHead folio="Industries" title="Where we work." />
-            <Reveal className="mt-10">
-              <IndustryIndex />
-            </Reveal>
-          </div>
-        </section>
-
-        {/* Who does the work, and the operator door */}
-        <section className="px-6 pb-14 md:px-10">
           <div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-14">
             <div className="border-t border-ink/80 pt-4">
-              <p className={`${mono} text-graphite`}>Who does the work</p>
-              <h2 className="mt-4 font-editorial text-[clamp(2rem,3.6vw,2.75rem)] uppercase leading-[0.95] tracking-tight text-ink">
+              <h2 className="font-editorial text-[clamp(2rem,3.6vw,2.75rem)] uppercase leading-[0.95] tracking-tight text-ink">
                 People inside, agents underneath.
               </h2>
               <p className="mt-4 max-w-[60ch] text-[15px] leading-[1.65] text-ink">
@@ -204,23 +232,24 @@ function ServicesPage() {
                 implementation firms from our network join, and the scope names them.
               </p>
             </div>
-            <div className="border-t border-ink/80 pt-4">
-              <p className={`${mono} text-graphite`}>Operators</p>
-              <h2 className="mt-4 font-editorial text-[clamp(2rem,3.6vw,2.75rem)] uppercase leading-[0.95] tracking-tight text-ink">
-                Know a trade? Lead the company.
-              </h2>
-              <p className="mt-4 max-w-[60ch] text-[15px] leading-[1.65] text-ink">
-                We partner with founders, operators and owners who know an industry and its
-                customers. You lead growth, product and sales. We build and run the machine. A
-                community for these operators is forming now.
-              </p>
-              <a
-                href={mailto("Operator partnership")}
-                className="mt-6 inline-flex items-center gap-3 border border-ink px-5 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-ink transition-colors hover:bg-ink hover:text-background focus-visible:bg-ink focus-visible:text-background focus-visible:outline-none"
-              >
-                Tell us the trade you know <span aria-hidden>→</span>
-              </a>
-            </div>
+            <ul aria-label="Read next" className="border-b border-ink/80">
+              {MORE.map((m) => (
+                <li key={m.to} className="border-t border-ink/80">
+                  <Link
+                    to={m.to}
+                    className="group grid grid-cols-1 gap-1 px-1 py-4 transition-colors hover:bg-ink hover:text-background focus-visible:bg-ink focus-visible:text-background focus-visible:outline-none sm:grid-cols-[140px_1fr_auto] sm:items-baseline sm:gap-6"
+                  >
+                    <span className="font-editorial text-[24px] uppercase leading-none tracking-tight">
+                      {m.label}
+                    </span>
+                    <span className="text-[14px] leading-[1.5]">{m.text}</span>
+                    <span aria-hidden className="hidden font-mono text-[12px] sm:block">
+                      →
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
 

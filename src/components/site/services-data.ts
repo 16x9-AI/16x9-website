@@ -1,3 +1,5 @@
+import type { Status } from "@/components/site/Board";
+
 // What 16x9 offers, single-sourced for the homepage and /services so the two
 // can never drift. Product truth is in PRODUCT.md; copy rules in VOICE.md.
 //
@@ -70,48 +72,6 @@ export const ENGAGEMENTS: Engagement[] = [
     form: "Equity or revenue share",
     body: "You bring the trade, the relationships and the distribution. We build the company around you and run the machine. New companies and existing ones.",
     keeps: "A share of a company built to run lean from the start.",
-  },
-];
-
-export type Industry = { name: string; start: string };
-
-// Manny's primer, 2026-11-01. Not a closed list: the test is the last row.
-export const INDUSTRIES: Industry[] = [
-  {
-    name: "Manufacturing",
-    start: "Quotes drafted from RFQ emails, orders keyed into the ERP, supplier invoices matched.",
-  },
-  {
-    name: "Medical practices",
-    start: "Intake, scheduling, referral and prior-authorization paperwork.",
-  },
-  {
-    name: "Accounting firms",
-    start: "Client document collection, bookkeeping prep, month-end checklists.",
-  },
-  {
-    name: "Engineering firms",
-    start: "Proposal assembly, submittal and RFI tracking, project reporting.",
-  },
-  {
-    name: "Insurance carriers and brokers",
-    start: "Submission intake, quote comparison, renewals, certificate requests.",
-  },
-  {
-    name: "Mortgage lending",
-    start: "Document collection, conditions tracking, borrower updates.",
-  },
-  {
-    name: "Real estate brokerage",
-    start: "Lead follow-up, transaction coordination, compliance file review.",
-  },
-  {
-    name: "Managed IT and security",
-    start: "Ticket triage, first review of alerts, compliance evidence on a schedule.",
-  },
-  {
-    name: "Anyone with an outsourced back office",
-    start: "If you pay a BPO for work that follows a checklist, that work is a candidate.",
   },
 ];
 
@@ -255,3 +215,352 @@ export const SAMPLE = {
   result:
     "Cost and turnaround per quote and per order, before and after, with the method and the records behind it. The owner prices the next bids from it.",
 };
+
+// ---------------------------------------------------------------------------
+// The function catalogue (/services/functions). Ranked by five tests, not by
+// a percentage: volume, rules, digital inputs, checkable output, and a gate
+// before harm. Research basis and date are in the vault, CHG-537-cc addendum
+// (Anthropic Economic Index, McKinsey State of AI 2026, Microsoft "Working with
+// AI", Stanford WORKBank, OpenAI GDPval). No automation percentage is published.
+//
+// `status` reuses the audited board vocabulary from routes/index.tsx (Q3 2026)
+// and is set only where a board row backs it; `proof` names that row. Change
+// the board and this together.
+
+export type LevelKey = "run" | "approve" | "assist";
+
+export const LEVELS: { key: LevelKey; name: string; line: string }[] = [
+  {
+    key: "run",
+    name: "Agents run it",
+    line: "High volume, clear rules, an answer that can be checked against a source. People work the exceptions.",
+  },
+  {
+    key: "approve",
+    name: "Agents draft, a person approves",
+    line: "Agents do the work end to end and stop at a gate. Nothing goes out until a person signs off.",
+  },
+  {
+    key: "assist",
+    name: "People lead, agents assist",
+    line: "Judgment, trust and accountability stay with people. Agents prepare the ground.",
+  },
+];
+
+export type FunctionGroup = {
+  key: string;
+  level: LevelKey;
+  name: string;
+  tasks: string[];
+  keeps: string;
+  status?: Status;
+  proof?: string;
+};
+
+export const FUNCTION_GROUPS: FunctionGroup[] = [
+  {
+    key: "payables",
+    level: "run",
+    name: "Accounts payable",
+    tasks: ["Invoice capture", "Three-way match", "Vendor onboarding", "Payment runs prepared"],
+    keeps: "Approving payments and settling vendor disputes.",
+  },
+  {
+    key: "receivables",
+    level: "run",
+    name: "Receivables and billing",
+    tasks: [
+      "Invoices built from hours or usage",
+      "Payment reminders",
+      "Collections follow-up",
+      "Cash applied to invoices",
+    ],
+    keeps: "Write-offs and customer escalations.",
+    status: "Building",
+    proof: "Receivables and agreement billing, each line behind a gate verdict.",
+  },
+  {
+    key: "close",
+    level: "run",
+    name: "Bookkeeping and close",
+    tasks: [
+      "Transactions categorised",
+      "Bank and card reconciliations",
+      "Month-end checklist",
+      "Accruals drafted",
+    ],
+    keeps: "Signing off the close.",
+    status: "Building",
+    proof: "An accounting platform: US GAAP close, a reconciliation queue, period locks.",
+  },
+  {
+    key: "intake",
+    level: "run",
+    name: "Document intake and data entry",
+    tasks: [
+      "Documents classified and read",
+      "Fields keyed into the ERP, CRM or loan system",
+      "Files renamed and filed",
+    ],
+    keeps: "Anything the agent is not sure of.",
+    status: "Running",
+    proof: "New leads become applications in the property system. Document agents in pilot.",
+  },
+  {
+    key: "desk",
+    level: "run",
+    name: "Inbox and service desk",
+    tasks: [
+      "Requests sorted and routed",
+      "Replies drafted",
+      "Status updates sent",
+      "Common questions answered",
+    ],
+    keeps: "Anything off script or sensitive.",
+  },
+  {
+    key: "dispatch",
+    level: "run",
+    name: "Scheduling and dispatch",
+    tasks: [
+      "Bookings and reminders",
+      "Rescheduling",
+      "Crews and drivers assigned",
+      "Customers updated as work moves",
+    ],
+    keeps: "Conflicts and priorities.",
+    status: "Building",
+    proof: "Cleaner assignment and operations, first in a back office moving onto agents.",
+  },
+  {
+    key: "reporting",
+    level: "run",
+    name: "Recurring reporting",
+    tasks: ["Weekly and monthly packs", "KPI commentary", "Client reports"],
+    keeps: "What the numbers mean for a decision.",
+  },
+  {
+    key: "research",
+    level: "run",
+    name: "Research and monitoring",
+    tasks: ["Market, regulatory and competitor watch", "Records enriched", "Daily briefs"],
+    keeps: "Choosing what to act on.",
+    status: "Running",
+    proof: "Filings and news read daily, scored, and published as a morning report.",
+  },
+  {
+    key: "sales",
+    level: "approve",
+    name: "Sales development",
+    tasks: [
+      "Prospects researched and scored",
+      "Outreach drafted per account",
+      "Inbound answered in minutes",
+      "CRM kept clean",
+      "Renewals flagged",
+    ],
+    keeps: "Every send passes an approval queue. People run the closing conversation.",
+    status: "Running",
+    proof: "Targeting engines: who to call, why now, who decides.",
+  },
+  {
+    key: "marketing",
+    level: "approve",
+    name: "Marketing operations",
+    tasks: [
+      "Content drafted against a source registry",
+      "Location and search pages",
+      "Campaign reports",
+      "Social posts scheduled",
+    ],
+    keeps: "Brand voice and the final approval.",
+    status: "Running",
+    proof: "A content engine whose gate blocks unsourced claims before anything publishes.",
+  },
+  {
+    key: "recruiting",
+    level: "approve",
+    name: "Recruiting and onboarding",
+    tasks: [
+      "Candidates sourced",
+      "Applicants screened against the role",
+      "Interviews scheduled",
+      "Onboarding paperwork run",
+    ],
+    keeps: "The hiring decision.",
+  },
+  {
+    key: "compliance",
+    level: "approve",
+    name: "Compliance and risk",
+    tasks: [
+      "Control evidence collected on a schedule",
+      "Policies checked",
+      "Identity and documents verified",
+      "Licences and renewals tracked",
+    ],
+    keeps: "Attestation and every judgment call.",
+  },
+  {
+    key: "procurement",
+    level: "approve",
+    name: "Procurement and contracts",
+    tasks: [
+      "Requests for quote handled",
+      "Quotes compared",
+      "Purchase orders raised",
+      "Contracts read against a playbook",
+      "Obligations tracked",
+    ],
+    keeps: "Negotiation and signature.",
+    status: "Building",
+    proof: "Vendor discovery: listings found, validated and enriched before outreach.",
+  },
+  {
+    key: "engineering",
+    level: "approve",
+    name: "IT operations and software delivery",
+    tasks: [
+      "Access requests",
+      "First review of alerts",
+      "Patch tickets",
+      "Tickets taken to a verified pull request",
+    ],
+    keeps: "Code review and incident command.",
+    status: "Running",
+    proof:
+      "Agents take a ticket, implement it, verify against the live system, close with evidence.",
+  },
+];
+
+/** What we do not automate, said plainly. */
+export const PEOPLE_LEAD = [
+  "Strategy and pricing",
+  "Negotiation",
+  "Relationship selling",
+  "Hiring and letting people go",
+  "Clinical and legal judgment",
+  "Crisis response",
+];
+
+export type IndustryPack = {
+  key: string;
+  name: string;
+  /** One line for the index rows. */
+  start: string;
+  tasks: string[];
+  /** Function groups that usually come first, by key. */
+  first: string[];
+  note?: string;
+};
+
+// Manny's primer, 2026-11-01. Not a closed list: the test is the last row.
+export const INDUSTRY_PACKS: IndustryPack[] = [
+  {
+    key: "manufacturing",
+    name: "Manufacturing",
+    start: "Quotes drafted from RFQ emails, orders keyed into the ERP, supplier invoices matched.",
+    tasks: [
+      "Quotes drafted from each RFQ against past jobs",
+      "Orders keyed into the ERP",
+      "Supplier invoices matched to POs and receipts",
+      "Ship-date updates sent as work moves",
+    ],
+    first: ["procurement", "intake", "payables"],
+  },
+  {
+    key: "medical",
+    name: "Medical practices",
+    start: "Intake, scheduling, referral and prior-authorization paperwork.",
+    tasks: [
+      "Patient intake forms read and filed",
+      "Insurance eligibility checked before the visit",
+      "Prior-authorization packets assembled",
+      "Reminders and rescheduling",
+    ],
+    first: ["intake", "dispatch", "receivables"],
+    note: "Patient data stays inside the practice's own systems.",
+  },
+  {
+    key: "accounting",
+    name: "Accounting firms",
+    start: "Client document collection, bookkeeping prep, month-end checklists.",
+    tasks: [
+      "Client documents requested and chased",
+      "Bookkeeping prepared for review",
+      "Tax organizers filled from source documents",
+      "Close checklists run",
+    ],
+    first: ["intake", "close", "reporting"],
+  },
+  {
+    key: "engineering",
+    name: "Engineering firms",
+    start: "Proposal assembly, submittal and RFI tracking, project reporting.",
+    tasks: [
+      "Proposals assembled from past work",
+      "Submittals and RFIs logged and chased",
+      "Project status reports",
+    ],
+    first: ["reporting", "intake", "desk"],
+  },
+  {
+    key: "insurance",
+    name: "Insurance carriers and brokers",
+    start: "Submission intake, quote comparison, renewals, certificate requests.",
+    tasks: [
+      "Submissions read and keyed",
+      "Carrier quotes compared side by side",
+      "Certificates of insurance issued on request",
+      "Renewals prepared ahead of the date",
+      "First notice of loss taken in",
+    ],
+    first: ["intake", "desk", "sales"],
+  },
+  {
+    key: "mortgage",
+    name: "Mortgage lending",
+    start: "Document collection, conditions tracking, borrower updates.",
+    tasks: [
+      "Borrower documents collected and checked",
+      "Conditions tracked to clear",
+      "Employment and income verifications requested",
+      "Borrowers updated at every stage",
+    ],
+    first: ["intake", "compliance", "desk"],
+  },
+  {
+    key: "realestate",
+    name: "Real estate brokerage",
+    start: "Lead follow-up, transaction coordination, compliance file review.",
+    tasks: [
+      "Leads answered and followed up",
+      "Transactions coordinated to closing",
+      "Compliance files reviewed before audit",
+      "Tenant applications into the property system",
+    ],
+    first: ["sales", "intake", "compliance"],
+  },
+  {
+    key: "msp",
+    name: "Managed IT and security",
+    start: "Ticket triage, first review of alerts, compliance evidence on a schedule.",
+    tasks: [
+      "Tickets sorted and routed",
+      "First review of alerts, analyst deciding",
+      "SOC 2 and ISO evidence pulled on a schedule",
+      "New customers onboarded from the signed contract",
+    ],
+    first: ["desk", "engineering", "compliance"],
+  },
+  {
+    key: "outsourced",
+    name: "Anyone with an outsourced back office",
+    start: "If you pay a BPO for work that follows a checklist, that work is a candidate.",
+    tasks: [
+      "The checklist work an outside team does today",
+      "Measured first, then moved onto agents",
+    ],
+    first: ["payables", "receivables", "desk"],
+  },
+];

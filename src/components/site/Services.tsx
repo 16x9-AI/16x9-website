@@ -1,10 +1,17 @@
 import { useId, useState, type ReactNode } from "react";
+import { Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
+import { StatusDot } from "@/components/site/Board";
 import {
   BILLING,
   ENGAGEMENTS,
   FUNCTIONS,
-  INDUSTRIES,
+  FUNCTION_GROUPS,
+  INDUSTRY_PACKS,
+  LEVELS,
+  MAIL,
+  PEOPLE_LEAD,
+  mailto,
   THEY_BRING,
   WE_BRING,
 } from "@/components/site/services-data";
@@ -161,22 +168,213 @@ export function EngagementPath({ detailed = false }: { detailed?: boolean }) {
 
 /** The industries, as an index: the trade in the display face, the first build beside it. */
 export function IndustryIndex() {
+  const odd = INDUSTRY_PACKS.length % 2 === 1;
   return (
     <ul className="grid grid-cols-1 border-b border-ink/80 lg:grid-cols-2 lg:gap-x-10">
-      {INDUSTRIES.map((ind, i) => (
+      {INDUSTRY_PACKS.map((ind, i) => (
         <li
-          key={ind.name}
-          className={`${i === INDUSTRIES.length - 1 && INDUSTRIES.length % 2 === 1 ? "lg:col-span-2" : ""} group grid grid-cols-1 gap-1 border-t border-ink/30 py-4 transition-colors hover:bg-ink hover:text-background sm:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] sm:items-baseline sm:gap-6`}
+          key={ind.key}
+          className={`${odd && i === INDUSTRY_PACKS.length - 1 ? "lg:col-span-2" : ""} border-t border-ink/30`}
         >
-          <span className="px-1 font-editorial text-[24px] uppercase leading-[1] tracking-tight md:text-[28px]">
-            {ind.name}
-          </span>
-          <span className="px-1 text-[13.5px] leading-[1.5] text-graphite group-hover:text-background/80">
-            {ind.start}
-          </span>
+          <Link
+            to="/industries"
+            hash={ind.key}
+            className="group grid grid-cols-1 gap-1 px-1 py-4 transition-colors hover:bg-ink hover:text-background focus-visible:bg-ink focus-visible:text-background focus-visible:outline-none sm:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] sm:items-baseline sm:gap-6"
+          >
+            <span className="font-editorial text-[24px] uppercase leading-[1] tracking-tight md:text-[28px]">
+              {ind.name}
+            </span>
+            <span className="text-[13.5px] leading-[1.5] text-graphite group-hover:text-background/80 group-focus-visible:text-background/80">
+              {ind.start}
+            </span>
+          </Link>
         </li>
       ))}
     </ul>
+  );
+}
+
+/** Wayfinding across the services pages. A row of the same structural grid as the nav. */
+const SERVICE_PAGES = [
+  { to: "/services", label: "Overview" },
+  { to: "/services/functions", label: "Functions" },
+  { to: "/industries", label: "Industries" },
+  { to: "/partners", label: "Partners" },
+] as const;
+
+export function ServicesNav() {
+  return (
+    <nav aria-label="Services" className="px-6 md:px-10">
+      <ul className="mx-auto flex max-w-[1400px] flex-wrap border-b border-ink/30">
+        {SERVICE_PAGES.map((p) => (
+          <li key={p.to}>
+            <Link
+              to={p.to}
+              activeOptions={{ exact: true }}
+              className="block px-3 py-3 font-mono text-[11px] uppercase tracking-[0.12em] text-graphite transition-colors first:pl-0 hover:text-ink focus-visible:text-ink focus-visible:underline focus-visible:outline-none sm:px-4"
+              activeProps={{
+                className: "text-ink underline underline-offset-[6px]",
+                "aria-current": "page",
+              }}
+            >
+              {p.label}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
+}
+
+/** The three levels, one column each, with the function names under each. */
+export function LevelSummary() {
+  return (
+    <ol className="grid grid-cols-1 gap-x-10 md:grid-cols-3">
+      {LEVELS.map((l) => {
+        const groups = FUNCTION_GROUPS.filter((g) => g.level === l.key);
+        const names = l.key === "assist" ? PEOPLE_LEAD : groups.map((g) => g.name);
+        return (
+          <li key={l.key} className="border-t border-ink/80 py-5">
+            <h3 className="font-editorial text-[28px] uppercase leading-[1] tracking-tight text-ink">
+              {l.name}
+            </h3>
+            <p className="mt-3 text-[14px] leading-[1.6] text-ink">{l.line}</p>
+            <ul className="mt-4">
+              {names.map((n) => (
+                <li
+                  key={n}
+                  className="border-t border-ink/20 py-2 text-[13.5px] leading-snug text-graphite"
+                >
+                  {n}
+                </li>
+              ))}
+            </ul>
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
+/**
+ * The ledger: every function group, by level. Picking an industry marks the
+ * groups that usually come first for it and shows that trade's own tasks.
+ * Status is printed only where an audited board row backs it.
+ */
+export function FunctionLedger() {
+  const [industry, setIndustry] = useState("");
+  const id = useId();
+  const pack = INDUSTRY_PACKS.find((p) => p.key === industry);
+  const first = new Set(pack?.first ?? []);
+  return (
+    <div>
+      <div className="flex flex-col gap-4 border-y border-ink/80 py-4 md:flex-row md:items-baseline md:justify-between">
+        <label htmlFor={`${id}-ind`} className={`${mono} text-graphite`}>
+          Read it for your industry
+        </label>
+        <select
+          id={`${id}-ind`}
+          value={industry}
+          onChange={(e) => setIndustry(e.target.value)}
+          className="cursor-pointer appearance-none border-0 border-b-2 border-ink bg-transparent px-0 pb-0.5 font-editorial text-[24px] uppercase leading-[1.1] tracking-tight text-ink [field-sizing:content] hover:border-graphite focus-visible:bg-ink/[0.06] focus-visible:outline-none"
+        >
+          <option value="">All industries</option>
+          {INDUSTRY_PACKS.map((p) => (
+            <option key={p.key} value={p.key}>
+              {p.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div aria-live="polite">
+        {pack && (
+          <div className="grid grid-cols-1 gap-4 border-b border-ink/30 bg-ink px-5 py-5 text-background md:grid-cols-[200px_1fr] md:gap-10 md:px-6">
+            <p className={`${mono} text-background/70`}>In {pack.name.toLowerCase()}</p>
+            <div>
+              <ul className="grid grid-cols-1 gap-x-8 sm:grid-cols-2">
+                {pack.tasks.map((t) => (
+                  <li
+                    key={t}
+                    className="border-t border-background/20 py-2 text-[14px] leading-snug first:border-t-0 sm:[&:nth-child(2)]:border-t-0"
+                  >
+                    {t}
+                  </li>
+                ))}
+              </ul>
+              {pack.note && <p className="mt-3 text-[13px] text-background/75">{pack.note}</p>}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {LEVELS.filter((l) => l.key !== "assist").map((l) => (
+        <section key={l.key} aria-labelledby={`${id}-${l.key}`} className="mt-12">
+          <div className="grid grid-cols-1 gap-2 md:grid-cols-[200px_1fr] md:gap-10">
+            <p className={`${mono} text-graphite md:pt-2`}>
+              {l.key === "run" ? "Level one" : "Level two"}
+            </p>
+            <div>
+              <h2
+                id={`${id}-${l.key}`}
+                className="font-editorial text-[clamp(2rem,3.6vw,2.75rem)] uppercase leading-[0.95] tracking-tight text-ink"
+              >
+                {l.name}
+              </h2>
+              <p className="mt-3 max-w-[60ch] text-[15px] leading-[1.6] text-ink">{l.line}</p>
+            </div>
+          </div>
+          <ul className="mt-6 border-b border-ink/80">
+            {FUNCTION_GROUPS.filter((g) => g.level === l.key).map((g) => {
+              const marked = first.has(g.key);
+              const dim = pack && !marked;
+              return (
+                <li
+                  key={g.key}
+                  id={g.key}
+                  className={`grid grid-cols-1 gap-3 border-t border-ink/30 py-5 transition-opacity duration-300 md:grid-cols-[200px_1.3fr_1fr] md:gap-10 lg:grid-cols-[200px_1.4fr_0.9fr_0.9fr] ${dim ? "opacity-35" : ""}`}
+                >
+                  <div>
+                    <h3 className="font-editorial text-[24px] uppercase leading-[1] tracking-tight text-ink">
+                      {g.name}
+                    </h3>
+                    {marked && (
+                      <p className={`mt-2 ${mono} text-[10.5px] text-ink`}>
+                        <span
+                          aria-hidden
+                          className="mr-1.5 inline-block h-[6px] w-[6px] bg-ink align-middle"
+                        />{" "}
+                        First for {pack?.name.toLowerCase()}
+                      </p>
+                    )}
+                  </div>
+                  <ul className="flex flex-wrap gap-x-5 gap-y-1 text-[14px] leading-[1.6] text-ink">
+                    {g.tasks.map((t) => (
+                      <li key={t}>{t}</li>
+                    ))}
+                  </ul>
+                  <p className="text-[13.5px] leading-[1.55] text-graphite">
+                    <span className={`${mono} mb-1 block text-[10.5px]`}>A person keeps</span>
+                    {g.keeps}
+                  </p>
+                  <div className="text-[13px] leading-[1.5] text-graphite md:col-start-2 lg:col-start-auto">
+                    <span className={`${mono} mb-1 block text-[10.5px]`}>In our companies</span>
+                    {g.status ? (
+                      <>
+                        <StatusDot status={g.status} tone="light" />
+                        <span className="mt-1 block">{g.proof}</span>
+                      </>
+                    ) : (
+                      <span>Not yet running in our own companies.</span>
+                    )}
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      ))}
+    </div>
   );
 }
 
@@ -241,5 +439,62 @@ export function StartSentence() {
         </div>
       </div>
     </div>
+  );
+}
+
+/** The opening frame of every services page: the headline, a rule, the lede beside an aside. */
+export function PageFront({
+  title,
+  lede,
+  aside,
+}: {
+  title: ReactNode;
+  lede: ReactNode;
+  aside?: ReactNode;
+}) {
+  return (
+    <section className="px-6 pb-12 pt-10 md:px-10 md:pt-14">
+      <div className="mx-auto max-w-[1400px]">
+        <h1 className="max-w-[24ch] text-balance font-editorial text-[clamp(2.75rem,7vw,6rem)] uppercase leading-[0.9] tracking-[-0.01em] text-ink">
+          {title}
+        </h1>
+        <div className="mt-10 grid grid-cols-1 gap-10 border-t border-ink/80 pt-8 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14">
+          <div className="max-w-[56ch] text-[17px] leading-[1.6] text-ink md:text-[18px]">
+            {lede}
+          </div>
+          {aside}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/** The closing band: one heading, one sentence, one email door with its own subject line. */
+export function CloseBand({
+  title,
+  body,
+  subject,
+}: {
+  title: string;
+  body: string;
+  subject: string;
+}) {
+  return (
+    <section className="bg-ink px-6 py-14 text-background md:px-10 md:py-20">
+      <div className="mx-auto grid max-w-[1400px] grid-cols-1 items-end gap-8 lg:grid-cols-[1.3fr_1fr]">
+        <h2 className="text-balance font-editorial text-[clamp(2.5rem,5.5vw,4.5rem)] uppercase leading-[0.92] tracking-tight">
+          {title}
+        </h2>
+        <div>
+          <p className="max-w-[48ch] text-[15px] leading-[1.65] text-background/85">{body}</p>
+          <a
+            href={mailto(subject)}
+            className="mt-6 inline-flex items-center gap-3 bg-background px-5 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-ink transition-colors hover:bg-silver-mist focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-background"
+          >
+            {MAIL} <span aria-hidden>→</span>
+          </a>
+        </div>
+      </div>
+    </section>
   );
 }
