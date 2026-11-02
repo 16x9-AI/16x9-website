@@ -15,7 +15,7 @@ import { MAIL, OUTCOMES, SAMPLE, STEPS, mailto } from "@/components/site/service
 
 const TITLE = "Services | 16x9";
 const DESCRIPTION =
-  "Forward-deployed engineers and operators move a company's back office onto agents. Start with a fixed-fee opportunity assessment, or partner for equity or a share of revenue.";
+  "Our engineers and operators put AI to work in your back office: paperwork, billing, scheduling, customer emails. Start with a two-week assessment, or partner with us for a share of what the company earns.";
 
 export const Route = createFileRoute("/services/")({
   head: () => ({
@@ -37,17 +37,17 @@ const MORE = [
   {
     to: "/services/functions" as const,
     label: "Functions",
-    text: "Every function we move onto agents, what a person keeps, and what already runs in our own companies.",
+    text: "Every task AI can take on, what a person still signs off, and what already runs in our own companies.",
   },
   {
     to: "/industries" as const,
     label: "Industries",
-    text: "Nine industries and the work that moves first in each.",
+    text: "Eighteen industries, each described in its own words.",
   },
   {
     to: "/partners" as const,
     label: "Partners",
-    text: "Know a trade? Build the company with us, for equity or a share of revenue.",
+    text: "Know an industry? Build a company with us and share in what it earns.",
   },
 ];
 
@@ -61,14 +61,16 @@ function ServicesPage() {
         <section className="px-6 pb-12 pt-10 md:px-10 md:pt-14">
           <div className="mx-auto max-w-[1400px]">
             <h1 className="max-w-[24ch] text-balance font-editorial text-[clamp(2.75rem,7vw,6rem)] uppercase leading-[0.9] tracking-[-0.01em] text-ink">
-              Agentic operations, deployed inside the company.
+              We put AI to work inside your company.
             </h1>
             <div className="mt-10 grid grid-cols-1 gap-10 border-t border-ink/80 pt-8 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14">
               <p className="max-w-[52ch] text-[17px] leading-[1.6] text-ink md:text-[18px]">
-                Software can now do much of the work behind each sale: answering requests, reviewing
-                documents, scheduling, billing, the monthly reports. Our engineers and operators
-                work inside your company and move that work onto agents, so each customer costs less
-                to serve and the team can take on more without hiring at the same pace.
+                A lot of the work behind every sale is routine: answering emails, filling in forms,
+                chasing paperwork, matching invoices, building the monthly report. AI can now do
+                most of it. Our engineers and operators work inside your company to set it up and
+                keep it running, so you can serve more customers without hiring at the same pace. By
+                AI we mean software that does a task from start to finish, not a chatbot you type
+                into.
               </p>
               <div className="hidden aspect-[3/1] w-full overflow-hidden border border-ink/80 text-ink sm:block">
                 <Motif kind="filmstrip" />
@@ -81,8 +83,8 @@ function ServicesPage() {
         <section className="px-6 pb-14 md:px-10">
           <div className="mx-auto max-w-[1400px]">
             <SectionHead folio="The model" title="Two sides, one company.">
-              You bring the trade, the customers and the distribution. We bring forward-deployed
-              engineers and operators, and Mycel, the orchestration system we built to run the work.
+              You know the business and its customers. We bring the engineers, the operators and the
+              system that runs the AI.
             </SectionHead>
             <Reveal className="mt-10 lg:ml-[240px]">
               <Splice />
@@ -103,9 +105,9 @@ function ServicesPage() {
         <section id="engagements" className="bg-obsidian px-6 py-12 text-snow md:px-10 md:py-16">
           <div className="mx-auto max-w-[1400px]">
             <SectionHead folio="Engagements" title="Five ways in." tone="dark">
-              Ordered by how much of the company we take on. Prices are set in scoping, after the
-              first conversation, and the scope names every person and firm on the work and what
-              each is paid before you sign.
+              From a two-week look at your operations to running the back office for you. Prices are
+              set after the first conversation. Before you sign, the agreement names every person on
+              the work and what each one is paid.
             </SectionHead>
             <Reveal className="mt-10">
               <EngagementPath detailed />
@@ -113,13 +115,13 @@ function ServicesPage() {
           </div>
         </section>
 
-        {/* What agents take on, in three levels */}
+        {/* What AI can take on, in three levels */}
         <section className="px-6 py-12 md:px-10 md:py-16">
           <div className="mx-auto max-w-[1400px]">
-            <SectionHead folio="Functions" title="What agents take on.">
-              Ranked by five tests: how much volume, how clear the rules, whether the inputs are
-              already digital, whether the answer can be checked against a source, and whether a
-              mistake can be caught before it does harm.
+            <SectionHead folio="Functions" title="What AI can take on.">
+              We rank every task with five plain questions. Does it happen many times a day? Does it
+              follow clear rules? Does it arrive as email, PDFs or spreadsheets? Can the answer be
+              checked? Can a mistake be caught before it hurts anyone?
             </SectionHead>
             <Reveal className="mt-10">
               <LevelSummary />
@@ -129,7 +131,7 @@ function ServicesPage() {
                 to="/services/functions"
                 className="underline underline-offset-4 hover:text-graphite"
               >
-                Every function, task by task
+                Every task, one by one
               </Link>{" "}
               <span aria-hidden>→</span>
             </p>
@@ -223,13 +225,13 @@ function ServicesPage() {
           <div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-14">
             <div className="border-t border-ink/80 pt-4">
               <h2 className="font-editorial text-[clamp(2rem,3.6vw,2.75rem)] uppercase leading-[0.95] tracking-tight text-ink">
-                People inside, agents underneath.
+                Our people inside, AI underneath.
               </h2>
               <p className="mt-4 max-w-[60ch] text-[15px] leading-[1.65] text-ink">
-                Forward-deployed engineers and operators from 16x9 work inside the company and
-                answer for the scope. Mycel runs the agents: every run traced, every promotion
-                signed off by a person. When a build needs more hands or a particular system,
-                implementation firms from our network join, and the scope names them.
+                Our engineers and operators work inside your company and answer for the work. Mycel,
+                the system we built, runs the AI and keeps a record of every step. A person approves
+                before anything new goes live. If a job needs more hands or a specific system,
+                partner firms join, and the agreement names them.
               </p>
             </div>
             <ul aria-label="Read next" className="border-b border-ink/80">
@@ -262,7 +264,7 @@ function ServicesPage() {
             <div>
               <p className="max-w-[48ch] text-[15px] leading-[1.65] text-background/85">
                 Tell us about the company and the work your team spends the most hours on. The first
-                conversation covers where agents would take the most off each contract.
+                conversation covers where AI would save your team the most time.
               </p>
               <a
                 href={mailto("An opportunity assessment")}

@@ -2,12 +2,12 @@ import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { StatusDot } from "@/components/site/Board";
+import { INDUSTRY_PACKS } from "@/components/site/industries-data";
 import {
   BILLING,
   ENGAGEMENTS,
   FUNCTIONS,
   FUNCTION_GROUPS,
-  INDUSTRY_PACKS,
   LEVELS,
   MAIL,
   PEOPLE_LEAD,
@@ -90,8 +90,8 @@ export function Splice() {
       </div>
       <SpliceSide title="16x9" items={WE_BRING} />
       <p className="border-t border-ink/80 px-5 py-3 text-[14px] leading-[1.55] text-ink sm:col-span-3 md:px-6">
-        Most of the work moves onto agents. People keep the decisions. We share in what the company
-        earns.
+        AI does most of the routine work. Your people keep the decisions. We share in what the
+        company earns.
       </p>
     </div>
   );
@@ -177,8 +177,8 @@ export function IndustryIndex() {
           className={`${odd && i === INDUSTRY_PACKS.length - 1 ? "lg:col-span-2" : ""} border-t border-ink/30`}
         >
           <Link
-            to="/industries"
-            hash={ind.key}
+            to="/industries/$slug"
+            params={{ slug: ind.key }}
             className="group grid grid-cols-1 gap-1 px-1 py-4 transition-colors hover:bg-ink hover:text-background focus-visible:bg-ink focus-visible:text-background focus-visible:outline-none sm:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] sm:items-baseline sm:gap-6"
           >
             <span className="font-editorial text-[24px] uppercase leading-[1] tracking-tight md:text-[28px]">
@@ -360,7 +360,7 @@ export function FunctionLedger() {
                     ))}
                   </ul>
                   <p className="text-[13.5px] leading-[1.55] text-graphite">
-                    <span className={`${mono} mb-1 block text-[10.5px]`}>A person keeps</span>
+                    <span className={`${mono} mb-1 block text-[10.5px]`}>A person still</span>
                     {g.keeps}
                   </p>
                   <div className="text-[13px] leading-[1.5] text-graphite md:col-start-2 lg:col-start-auto">

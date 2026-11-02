@@ -13,7 +13,7 @@ import { LEVELS, PEOPLE_LEAD } from "@/components/site/services-data";
 
 const TITLE = "Functions | 16x9";
 const DESCRIPTION =
-  "The business functions agents take on: payables, receivables, close, intake, service desk, scheduling, reporting, research, sales development, marketing, recruiting, compliance, procurement, legal drafting and IT. What a person keeps, and what already runs.";
+  "The work AI can take on: paying bills, billing, bookkeeping, paperwork, customer emails, scheduling, reports, research, sales follow-up, marketing, hiring, compliance, buying, contracts and IT. What a person still signs off, and what already runs.";
 
 export const Route = createFileRoute("/services/functions")({
   head: () => ({
@@ -49,11 +49,11 @@ function FunctionsPage() {
       <ServicesNav />
       <main>
         <PageFront
-          title="The work agents take on."
+          title="The work AI can take on."
           lede={
             <p>
               Most companies run on the same back office: invoices, inboxes, documents, schedules,
-              reports and follow-up. Here is each function we move onto agents, the tasks inside it,
+              reports and follow-up. Here is each kind of work AI can take on, the tasks inside it,
               and what a person keeps. Where it already runs in one of our own companies, we say so.
               Work you already outsource moves first: the budget line exists and you already buy an
               outcome.
@@ -113,7 +113,7 @@ function FunctionsPage() {
 
         <CloseBand
           title="Pick the function that costs you most."
-          body="Tell us which of these your team spends the most hours on. The assessment measures it as it runs today, then ranks what moving it onto agents does for margin."
+          body="Tell us which of these your team spends the most hours on. The assessment measures it as it runs today, then shows what handing it to AI would save."
           subject="An opportunity assessment"
         />
       </main>

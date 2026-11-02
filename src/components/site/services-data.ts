@@ -16,14 +16,14 @@ export function mailto(subject: string) {
 
 /** The partnership, both sides. The hero sets these against each other. */
 export const THEY_BRING = [
-  "The trade, learned over years",
-  "Customers and relationships",
-  "Distribution, and a reason to be trusted",
+  "Years of knowing how the business works",
+  "The customers, and their trust",
+  "A way to reach more of them",
 ];
 export const WE_BRING = [
-  "Forward-deployed engineers and operators",
-  "Mycel, the orchestration system that runs the work",
-  "Systems already running in our own companies",
+  "Engineers and operators who work inside the company",
+  "Mycel, the system we built to run AI at work",
+  "Tools already running in our own companies",
 ];
 
 export type Engagement = {
@@ -42,36 +42,37 @@ export const ENGAGEMENTS: Engagement[] = [
     key: "assess",
     name: "Opportunity assessment",
     form: "Fixed fee · about two weeks",
-    body: "We measure each process as it runs today: hours, cost, volume, errors. Then we rank the changes by what each does for margin and price the first build.",
-    keeps: "The baseline and the ranked plan, whether or not you go on.",
+    body: "We sit with your team and measure where the hours go: how long each task takes, what it costs, how often it goes wrong. Then we list what AI can take on, biggest saving first, and price the first piece.",
+    keeps: "The measurements and the plan, whether or not you go on.",
   },
   {
     key: "build",
     name: "Fixed-scope build",
     form: "Fixed price · six to eight weeks",
-    body: "The first one to three automations go into the live work. You see each one running on real work every week. Midway you continue, change the scope, or stop.",
-    keeps: "The automations, the measured result, and the runbooks.",
+    body: "We set up AI on the first one to three tasks, inside your real daily work. You watch it run every week. Halfway through you decide: keep going, change course, or stop.",
+    keeps:
+      "The working setup, a before-and-after measurement, and written instructions for your team.",
   },
   {
     key: "team",
-    name: "Forward-deployed team",
+    name: "Our team inside yours",
     form: "Monthly retainer",
-    body: "Engineers and operators work inside your company and move the next processes onto agents, one function at a time, behind gates your people set.",
-    keeps: "Everything we build. Nothing is licensed back to you.",
+    body: "Our engineers and operators work inside your company and move one task after another onto AI. Your people decide what needs their sign-off.",
+    keeps: "Everything we build. You do not rent it back from us.",
   },
   {
     key: "operate",
-    name: "Back office, operated",
+    name: "We run the back office",
     form: "Profit share · terms set per company",
-    body: "We take on the back office and run it on agents, with our operators on the exceptions. We are paid from the profit the change adds, measured against a baseline we agree first.",
+    body: "We take over the back office and run it with AI, with our own people handling anything unusual. We agree today's numbers first, and we are paid from the extra profit after that.",
     keeps: "A leaner company and a monthly profit report.",
   },
   {
     key: "partner",
     name: "Joint venture",
     form: "Equity or revenue share",
-    body: "You bring the trade, the relationships and the distribution. We build the company around you and run the machine. New companies and existing ones.",
-    keeps: "A share of a company built to run lean from the start.",
+    body: "You bring the know-how, the customers and a way to reach more of them. We build and run everything behind the scenes. For new companies and existing ones.",
+    keeps: "A share of a company that needs far fewer people to run.",
   },
 ];
 
@@ -83,7 +84,7 @@ export const FUNCTIONS: Fn[] = [
     key: "requests",
     name: "Requests and service desks",
     phrase: "sorting and answering requests",
-    body: "Sorting, routing and answering what comes in, as tickets, emails, claims or calls. Agents draft; a person decides what needs deciding.",
+    body: "Sorting and answering what comes in by email, phone, ticket or form. AI drafts the answer; a person decides anything that needs deciding.",
   },
   {
     key: "documents",
@@ -117,7 +118,7 @@ export const FUNCTIONS: Fn[] = [
   },
   {
     key: "people",
-    name: "Recruiting and onboarding",
+    name: "Hiring and onboarding",
     phrase: "hiring and onboarding",
     body: "Screening applicants against the role, scheduling interviews, and running onboarding from the signed offer.",
   },
@@ -153,34 +154,34 @@ export const BILLING: Billing[] = [
 export const OUTCOMES = [
   {
     h: "Margin on fixed-price work",
-    body: "When a contract bills per month, per seat or per project, the hours agents take off the work stay with you.",
+    body: "If you charge a fixed price per month or per project, every hour AI saves is money you keep.",
   },
   {
     h: "Growth without the same hiring",
     body: "The same team serves more customers, so the next contract no longer waits on the next hire.",
   },
   {
-    h: "Bidding against roll-ups",
-    body: "Roll-ups rebuild companies like yours around software and bid on the lower cost. With the work automated, you bid where they bid.",
+    h: "Competing with bigger players",
+    body: "Investor-backed groups are buying companies like yours, cutting costs with software and underbidding you. With the same tools, you can bid where they bid.",
   },
   {
     h: "Room to borrow",
-    body: "Lenders lend against cash flow. When the same contracts cost less to deliver, more of it is left to carry a loan.",
+    body: "Banks lend against cash flow. When the same work costs less to deliver, there is more cash to support a loan.",
   },
   {
     h: "A sale, on your timing",
-    body: "Buyers pay for lower costs once they show in a full year of earnings. When a sale, a raise or a loan is the goal, a partner desk runs that work, and the scope says so.",
+    body: "Buyers pay more once lower costs show up in a full year of results. If selling, raising money or borrowing is the goal, a partner firm handles that side, and we say so up front.",
   },
 ];
 
 export const STEPS = [
   {
     when: "Weeks 1–2",
-    body: "The opportunity assessment. Every process measured as it runs, the changes ranked, the first build priced.",
+    body: "The assessment. We measure how the work runs today, list what AI can take on, and price the first piece.",
   },
   {
     when: "Weeks 3–10",
-    body: "The first one to three automations built into the live work. You see each one on real work every week.",
+    body: "AI set up on the first one to three tasks, inside your real work. You see it run every week.",
   },
   {
     when: "Midway",
@@ -188,11 +189,11 @@ export const STEPS = [
   },
   {
     when: "End of build",
-    body: "The result measured against the baseline. Your team gets the runbooks.",
+    body: "We measure again and compare with where you started. Your team gets written instructions.",
   },
   {
     when: "After",
-    body: "The next functions move onto agents with a forward-deployed team, or we take the back office on for a share of the profit it adds.",
+    body: "Our team moves more tasks onto AI, or we take over the back office for a share of the extra profit.",
   },
 ];
 
@@ -209,7 +210,7 @@ export const SAMPLE = {
   ],
   build: [
     "Quotes drafted from each RFQ email against past jobs and current material prices, with an estimator approving every one.",
-    "Purchase orders, receipts and supplier invoices matched by an agent, with the clerk working only the exceptions.",
+    "Purchase orders, delivery receipts and supplier invoices matched by AI, with the clerk handling only the ones that do not match.",
     "Order confirmations and ship-date updates sent to customers as the work moves through the floor.",
   ],
   result:
@@ -232,18 +233,18 @@ export type LevelKey = "run" | "approve" | "assist";
 export const LEVELS: { key: LevelKey; name: string; line: string }[] = [
   {
     key: "run",
-    name: "Agents run it",
-    line: "High volume, clear rules, an answer that can be checked against a source. People work the exceptions.",
+    name: "AI does it, your people check",
+    line: "Work that repeats all day, follows clear rules, and can be checked against a source. AI does it. Your people handle anything unusual.",
   },
   {
     key: "approve",
-    name: "Agents draft, a person approves",
-    line: "Agents do the work end to end and stop at a gate. Nothing goes out until a person signs off.",
+    name: "AI does it, a person signs off",
+    line: "AI does the whole job and stops before anything goes out. A person reads it and signs off.",
   },
   {
     key: "assist",
-    name: "People lead, agents assist",
-    line: "Judgment, trust and accountability stay with people. Agents prepare the ground.",
+    name: "Your people lead, AI helps",
+    line: "Decisions that need judgment, trust or accountability stay with people. AI gets the information ready.",
   },
 ];
 
@@ -261,19 +262,24 @@ export const FUNCTION_GROUPS: FunctionGroup[] = [
   {
     key: "payables",
     level: "run",
-    name: "Accounts payable",
-    tasks: ["Invoice capture", "Three-way match", "Vendor onboarding", "Payment runs prepared"],
+    name: "Paying bills (accounts payable)",
+    tasks: [
+      "Bills read as they arrive",
+      "Each bill matched to its purchase order and delivery",
+      "Vendor onboarding",
+      "Payments lined up for approval",
+    ],
     keeps: "Approving payments and settling vendor disputes.",
   },
   {
     key: "receivables",
     level: "run",
-    name: "Receivables and billing",
+    name: "Billing and collecting (receivables)",
     tasks: [
       "Invoices built from hours or usage",
       "Payment reminders",
       "Collections follow-up",
-      "Cash applied to invoices",
+      "Payments matched to the right invoice",
       "Claims coded and submitted to payers",
     ],
     keeps: "Write-offs and customer escalations.",
@@ -283,12 +289,12 @@ export const FUNCTION_GROUPS: FunctionGroup[] = [
   {
     key: "close",
     level: "run",
-    name: "Bookkeeping and close",
+    name: "Bookkeeping and month-end close",
     tasks: [
-      "Transactions categorised",
+      "Every transaction put in the right account",
       "Bank and card reconciliations",
       "Month-end checklist",
-      "Accruals drafted",
+      "Month-end adjusting entries drafted",
     ],
     keeps: "Signing off the close.",
     status: "Building",
@@ -297,7 +303,7 @@ export const FUNCTION_GROUPS: FunctionGroup[] = [
   {
     key: "intake",
     level: "run",
-    name: "Document intake and data entry",
+    name: "Paperwork and data entry",
     tasks: [
       "Documents classified and read",
       "Fields keyed into the ERP, CRM or loan system",
@@ -305,12 +311,13 @@ export const FUNCTION_GROUPS: FunctionGroup[] = [
     ],
     keeps: "Anything the agent is not sure of.",
     status: "Running",
-    proof: "New leads become applications in the property system. Document agents in pilot.",
+    proof:
+      "New leads become applications in the property system. AI that reads and files documents is in pilot.",
   },
   {
     key: "desk",
     level: "run",
-    name: "Inbox and service desk",
+    name: "Inbox and customer questions",
     tasks: [
       "Requests sorted and routed",
       "Replies drafted",
@@ -331,20 +338,24 @@ export const FUNCTION_GROUPS: FunctionGroup[] = [
     ],
     keeps: "Conflicts and priorities.",
     status: "Building",
-    proof: "Cleaner assignment and operations, first in a back office moving onto agents.",
+    proof: "Assigning cleaners to jobs, the first part of a back office moving onto AI.",
   },
   {
     key: "reporting",
     level: "run",
-    name: "Recurring reporting",
-    tasks: ["Weekly and monthly packs", "KPI commentary", "Client reports"],
+    name: "Weekly and monthly reports",
+    tasks: ["Weekly and monthly packs", "A plain summary of what moved and why", "Client reports"],
     keeps: "What the numbers mean for a decision.",
   },
   {
     key: "research",
     level: "run",
-    name: "Research and monitoring",
-    tasks: ["Market, regulatory and competitor watch", "Records enriched", "Daily briefs"],
+    name: "Research and keeping watch",
+    tasks: [
+      "Market, regulatory and competitor watch",
+      "Contact and company records filled in",
+      "Daily briefs",
+    ],
     keeps: "Choosing what to act on.",
     status: "Running",
     proof: "Filings and news read daily, scored, and published as a morning report.",
@@ -352,12 +363,12 @@ export const FUNCTION_GROUPS: FunctionGroup[] = [
   {
     key: "sales",
     level: "approve",
-    name: "Sales development",
+    name: "Finding and following up with customers",
     tasks: [
-      "Prospects researched and scored",
+      "Likely customers found and ranked",
       "Outreach drafted per account",
       "Inbound answered in minutes",
-      "CRM kept clean",
+      "Customer records kept up to date",
       "Renewals flagged",
     ],
     keeps: "Every send passes an approval queue. People run the closing conversation.",
@@ -367,10 +378,10 @@ export const FUNCTION_GROUPS: FunctionGroup[] = [
   {
     key: "marketing",
     level: "approve",
-    name: "Marketing operations",
+    name: "Marketing",
     tasks: [
-      "Content drafted against a source registry",
-      "Location and search pages",
+      "Articles drafted, every claim backed by a source",
+      "Pages that help people find you on Google",
       "Campaign reports",
       "Social posts scheduled",
     ],
@@ -393,9 +404,9 @@ export const FUNCTION_GROUPS: FunctionGroup[] = [
   {
     key: "compliance",
     level: "approve",
-    name: "Compliance and risk",
+    name: "Compliance paperwork",
     tasks: [
-      "Control evidence collected on a schedule",
+      "Audit evidence collected on a schedule",
       "Policies checked",
       "Identity and documents verified",
       "Licences and renewals tracked",
@@ -406,9 +417,9 @@ export const FUNCTION_GROUPS: FunctionGroup[] = [
   {
     key: "procurement",
     level: "approve",
-    name: "Procurement",
+    name: "Buying from suppliers",
     tasks: [
-      "Requests for quote handled",
+      "Quote requests sent to suppliers",
       "Quotes compared",
       "Purchase orders raised",
       "Invoices checked against negotiated terms to recover overpayments",
@@ -420,10 +431,10 @@ export const FUNCTION_GROUPS: FunctionGroup[] = [
   {
     key: "legal",
     level: "approve",
-    name: "Legal drafting and filings",
+    name: "Contracts and filings",
     tasks: [
       "NDAs and standard contracts drafted",
-      "Contracts read against a playbook",
+      "Contracts checked against your standard terms",
       "Regulatory filings prepared",
       "Obligations and renewal dates tracked",
     ],
@@ -432,19 +443,19 @@ export const FUNCTION_GROUPS: FunctionGroup[] = [
   {
     key: "engineering",
     level: "approve",
-    name: "IT operations and software delivery",
+    name: "IT support and software",
     tasks: [
-      "Patching and monitoring",
+      "Updates installed and systems watched",
       "User accounts provisioned and removed",
       "Access requests",
-      "First review of alerts",
-      "Patch tickets",
-      "Tickets taken to a verified pull request",
+      "Security alerts reviewed first",
+      "Update tickets closed",
+      "Software changes built, tested and sent for review",
     ],
     keeps: "Code review and incident command.",
     status: "Running",
     proof:
-      "Agents take a ticket, implement it, verify against the live system, close with evidence.",
+      "A request comes in, the change is built and tested against the live system, and a person reviews it.",
   },
 ];
 
@@ -456,132 +467,4 @@ export const PEOPLE_LEAD = [
   "Hiring and letting people go",
   "Clinical and legal judgment",
   "Crisis response",
-];
-
-export type IndustryPack = {
-  key: string;
-  name: string;
-  /** One line for the index rows. */
-  start: string;
-  tasks: string[];
-  /** Function groups that usually come first, by key. */
-  first: string[];
-  note?: string;
-};
-
-// Manny's primer, 2026-11-01. Not a closed list: the test is the last row.
-export const INDUSTRY_PACKS: IndustryPack[] = [
-  {
-    key: "manufacturing",
-    name: "Manufacturing",
-    start: "Quotes drafted from RFQ emails, orders keyed into the ERP, supplier invoices matched.",
-    tasks: [
-      "Quotes drafted from each RFQ against past jobs",
-      "Orders keyed into the ERP",
-      "Supplier invoices matched to POs and receipts",
-      "Ship-date updates sent as work moves",
-    ],
-    first: ["procurement", "intake", "payables"],
-  },
-  {
-    key: "medical",
-    name: "Medical practices",
-    start: "Intake, prior authorization, medical coding and claims follow-up.",
-    tasks: [
-      "Patient intake forms read and filed",
-      "Insurance eligibility checked before the visit",
-      "Prior-authorization packets assembled",
-      "Clinical notes coded, claims submitted and followed up",
-      "Reminders and rescheduling",
-    ],
-    first: ["intake", "receivables", "dispatch"],
-    note: "Patient data stays inside the practice's own systems.",
-  },
-  {
-    key: "accounting",
-    name: "Accounting firms",
-    start: "Client document collection, bookkeeping prep, month-end checklists.",
-    tasks: [
-      "Client documents requested and chased",
-      "Bookkeeping prepared for review",
-      "Tax organizers filled from source documents",
-      "Multi-state filings prepared for review",
-      "Close checklists run",
-    ],
-    first: ["intake", "close", "compliance"],
-  },
-  {
-    key: "engineering",
-    name: "Engineering firms",
-    start: "Proposal assembly, submittal and RFI tracking, project reporting.",
-    tasks: [
-      "Proposals assembled from past work",
-      "Submittals and RFIs logged and chased",
-      "Project status reports",
-    ],
-    first: ["reporting", "intake", "desk"],
-  },
-  {
-    key: "insurance",
-    name: "Insurance carriers and brokers",
-    start: "Submission intake, quote comparison, renewals, standard claims.",
-    tasks: [
-      "Submissions read and keyed",
-      "Carrier quotes compared side by side",
-      "Certificates of insurance issued on request",
-      "Renewals prepared ahead of the date",
-      "First notice of loss taken in",
-      "Standard claims checked against the policy, reserve drafted, an adjuster approving",
-    ],
-    first: ["intake", "desk", "sales"],
-  },
-  {
-    key: "mortgage",
-    name: "Mortgage lending",
-    start: "Document collection, conditions tracking, borrower updates.",
-    tasks: [
-      "Borrower documents collected and checked",
-      "Conditions tracked to clear",
-      "Employment and income verifications requested",
-      "Borrowers updated at every stage",
-    ],
-    first: ["intake", "compliance", "desk"],
-  },
-  {
-    key: "realestate",
-    name: "Real estate brokerage",
-    start: "Lead follow-up, transaction coordination, compliance file review.",
-    tasks: [
-      "Leads answered and followed up",
-      "Transactions coordinated to closing",
-      "Compliance files reviewed before audit",
-      "Tenant applications into the property system",
-    ],
-    first: ["sales", "intake", "compliance"],
-  },
-  {
-    key: "msp",
-    name: "Managed IT and security",
-    start: "Ticket triage, first review of alerts, compliance evidence on a schedule.",
-    tasks: [
-      "Tickets sorted and routed",
-      "Patching, monitoring and user provisioning across client environments",
-      "First review of alerts, analyst deciding",
-      "SOC 2 and ISO evidence pulled on a schedule",
-      "New customers onboarded from the signed contract",
-    ],
-    first: ["desk", "engineering", "compliance"],
-  },
-  {
-    key: "outsourced",
-    name: "Anyone with an outsourced back office",
-    start:
-      "Work you already outsource moves first: the budget line exists and you already buy an outcome.",
-    tasks: [
-      "The checklist work a BPO, MSP or outside firm does today",
-      "Measured against the current contract, then moved onto agents",
-      "The same outcome you buy now, delivered by agents with our operators on the exceptions",
-    ],
-    first: ["payables", "receivables", "desk"],
-  },
 ];

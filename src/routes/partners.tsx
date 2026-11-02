@@ -8,7 +8,7 @@ import { mailto } from "@/components/site/services-data";
 
 const TITLE = "Partners | 16x9";
 const DESCRIPTION =
-  "16x9 partners with operators who know a trade. You bring the customers, relationships and distribution. We build and run the company on agents, for equity or a share of revenue.";
+  "16x9 partners with people who know an industry. You bring the customers and the know-how. We build and run the business with AI, and we share in what it earns.";
 
 export const Route = createFileRoute("/partners")({
   head: () => ({
@@ -34,41 +34,41 @@ const STAGES = [
   },
   {
     h: "The measure",
-    body: "We measure how the work runs today, or would run, and rank what agents can take on by what it does for margin.",
+    body: "We measure how the work runs today, or would run, and list what AI can take on, biggest saving first.",
   },
   {
     h: "The build",
-    body: "Forward-deployed engineers and operators build the company's operations on Mycel. You lead growth, product and sales.",
+    body: "Our engineers and operators build and run the company's operations with AI. You lead sales, customers and growth.",
   },
   {
     h: "The structure",
-    body: "Equity, a share of revenue, or another joint-venture form, agreed in writing before the build starts.",
+    body: "Shares in the company, a cut of revenue, or another partnership deal, agreed in writing before work starts.",
   },
   {
     h: "What comes next",
-    body: "A lean company has options: add-on acquisitions, a raise, or a sale at a better multiple. A partner desk runs that work when it is time.",
+    body: "A company that runs on fewer people has options: buy competitors, raise money, or sell for a better price. A partner firm handles that when the time comes.",
   },
 ];
 
 const DOORS = [
   {
     label: "Operators and founders",
-    text: "You know a trade and its customers. You want to start or lead a company that runs on agents.",
+    text: "You know an industry and its customers. You want to start or run a company where AI does the routine work.",
     subject: "Operator partnership",
   },
   {
     label: "Owners",
-    text: "You run an established company and would rather partner than buy services. We can take a share of what the change adds.",
+    text: "You run an established company and would rather partner than hire a vendor. We can be paid from the extra profit instead of a fee.",
     subject: "Owner partnership",
   },
   {
     label: "Holding companies and investors",
-    text: "You own several companies and want one operating layer under all of them.",
+    text: "You own several companies and want the same AI back office running all of them.",
     subject: "Portfolio operations",
   },
   {
     label: "Brokers and advisers",
-    text: "You see the companies first. Bring us the ones that should run leaner before they sell, and we agree terms at the introduction.",
+    text: "You see the companies first. Bring us the ones that would sell for more with lower costs. We agree your referral terms up front.",
     subject: "Broker introduction",
   },
 ];
@@ -83,9 +83,9 @@ function PartnersPage() {
           title="Know a trade? Build the company with us."
           lede={
             <p>
-              The people who know an industry are rarely the people who can rebuild its operations
-              on agents. We pair the two. You keep the customer and the relationship. We build the
-              machine, run it, and share in what the company earns.
+              People who know an industry rarely have the time or the engineers to rebuild how it
+              runs with AI. We do that part. You keep the customers and the relationships. We build
+              and run everything behind the scenes, and we share in what the company earns.
             </p>
           }
           aside={
