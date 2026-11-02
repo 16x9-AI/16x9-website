@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
-import { motion } from "framer-motion";
+import { useEntrance } from "@/components/site/Reveal";
 import { StatusDot } from "@/components/site/Board";
 import { INDUSTRY_PACKS } from "@/components/site/industries-data";
 import {
@@ -69,6 +69,8 @@ export function SectionHead({
  * the hairline draws down as the plate enters, then holds.
  */
 export function Splice() {
+  // The hairline draws once as the panel enters; visible from the first paint if already on screen.
+  const line = useEntrance<HTMLSpanElement>("-60px");
   return (
     <div className="grid grid-cols-1 border border-ink/80 sm:grid-cols-[1fr_auto_1fr]">
       <SpliceSide title="The operator" items={THEY_BRING} />
@@ -76,13 +78,16 @@ export function Splice() {
         aria-hidden
         className="relative flex items-center justify-center border-y border-ink/80 py-4 sm:border-x sm:border-y-0 sm:px-8 sm:py-0"
       >
-        <motion.span
+        <span
+          ref={line.ref}
           className="absolute inset-x-0 top-1/2 h-px origin-left bg-ink sm:inset-x-auto sm:inset-y-0 sm:left-1/2 sm:top-0 sm:h-auto sm:w-px sm:origin-top"
-          initial={{ scale: 0 }}
-          whileInView={{ scale: 1 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
-          style={{ originX: 0, originY: 0 }}
+          style={{
+            transform: line.state === "waiting" ? "scale(0)" : undefined,
+            transition:
+              line.state === "shown"
+                ? "transform 900ms cubic-bezier(0.16, 1, 0.3, 1) 150ms"
+                : undefined,
+          }}
         />
         <span className="relative bg-background px-2 font-editorial text-[64px] leading-none text-ink sm:px-0 sm:py-2 md:text-[88px]">
           ×

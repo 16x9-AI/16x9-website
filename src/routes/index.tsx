@@ -4,7 +4,7 @@ import { Nav } from "@/components/site/Nav";
 import { Footer } from "@/components/site/Footer";
 import { Reveal } from "@/components/site/Reveal";
 import { Marquee } from "@/components/site/Marquee";
-import { MycelBrain } from "@/components/site/MycelBrain";
+import { DeferredMycelBrain } from "@/components/site/DeferredMycelBrain";
 import { Contact } from "@/components/site/Contact";
 import { Motif } from "@/components/site/Motif";
 import { CountUp } from "@/components/site/CountUp";
@@ -437,7 +437,7 @@ function Index() {
                 </figure>
                 <div className="mt-6 hidden aspect-video w-full overflow-hidden border border-ink/80 bg-obsidian sm:block lg:aspect-auto lg:h-[420px]">
                   <div className="h-full w-full invert">
-                    <MycelBrain />
+                    <DeferredMycelBrain />
                   </div>
                 </div>
               </Reveal>
