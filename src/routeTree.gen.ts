@@ -10,19 +10,35 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as PartnersRouteImport } from './routes/partners'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ScorecardRouteImport } from './routes/scorecard'
+import { Route as TeamRouteImport } from './routes/team'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as ArticlesIndexRouteImport } from './routes/articles.index'
+import { Route as ArticlesSlugRouteImport } from './routes/articles.$slug'
 import { Route as IndustriesIndexRouteImport } from './routes/industries.index'
 import { Route as IndustriesSlugRouteImport } from './routes/industries.$slug'
 import { Route as ServicesIndexRouteImport } from './routes/services.index'
 import { Route as ServicesFunctionsRouteImport } from './routes/services.functions'
 import { Route as WorkSlugRouteImport } from './routes/work.$slug'
+import { Route as ApiAuthLogoutRouteImport } from './routes/api/auth/logout'
+import { Route as ApiAuthSessionRouteImport } from './routes/api/auth/session'
+import { Route as ApiCronPagePostVisualsRouteImport } from './routes/api/cron/page-post-visuals'
+import { Route as ApiAuthOtpStartRouteImport } from './routes/api/auth/otp/start'
+import { Route as ApiAuthOtpVerifyRouteImport } from './routes/api/auth/otp/verify'
+import { Route as ApiTeamLinkedinDecideRouteImport } from './routes/api/team/linkedin/decide'
+import { Route as ApiTeamLinkedinVisualRouteImport } from './routes/api/team/linkedin/visual'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PartnersRoute = PartnersRouteImport.update({
@@ -40,9 +56,24 @@ const ScorecardRoute = ScorecardRouteImport.update({
   path: '/scorecard',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TeamRoute = TeamRouteImport.update({
+  id: '/team',
+  path: '/team',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArticlesIndexRoute = ArticlesIndexRouteImport.update({
+  id: '/articles/',
+  path: '/articles/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArticlesSlugRoute = ArticlesSlugRouteImport.update({
+  id: '/articles/$slug',
+  path: '/articles/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndustriesIndexRoute = IndustriesIndexRouteImport.update({
@@ -70,94 +101,206 @@ const WorkSlugRoute = WorkSlugRouteImport.update({
   path: '/work/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAuthLogoutRoute = ApiAuthLogoutRouteImport.update({
+  id: '/api/auth/logout',
+  path: '/api/auth/logout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthSessionRoute = ApiAuthSessionRouteImport.update({
+  id: '/api/auth/session',
+  path: '/api/auth/session',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCronPagePostVisualsRoute = ApiCronPagePostVisualsRouteImport.update({
+  id: '/api/cron/page-post-visuals',
+  path: '/api/cron/page-post-visuals',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthOtpStartRoute = ApiAuthOtpStartRouteImport.update({
+  id: '/api/auth/otp/start',
+  path: '/api/auth/otp/start',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthOtpVerifyRoute = ApiAuthOtpVerifyRouteImport.update({
+  id: '/api/auth/otp/verify',
+  path: '/api/auth/otp/verify',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiTeamLinkedinDecideRoute = ApiTeamLinkedinDecideRouteImport.update({
+  id: '/api/team/linkedin/decide',
+  path: '/api/team/linkedin/decide',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiTeamLinkedinVisualRoute = ApiTeamLinkedinVisualRouteImport.update({
+  id: '/api/team/linkedin/visual',
+  path: '/api/team/linkedin/visual',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
   '/partners': typeof PartnersRoute
   '/privacy': typeof PrivacyRoute
   '/scorecard': typeof ScorecardRoute
+  '/team': typeof TeamRoute
   '/terms': typeof TermsRoute
+  '/articles/$slug': typeof ArticlesSlugRoute
   '/industries/$slug': typeof IndustriesSlugRoute
   '/services/functions': typeof ServicesFunctionsRoute
   '/work/$slug': typeof WorkSlugRoute
+  '/articles/': typeof ArticlesIndexRoute
   '/industries/': typeof IndustriesIndexRoute
   '/services/': typeof ServicesIndexRoute
+  '/api/auth/logout': typeof ApiAuthLogoutRoute
+  '/api/auth/session': typeof ApiAuthSessionRoute
+  '/api/cron/page-post-visuals': typeof ApiCronPagePostVisualsRoute
+  '/api/auth/otp/start': typeof ApiAuthOtpStartRoute
+  '/api/auth/otp/verify': typeof ApiAuthOtpVerifyRoute
+  '/api/team/linkedin/decide': typeof ApiTeamLinkedinDecideRoute
+  '/api/team/linkedin/visual': typeof ApiTeamLinkedinVisualRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
   '/partners': typeof PartnersRoute
   '/privacy': typeof PrivacyRoute
   '/scorecard': typeof ScorecardRoute
+  '/team': typeof TeamRoute
   '/terms': typeof TermsRoute
+  '/articles/$slug': typeof ArticlesSlugRoute
   '/industries/$slug': typeof IndustriesSlugRoute
   '/services/functions': typeof ServicesFunctionsRoute
   '/work/$slug': typeof WorkSlugRoute
+  '/articles': typeof ArticlesIndexRoute
   '/industries': typeof IndustriesIndexRoute
   '/services': typeof ServicesIndexRoute
+  '/api/auth/logout': typeof ApiAuthLogoutRoute
+  '/api/auth/session': typeof ApiAuthSessionRoute
+  '/api/cron/page-post-visuals': typeof ApiCronPagePostVisualsRoute
+  '/api/auth/otp/start': typeof ApiAuthOtpStartRoute
+  '/api/auth/otp/verify': typeof ApiAuthOtpVerifyRoute
+  '/api/team/linkedin/decide': typeof ApiTeamLinkedinDecideRoute
+  '/api/team/linkedin/visual': typeof ApiTeamLinkedinVisualRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
   '/partners': typeof PartnersRoute
   '/privacy': typeof PrivacyRoute
   '/scorecard': typeof ScorecardRoute
+  '/team': typeof TeamRoute
   '/terms': typeof TermsRoute
+  '/articles/$slug': typeof ArticlesSlugRoute
   '/industries/$slug': typeof IndustriesSlugRoute
   '/services/functions': typeof ServicesFunctionsRoute
   '/work/$slug': typeof WorkSlugRoute
+  '/articles/': typeof ArticlesIndexRoute
   '/industries/': typeof IndustriesIndexRoute
   '/services/': typeof ServicesIndexRoute
+  '/api/auth/logout': typeof ApiAuthLogoutRoute
+  '/api/auth/session': typeof ApiAuthSessionRoute
+  '/api/cron/page-post-visuals': typeof ApiCronPagePostVisualsRoute
+  '/api/auth/otp/start': typeof ApiAuthOtpStartRoute
+  '/api/auth/otp/verify': typeof ApiAuthOtpVerifyRoute
+  '/api/team/linkedin/decide': typeof ApiTeamLinkedinDecideRoute
+  '/api/team/linkedin/visual': typeof ApiTeamLinkedinVisualRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/login'
     | '/partners'
     | '/privacy'
     | '/scorecard'
+    | '/team'
     | '/terms'
+    | '/articles/$slug'
     | '/industries/$slug'
     | '/services/functions'
     | '/work/$slug'
+    | '/articles/'
     | '/industries/'
     | '/services/'
+    | '/api/auth/logout'
+    | '/api/auth/session'
+    | '/api/cron/page-post-visuals'
+    | '/api/auth/otp/start'
+    | '/api/auth/otp/verify'
+    | '/api/team/linkedin/decide'
+    | '/api/team/linkedin/visual'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/login'
     | '/partners'
     | '/privacy'
     | '/scorecard'
+    | '/team'
     | '/terms'
+    | '/articles/$slug'
     | '/industries/$slug'
     | '/services/functions'
     | '/work/$slug'
+    | '/articles'
     | '/industries'
     | '/services'
+    | '/api/auth/logout'
+    | '/api/auth/session'
+    | '/api/cron/page-post-visuals'
+    | '/api/auth/otp/start'
+    | '/api/auth/otp/verify'
+    | '/api/team/linkedin/decide'
+    | '/api/team/linkedin/visual'
   id:
     | '__root__'
     | '/'
+    | '/login'
     | '/partners'
     | '/privacy'
     | '/scorecard'
+    | '/team'
     | '/terms'
+    | '/articles/$slug'
     | '/industries/$slug'
     | '/services/functions'
     | '/work/$slug'
+    | '/articles/'
     | '/industries/'
     | '/services/'
+    | '/api/auth/logout'
+    | '/api/auth/session'
+    | '/api/cron/page-post-visuals'
+    | '/api/auth/otp/start'
+    | '/api/auth/otp/verify'
+    | '/api/team/linkedin/decide'
+    | '/api/team/linkedin/visual'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  LoginRoute: typeof LoginRoute
   PartnersRoute: typeof PartnersRoute
   PrivacyRoute: typeof PrivacyRoute
   ScorecardRoute: typeof ScorecardRoute
+  TeamRoute: typeof TeamRoute
   TermsRoute: typeof TermsRoute
+  ArticlesSlugRoute: typeof ArticlesSlugRoute
   IndustriesSlugRoute: typeof IndustriesSlugRoute
   ServicesFunctionsRoute: typeof ServicesFunctionsRoute
   WorkSlugRoute: typeof WorkSlugRoute
+  ArticlesIndexRoute: typeof ArticlesIndexRoute
   IndustriesIndexRoute: typeof IndustriesIndexRoute
   ServicesIndexRoute: typeof ServicesIndexRoute
+  ApiAuthLogoutRoute: typeof ApiAuthLogoutRoute
+  ApiAuthSessionRoute: typeof ApiAuthSessionRoute
+  ApiCronPagePostVisualsRoute: typeof ApiCronPagePostVisualsRoute
+  ApiAuthOtpStartRoute: typeof ApiAuthOtpStartRoute
+  ApiAuthOtpVerifyRoute: typeof ApiAuthOtpVerifyRoute
+  ApiTeamLinkedinDecideRoute: typeof ApiTeamLinkedinDecideRoute
+  ApiTeamLinkedinVisualRoute: typeof ApiTeamLinkedinVisualRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -167,6 +310,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/partners': {
@@ -190,11 +340,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ScorecardRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/team': {
+      id: '/team'
+      path: '/team'
+      fullPath: '/team'
+      preLoaderRoute: typeof TeamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/terms': {
       id: '/terms'
       path: '/terms'
       fullPath: '/terms'
       preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/articles/': {
+      id: '/articles/'
+      path: '/articles'
+      fullPath: '/articles/'
+      preLoaderRoute: typeof ArticlesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/articles/$slug': {
+      id: '/articles/$slug'
+      path: '/articles/$slug'
+      fullPath: '/articles/$slug'
+      preLoaderRoute: typeof ArticlesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/industries/': {
@@ -232,20 +403,80 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorkSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/auth/logout': {
+      id: '/api/auth/logout'
+      path: '/api/auth/logout'
+      fullPath: '/api/auth/logout'
+      preLoaderRoute: typeof ApiAuthLogoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/session': {
+      id: '/api/auth/session'
+      path: '/api/auth/session'
+      fullPath: '/api/auth/session'
+      preLoaderRoute: typeof ApiAuthSessionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/cron/page-post-visuals': {
+      id: '/api/cron/page-post-visuals'
+      path: '/api/cron/page-post-visuals'
+      fullPath: '/api/cron/page-post-visuals'
+      preLoaderRoute: typeof ApiCronPagePostVisualsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/otp/start': {
+      id: '/api/auth/otp/start'
+      path: '/api/auth/otp/start'
+      fullPath: '/api/auth/otp/start'
+      preLoaderRoute: typeof ApiAuthOtpStartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/otp/verify': {
+      id: '/api/auth/otp/verify'
+      path: '/api/auth/otp/verify'
+      fullPath: '/api/auth/otp/verify'
+      preLoaderRoute: typeof ApiAuthOtpVerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/team/linkedin/decide': {
+      id: '/api/team/linkedin/decide'
+      path: '/api/team/linkedin/decide'
+      fullPath: '/api/team/linkedin/decide'
+      preLoaderRoute: typeof ApiTeamLinkedinDecideRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/team/linkedin/visual': {
+      id: '/api/team/linkedin/visual'
+      path: '/api/team/linkedin/visual'
+      fullPath: '/api/team/linkedin/visual'
+      preLoaderRoute: typeof ApiTeamLinkedinVisualRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  LoginRoute: LoginRoute,
   PartnersRoute: PartnersRoute,
   PrivacyRoute: PrivacyRoute,
   ScorecardRoute: ScorecardRoute,
+  TeamRoute: TeamRoute,
   TermsRoute: TermsRoute,
+  ArticlesSlugRoute: ArticlesSlugRoute,
   IndustriesSlugRoute: IndustriesSlugRoute,
   ServicesFunctionsRoute: ServicesFunctionsRoute,
   WorkSlugRoute: WorkSlugRoute,
+  ArticlesIndexRoute: ArticlesIndexRoute,
   IndustriesIndexRoute: IndustriesIndexRoute,
   ServicesIndexRoute: ServicesIndexRoute,
+  ApiAuthLogoutRoute: ApiAuthLogoutRoute,
+  ApiAuthSessionRoute: ApiAuthSessionRoute,
+  ApiCronPagePostVisualsRoute: ApiCronPagePostVisualsRoute,
+  ApiAuthOtpStartRoute: ApiAuthOtpStartRoute,
+  ApiAuthOtpVerifyRoute: ApiAuthOtpVerifyRoute,
+  ApiTeamLinkedinDecideRoute: ApiTeamLinkedinDecideRoute,
+  ApiTeamLinkedinVisualRoute: ApiTeamLinkedinVisualRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

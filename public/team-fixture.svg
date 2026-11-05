@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1350" viewBox="0 0 1080 1350">
+  <rect width="1080" height="1350" fill="#f5f5f5"/>
+  <rect x="80" y="80" width="920" height="1190" fill="none" stroke="#111" stroke-width="2"/>
+  <text x="120" y="220" fill="#111" font-family="Georgia, serif" font-size="72">16x9</text>
+  <text x="120" y="300" fill="#444" font-family="ui-sans-serif, sans-serif" font-size="28">Fixture image. Not drawn on page load.</text>
+</svg>

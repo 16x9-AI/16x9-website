@@ -66,6 +66,11 @@ export function Footer() {
               </a>
             </li>
             <li>
+              <Link to="/articles" className="transition-colors hover:text-snow/70">
+                Articles
+              </Link>
+            </li>
+            <li>
               <a
                 href="https://www.frontierdesk.ai"
                 className="transition-colors hover:text-snow/70"

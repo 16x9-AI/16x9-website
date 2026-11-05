@@ -13,6 +13,10 @@ User-agent: Bingbot
 User-agent: DuckDuckBot
 User-agent: Applebot
 Allow: /
+Disallow: /team
+Disallow: /login
+Disallow: /api/
+Disallow: /_serverFn/
 
 # AI search and answer engines (cited answers)
 User-agent: OAI-SearchBot
@@ -20,6 +24,10 @@ User-agent: Claude-SearchBot
 User-agent: PerplexityBot
 User-agent: DuckAssistBot
 Allow: /
+Disallow: /team
+Disallow: /login
+Disallow: /api/
+Disallow: /_serverFn/
 
 # Fetches a person asked an AI assistant to make
 User-agent: ChatGPT-User
@@ -27,6 +35,10 @@ User-agent: Claude-User
 User-agent: Perplexity-User
 User-agent: MistralAI-User
 Allow: /
+Disallow: /team
+Disallow: /login
+Disallow: /api/
+Disallow: /_serverFn/
 
 # TRAINING: model training and grounding (see note above)
 User-agent: GPTBot
@@ -36,11 +48,18 @@ User-agent: Applebot-Extended
 User-agent: CCBot
 User-agent: meta-externalagent
 Allow: /
+Disallow: /team
+Disallow: /login
+Disallow: /api/
+Disallow: /_serverFn/
 
 # Everyone else
 User-agent: *
 Allow: /
-# Server-function endpoints carry no content.
+# Server-function endpoints carry no content. Team and sign-in are private.
 Disallow: /_serverFn/
+Disallow: /team
+Disallow: /login
+Disallow: /api/
 
 Sitemap: https://16x9.ai/sitemap.xml
