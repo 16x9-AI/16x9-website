@@ -6,7 +6,8 @@
  */
 
 import { createHash } from "node:crypto";
-import { COMPANY, ecosystemId, publisherEnabled } from "./company";
+import { COMPANY, publisherEnabled } from "./company";
+import { runAgent } from "./mycel";
 import type { TargetName } from "./posts";
 import type { TargetWrite } from "./write-guard";
 
@@ -146,28 +147,11 @@ async function defaultDispatch(
   agent: string,
   body: { mode: "publish"; post_id: string; target: TargetName },
 ): Promise<{ postUrn?: string; error?: string }> {
-  const base = process.env.MYCEL_API_BASE?.replace(/\/$/, "");
-  const key = process.env.MYCEL_16X9_API_KEY;
-  if (!base || !key) return { error: "Mycel is not configured" };
-  const res = await fetch(`${base}/api/sdk/agents/${agent}/run/stream`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${key}`,
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      "X-Mycel-Ecosystem": ecosystemId(),
-    },
-    body: JSON.stringify({ input: JSON.stringify(body) }),
-    signal: AbortSignal.timeout(60_000),
-  });
-  if (!res.ok) return { error: `publisher ${res.status}` };
-  const data = (await res.json()) as {
-    post_urn?: unknown;
-    error?: unknown;
-    output?: { post_urn?: unknown; error?: unknown };
-  };
-  const urn = data.post_urn ?? data.output?.post_urn;
-  const error = data.error ?? data.output?.error;
+  const run = await runAgent(agent, body);
+  if (run.status !== "ok")
+    return { error: run.status === "error" ? run.detail : "Mycel is not configured" };
+  const urn = run.output.post_urn;
+  const error = run.output.error;
   return {
     postUrn: typeof urn === "string" ? urn : undefined,
     error: typeof error === "string" ? error : undefined,

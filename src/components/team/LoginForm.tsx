@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { getRouteApi } from "@tanstack/react-router";
+import { safeNext } from "@/lib/linkedin/next-url";
 
 const loginRoute = getRouteApi("/login");
 
@@ -54,7 +55,7 @@ export function LoginForm() {
         detail?: string;
       } | null;
       if (res.ok && body?.status === "authenticated") {
-        window.location.assign(search.next);
+        window.location.assign(safeNext(search.next, window.location.origin));
         return;
       }
       setDetail(body?.detail || body?.status || "Didn't go through.");

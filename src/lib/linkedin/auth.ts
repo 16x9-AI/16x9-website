@@ -4,8 +4,15 @@
  * and SES is unset, so a local review can finish without a mail account.
  */
 
-import { sendOtpEmail } from "./email";
-import { createChallenge, generateCode, throttled, verifyChallenge, type CookieStore } from "./otp";
+import { sendOtpEmail, sesConfigured } from "./email";
+import {
+  createChallenge,
+  generateCode,
+  sendBudgetExceeded,
+  throttled,
+  verifyChallenge,
+  type CookieStore,
+} from "./otp";
 import { authConfigured, mintSessionToken, SESSION_COOKIE, SESSION_MAX_AGE } from "./session-token";
 import { isTeamEmail } from "./team";
 import { json } from "./decide";
@@ -26,8 +33,13 @@ export async function handleOtpStart(request: Request, jar: CookieStore): Promis
   }
   if (!EMAIL_RE.test(email)) return json({ status: "error", detail: "invalid email" }, 400);
   if (!authConfigured()) return json({ status: "not_configured" }, 503);
-  if (throttled(email))
+  if (throttled(email) || sendBudgetExceeded(clientIp(request))) {
     return json({ status: "throttled", detail: "please wait before requesting another code" }, 429);
+  }
+
+  if (!isTeamEmail(email)) {
+    return json({ status: "code_sent", delivery: sesConfigured() ? "sent" : "not_configured" });
+  }
 
   const code = generateCode();
   await createChallenge(email, code, process.env.AUTH_SECRET || "", jar);
@@ -63,4 +75,10 @@ export async function handleOtpVerify(request: Request, jar: CookieStore): Promi
   const token = await mintSessionToken(email, process.env.AUTH_SECRET || "");
   jar.set(SESSION_COOKIE, token, SESSION_MAX_AGE);
   return json({ status: "authenticated", team: isTeamEmail(email) });
+}
+
+function clientIp(request: Request): string {
+  const forwarded = request.headers.get("x-forwarded-for");
+  if (forwarded) return forwarded.split(",")[0]?.trim() || "unknown";
+  return request.headers.get("x-real-ip") || "unknown";
 }

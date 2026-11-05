@@ -17,12 +17,17 @@ export type DecideDeps = {
   getPost: (id: string) => Promise<PagePost | null>;
   submit: (
     plan: ReturnType<typeof buildDecisionPlan> & { status: "planned" },
-  ) => Promise<{ status: "received" } | { status: "error" | "not_configured"; detail?: string }>;
+  ) => Promise<
+    { status: "received" } | { status: "error" | "not_configured" | "conflict"; detail?: string }
+  >;
   existingTargets: (postId: string) => Promise<ExistingTarget[]>;
   writeTarget: (row: TargetWrite) => Promise<{ status: string; detail?: string }>;
   publish: typeof publishTargets;
   notify: (to: string[], subject: string, text: string) => Promise<void>;
   now: () => string;
+  imageVersion?: (postId: string) => Promise<string>;
+  claimDraft?: (id: string) => boolean;
+  releaseDraft?: (id: string) => void;
 };
 
 export function json(body: unknown, status = 200): Response {
@@ -76,9 +81,14 @@ export async function handleDecide(request: Request, deps: DecideDeps): Promise<
   if (!post) return json({ status: "not_found", detail: "no such draft" }, 404);
   if (post.status !== "drafted")
     return json({ status: "conflict", detail: `already ${post.status}` }, 409);
+  if (deps.claimDraft && !deps.claimDraft(id))
+    return json({ status: "conflict", detail: "already decided" }, 409);
 
   const wrote = await deps.submit(built);
   if (wrote.status !== "received") {
+    deps.releaseDraft?.(id);
+    if (wrote.status === "conflict")
+      return json({ status: "conflict", detail: wrote.detail || "already decided" }, 409);
     const detail = "detail" in wrote && wrote.detail ? wrote.detail : wrote.status;
     return json({ status: "error", detail }, wrote.status === "not_configured" ? 503 : 502);
   }
@@ -90,11 +100,12 @@ export async function handleDecide(request: Request, deps: DecideDeps): Promise<
       publishLine = "\nLinkedIn: no destination selected, nothing sent.";
     } else {
       const existing = await deps.existingTargets(id);
+      const imageVersion = deps.imageVersion ? await deps.imageVersion(id) : "";
       const published = await deps.publish({
         postId: id,
         targets,
         finalText: built.plan.ops[0].data.final_text,
-        imageVersion: "",
+        imageVersion,
         existing,
       });
       for (const row of published.writes) {

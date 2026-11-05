@@ -3,7 +3,7 @@ import { json } from "@/lib/linkedin/decide";
 import { requestCookieStore } from "@/lib/linkedin/http-cookies";
 import { blobConfigured } from "@/lib/linkedin/blob-store";
 import { defaultDraw, regeneratePostVisual } from "@/lib/linkedin/regen";
-import { getPagePost } from "@/lib/linkedin/queue";
+import { getArticleById, getPagePost, toVisual } from "@/lib/linkedin/queue";
 import { readSessionToken, SESSION_COOKIE } from "@/lib/linkedin/session-token";
 import { isTeamEmail } from "@/lib/linkedin/team";
 import {
@@ -15,8 +15,6 @@ import {
 } from "@/lib/linkedin/blob-store";
 import { readRows, requestPageVisualSpec } from "@/lib/linkedin/mycel";
 import { COMPANY } from "@/lib/linkedin/company";
-import { getArticleById } from "@/lib/linkedin/queue";
-import type { VisualRow } from "@/lib/linkedin/visuals";
 
 export const Route = createFileRoute("/api/team/linkedin/visual")({
   server: {
@@ -39,19 +37,10 @@ export const Route = createFileRoute("/api/team/linkedin/visual")({
           getPost: getPagePost,
           getVisual: async (postId) => {
             const rows = await readRows(COMPANY.visualsTable, "post_id", postId, 1);
-            const row = rows?.[0];
-            if (!row) return null;
-            const kind = typeof row.kind === "string" ? row.kind : "";
-            return {
-              postId,
-              noteId: typeof row.note_id === "string" ? row.note_id : "",
-              kind:
-                kind === "spec" || kind === "unsupported_type" || kind === "unsupported_layout"
-                  ? kind
-                  : "unknown",
-              spec: row.spec,
-              reason: typeof row.reason === "string" ? row.reason : "",
-            } satisfies VisualRow;
+            const raw = rows?.[0];
+            if (!raw) return null;
+            const row = toVisual(raw);
+            return row.postId ? row : { ...row, postId };
           },
           readChoice,
           findStored,

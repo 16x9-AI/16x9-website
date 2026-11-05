@@ -44,9 +44,13 @@ export function generateCode(): string {
 }
 
 const lastSent = new Map<string, number>();
-
-/** Failed tries for one challenge. Keyed by email and the code HMAC, which stays put across re-signs. */
 const attemptLedger = new Map<string, { count: number; expMs: number }>();
+const emailTotals = new Map<string, { count: number; expMs: number }>();
+const sendHits = new Map<string, number[]>();
+
+const SEND_WINDOW_MS = 10 * 60 * 1000;
+const SEND_PER_IP = 8;
+const SEND_GLOBAL = 30;
 
 function ledgerKey(email: string, hash: string): string {
   return `${email}\n${hash}`;
@@ -65,14 +69,47 @@ function rememberedAttempts(email: string, hash: string, now = Date.now()): numb
 
 function rememberAttempts(email: string, hash: string, count: number, expSeconds: number): void {
   if (!hash) return;
-  attemptLedger.set(ledgerKey(email, hash), { count, expMs: expSeconds * 1000 });
+  const key = ledgerKey(email, hash);
+  const prev = attemptLedger.get(key);
+  attemptLedger.set(key, {
+    count: Math.max(prev?.count ?? 0, count),
+    expMs: Math.max(prev?.expMs ?? 0, expSeconds * 1000),
+  });
 }
 
-function forgetEmail(email: string): void {
-  const prefix = `${email}\n`;
-  for (const key of attemptLedger.keys()) {
-    if (key.startsWith(prefix)) attemptLedger.delete(key);
+function emailAttemptCount(email: string, now = Date.now()): number {
+  const row = emailTotals.get(email);
+  if (!row) return 0;
+  if (row.expMs <= now) {
+    emailTotals.delete(email);
+    return 0;
   }
+  return row.count;
+}
+
+function noteEmailAttempts(email: string, count: number, expSeconds: number): void {
+  const prev = emailTotals.get(email);
+  emailTotals.set(email, {
+    count: Math.max(prev?.count ?? 0, count),
+    expMs: Math.max(prev?.expMs ?? 0, expSeconds * 1000),
+  });
+}
+
+/** True when this IP or the process is over the send cap. Records the attempt when it is allowed. */
+export function sendBudgetExceeded(ip: string, now = Date.now()): boolean {
+  const within = (stamps: number[]) => stamps.filter((t) => now - t < SEND_WINDOW_MS);
+  const global = within(sendHits.get("*") ?? []);
+  const mine = within(sendHits.get(ip) ?? []);
+  if (global.length >= SEND_GLOBAL || mine.length >= SEND_PER_IP) {
+    sendHits.set("*", global);
+    sendHits.set(ip, mine);
+    return true;
+  }
+  global.push(now);
+  mine.push(now);
+  sendHits.set("*", global);
+  sendHits.set(ip, mine);
+  return false;
 }
 
 export function throttled(email: string, now = Date.now()): boolean {
@@ -87,6 +124,8 @@ export function throttled(email: string, now = Date.now()): boolean {
 export function resetThrottle(): void {
   lastSent.clear();
   attemptLedger.clear();
+  emailTotals.clear();
+  sendHits.clear();
 }
 
 export async function createChallenge(
@@ -96,7 +135,6 @@ export async function createChallenge(
   jar: CookieStore,
 ): Promise<void> {
   const normalized = email.trim().toLowerCase();
-  forgetEmail(normalized);
   const token = await new SignJWT({
     email: normalized,
     ch: codeHash(secret, normalized, code),
@@ -138,12 +176,17 @@ export async function verifyChallenge(
   const challengeEmail = typeof payload.email === "string" ? payload.email : "";
   const storedHash = typeof payload.ch === "string" ? payload.ch : "";
   const cookieAttempts = typeof payload.attempts === "number" ? payload.attempts : 0;
-  const attempts = Math.max(cookieAttempts, rememberedAttempts(normalized, storedHash));
+  const attempts = Math.max(
+    cookieAttempts,
+    rememberedAttempts(normalized, storedHash),
+    emailAttemptCount(normalized),
+  );
   const exp = typeof payload.exp === "number" ? payload.exp : 0;
 
   if (challengeEmail !== normalized) return "invalid_code";
   if (attempts >= MAX_ATTEMPTS) {
     rememberAttempts(normalized, storedHash, attempts, exp);
+    noteEmailAttempts(normalized, attempts, exp);
     jar.set(CHALLENGE_COOKIE, "", 0);
     return "too_many_attempts";
   }
@@ -156,6 +199,7 @@ export async function verifyChallenge(
   const remaining = exp - Math.floor(Date.now() / 1000);
   const nextCount = attempts + 1;
   rememberAttempts(normalized, storedHash, nextCount, exp);
+  noteEmailAttempts(normalized, nextCount, exp);
   if (remaining > 0) {
     const next = await new SignJWT({ email: normalized, ch: storedHash, attempts: nextCount })
       .setProtectedHeader({ alg: "HS256" })

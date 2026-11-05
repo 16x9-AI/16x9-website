@@ -48,7 +48,7 @@ function toPost(row: Row): PagePost {
   };
 }
 
-function toVisual(row: Row): VisualRow {
+export function toVisual(row: Row): VisualRow {
   const kind = str(row.kind);
   let spec: unknown = row.spec ?? null;
   if (typeof spec === "string") {
@@ -154,6 +154,31 @@ export async function getArticle(slug: string): Promise<Article | null> {
 export async function getArticleById(id: string): Promise<Article | null> {
   const articles = await getArticles();
   return articles.find((article) => article.id === id) ?? null;
+}
+
+export async function readExistingTargets(
+  postId: string,
+): Promise<{ id: string; status: string; idempotencyKey: string; postUrn: string }[]> {
+  const rows = await readRows(COMPANY.targetsTable, "post_id", postId, 10);
+  return (rows ?? [])
+    .map((row) => ({
+      id: str(row.id) || `${postId}:${str(row.target)}`,
+      status: str(row.status),
+      idempotencyKey: str(row.idempotency_key),
+      postUrn: str(row.post_urn),
+    }))
+    .filter((row) => row.status);
+}
+
+export async function currentImageVersion(postId: string): Promise<string> {
+  const rows = await readRows(COMPANY.visualsTable, "post_id", postId, 1);
+  const row = rows?.[0] ? toVisual(rows[0]) : null;
+  if (!row || row.kind !== "spec" || !row.spec || typeof row.spec !== "object") return "";
+  try {
+    return resolveCurrent(row, await readChoice(postId)).v;
+  } catch {
+    return "";
+  }
 }
 
 export type { PagePostStatus };

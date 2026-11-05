@@ -1,8 +1,9 @@
 /**
  * GET /api/cron/page-post-visuals
- * Same gates as Frontier Desk: a plain sweep needs the Vercel cron user agent;
+ * A plain sweep needs Authorization: Bearer ${CRON_SECRET}.
  * ?post= and ?force=1 need Authorization: Bearer ${X9_PAGE_VISUALS_SECRET}.
- * This route is not registered in vercel.json. Nothing runs on a schedule until that line is added.
+ * Either request is refused while its secret is unset. The user agent is not a credential.
+ * This route is not registered in vercel.json.
  */
 
 import { json } from "./decide";
@@ -92,22 +93,11 @@ export async function sweepPageVisuals(
 
 export function authorizeCron(request: Request): Response | null {
   const query = new URL(request.url).searchParams;
-  if (query.has("post") || query.has("force")) {
-    const secret = process.env.X9_PAGE_VISUALS_SECRET;
-    if (!secret) {
-      return json(
-        {
-          status: "forbidden",
-          message: "?post= and ?force=1 are disabled: X9_PAGE_VISUALS_SECRET is not set",
-        },
-        403,
-      );
-    }
-    if (request.headers.get("authorization") !== `Bearer ${secret}`)
-      return json({ status: "forbidden" }, 403);
-    return null;
-  }
-  if (!(request.headers.get("user-agent") ?? "").startsWith("vercel-cron/"))
+  const targeted = query.has("post") || query.has("force");
+  const name = targeted ? "X9_PAGE_VISUALS_SECRET" : "CRON_SECRET";
+  const secret = targeted ? process.env.X9_PAGE_VISUALS_SECRET : process.env.CRON_SECRET;
+  if (!secret) return json({ status: "forbidden", message: `${name} is not set` }, 403);
+  if (request.headers.get("authorization") !== `Bearer ${secret}`)
     return json({ status: "forbidden" }, 403);
   return null;
 }

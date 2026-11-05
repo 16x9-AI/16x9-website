@@ -9,6 +9,10 @@ import { describeVisual, resolveCurrent, type VisualRow } from "./visuals";
 import { guardPostPlan } from "./write-guard";
 import { isTeamEmail, teamNotifyRecipients } from "./team";
 import { handleDecide } from "./decide";
+import { handleOtpStart } from "./auth";
+import { safeNext } from "./next-url";
+import { toVisual, readExistingTargets } from "./queue";
+import { resetDraftClaims, runAgent, submitLinkedInPostPlan } from "./mycel";
 import { regeneratePostVisual, type RegenDeps } from "./regen";
 import { authorizeCron, sweepPageVisuals } from "./sweep";
 import { selectDailyEpisode } from "./research";
@@ -541,6 +545,8 @@ describe("auth and cron gates", () => {
   });
 
   it("blocks a sweep that is not the cron and a targeted run without the bearer", async () => {
+    delete process.env.CRON_SECRET;
+    delete process.env.X9_PAGE_VISUALS_SECRET;
     expect(authorizeCron(new Request("https://16x9.ai/api/cron/page-post-visuals"))?.status).toBe(
       403,
     );
@@ -549,13 +555,23 @@ describe("auth and cron gates", () => {
         new Request("https://16x9.ai/api/cron/page-post-visuals", {
           headers: { "user-agent": "vercel-cron/1" },
         }),
+      )?.status,
+    ).toBe(403);
+    process.env.CRON_SECRET = "cron-secret";
+    expect(
+      authorizeCron(
+        new Request("https://16x9.ai/api/cron/page-post-visuals", {
+          headers: { authorization: "Bearer cron-secret", "user-agent": "curl/8" },
+        }),
       ),
     ).toBeNull();
-    process.env.X9_PAGE_VISUALS_SECRET = "local-secret";
     const targeted = authorizeCron(
-      new Request("https://16x9.ai/api/cron/page-post-visuals?post=" + ID),
+      new Request("https://16x9.ai/api/cron/page-post-visuals?post=" + ID, {
+        headers: { authorization: "Bearer cron-secret" },
+      }),
     );
     expect(targeted?.status).toBe(403);
+    process.env.X9_PAGE_VISUALS_SECRET = "local-secret";
     const allowed = authorizeCron(
       new Request("https://16x9.ai/api/cron/page-post-visuals?force=1", {
         headers: { authorization: "Bearer local-secret" },
@@ -563,6 +579,7 @@ describe("auth and cron gates", () => {
     );
     expect(allowed).toBeNull();
     delete process.env.X9_PAGE_VISUALS_SECRET;
+    delete process.env.CRON_SECRET;
 
     const sweep = await sweepPageVisuals(
       {
@@ -707,6 +724,252 @@ describe("review fixes", () => {
       else process.env.MYCEL_16X9_API_KEY = prevKey;
       if (prevPublisher === undefined) delete process.env.X9_LINKEDIN_PUBLISHER_ENABLED;
       else process.env.X9_LINKEDIN_PUBLISHER_ENABLED = prevPublisher;
+    }
+  });
+});
+
+describe("review follow-ups", () => {
+  it("does not email a code to a non-team address and caps sends per IP", async () => {
+    resetThrottle();
+    const prevSecret = process.env.AUTH_SECRET;
+    const prevEcho = process.env.X9_OTP_DEV_ECHO;
+    const prevNode = process.env.NODE_ENV;
+    process.env.AUTH_SECRET = "test-secret-test-secret-test-secret";
+    process.env.X9_OTP_DEV_ECHO = "1";
+    process.env.NODE_ENV = "test";
+    const jar = memoryJar();
+    try {
+      const outsider = await handleOtpStart(
+        new Request("https://16x9.ai/api/auth/otp/start", {
+          method: "POST",
+          headers: { "content-type": "application/json", "x-forwarded-for": "203.0.113.9" },
+          body: JSON.stringify({ email: "outsider@gmail.com" }),
+        }),
+        jar,
+      );
+      const body = (await outsider.json()) as {
+        status?: string;
+        devCode?: string;
+        delivery?: string;
+      };
+      expect(outsider.status).toBe(200);
+      expect(body.status).toBe("code_sent");
+      expect(body.devCode).toBeUndefined();
+      expect(jar.values.get(CHALLENGE_COOKIE)).toBeUndefined();
+
+      const team = await handleOtpStart(
+        new Request("https://16x9.ai/api/auth/otp/start", {
+          method: "POST",
+          headers: { "content-type": "application/json", "x-forwarded-for": "203.0.113.10" },
+          body: JSON.stringify({ email: "nelson.sanmiguel@16x9.ai" }),
+        }),
+        jar,
+      );
+      const teamBody = (await team.json()) as { devCode?: string };
+      expect(teamBody.devCode).toMatch(/^\d{6}$/);
+
+      resetThrottle();
+      let blocked = 0;
+      for (let i = 0; i < 9; i++) {
+        const res = await handleOtpStart(
+          new Request("https://16x9.ai/api/auth/otp/start", {
+            method: "POST",
+            headers: { "content-type": "application/json", "x-forwarded-for": "203.0.113.20" },
+            body: JSON.stringify({ email: `member${i}@16x9.ai` }),
+          }),
+          memoryJar(),
+        );
+        if (res.status === 429) blocked += 1;
+      }
+      expect(blocked).toBe(1);
+    } finally {
+      if (prevSecret === undefined) delete process.env.AUTH_SECRET;
+      else process.env.AUTH_SECRET = prevSecret;
+      if (prevEcho === undefined) delete process.env.X9_OTP_DEV_ECHO;
+      else process.env.X9_OTP_DEV_ECHO = prevEcho;
+      if (prevNode === undefined) delete process.env.NODE_ENV;
+      else process.env.NODE_ENV = prevNode;
+      resetThrottle();
+    }
+  });
+
+  it("keeps only a same-origin path for the post-login redirect", () => {
+    const origin = "https://16x9.ai";
+    expect(safeNext("/team", origin)).toBe("/team");
+    expect(safeNext("/articles?q=1", origin)).toBe("/articles?q=1");
+    expect(safeNext("/\\evil.example", origin)).toBe("/team");
+    expect(safeNext("/\t/evil.example", origin)).toBe("/team");
+    expect(safeNext("https://evil.example/phish", origin)).toBe("/team");
+    expect(safeNext("//evil.example", origin)).toBe("/team");
+  });
+
+  it("does not reset the OTP budget when a new code is requested", async () => {
+    resetThrottle();
+    const secret = "test-secret-test-secret-test-secret";
+    const jar = memoryJar();
+    await createChallenge("locked@16x9.ai", "111111", secret, jar);
+    const original = jar.values.get(CHALLENGE_COOKIE) ?? "";
+    for (let i = 0; i < 5; i++) {
+      jar.set(CHALLENGE_COOKIE, original, 600);
+      expect(await verifyChallenge("locked@16x9.ai", "000000", secret, jar)).toBe("invalid_code");
+    }
+    await createChallenge("locked@16x9.ai", "222222", secret, jar);
+    const fresh = jar.values.get(CHALLENGE_COOKIE) ?? "";
+    jar.set(CHALLENGE_COOKIE, original, 600);
+    expect(await verifyChallenge("locked@16x9.ai", "111111", secret, jar)).toBe(
+      "too_many_attempts",
+    );
+    jar.set(CHALLENGE_COOKIE, fresh, 600);
+    expect(await verifyChallenge("locked@16x9.ai", "222222", secret, jar)).toBe(
+      "too_many_attempts",
+    );
+  });
+
+  it("parses a string visual spec the same way on every read", () => {
+    const row = toVisual({
+      post_id: ID,
+      note_id: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+      kind: "spec",
+      spec: JSON.stringify({ headline: "Hi" }),
+      reason: "",
+    });
+    expect(row.spec).toEqual({ headline: "Hi" });
+    expect(
+      toVisual({ ...row, spec: "{", kind: "spec", post_id: ID, note_id: "n" }).spec,
+    ).toBeNull();
+  });
+
+  it("reads stored target rows and passes the image version into the approval", async () => {
+    const prevBase = process.env.MYCEL_API_BASE;
+    const prevKey = process.env.MYCEL_16X9_API_KEY;
+    const prevPublisher = process.env.X9_LINKEDIN_PUBLISHER_ENABLED;
+    process.env.MYCEL_API_BASE = "https://mycel.test";
+    process.env.MYCEL_16X9_API_KEY = "test-key";
+    delete process.env.X9_LINKEDIN_PUBLISHER_ENABLED;
+    const original = globalThis.fetch;
+    globalThis.fetch = (async (url: string) => {
+      if (String(url).includes("x9_linkedin_page_targets")) {
+        return Response.json({
+          x9_linkedin_page_targets: [
+            {
+              id: `${ID}:company`,
+              post_id: ID,
+              status: "published",
+              idempotency_key: "already",
+              post_urn: "urn:li:share:1",
+            },
+          ],
+        });
+      }
+      return Response.json({});
+    }) as typeof fetch;
+    try {
+      const rows = await readExistingTargets(ID);
+      expect(rows[0]).toMatchObject({
+        id: `${ID}:company`,
+        status: "published",
+        idempotencyKey: "already",
+        postUrn: "urn:li:share:1",
+      });
+    } finally {
+      globalThis.fetch = original;
+    }
+
+    const writes: TargetWrite[] = [];
+    const res = await handleDecide(
+      new Request("https://16x9.ai/api", {
+        method: "POST",
+        body: JSON.stringify({
+          id: ID,
+          decision: "approve",
+          text: "Hello there",
+          destination: "company",
+        }),
+      }),
+      {
+        session: async () => ({ email: "nelson.sanmiguel@16x9.ai" }),
+        getPost: async () => draft(),
+        submit: async () => ({ status: "received" as const }),
+        existingTargets: async () => [],
+        writeTarget: async (row) => {
+          writes.push(row);
+          return { status: "received" };
+        },
+        publish: publishTargets,
+        notify: async () => undefined,
+        now: () => "2026-11-05T12:00:00.000Z",
+        imageVersion: async () => "abc123def456",
+      },
+    );
+    expect(res.status).toBe(200);
+    expect(writes[0]?.imageVersion).toBe("abc123def456");
+    expect(publisherEnabled()).toBe(false);
+    if (prevBase === undefined) delete process.env.MYCEL_API_BASE;
+    else process.env.MYCEL_API_BASE = prevBase;
+    if (prevKey === undefined) delete process.env.MYCEL_16X9_API_KEY;
+    else process.env.MYCEL_16X9_API_KEY = prevKey;
+    if (prevPublisher === undefined) delete process.env.X9_LINKEDIN_PUBLISHER_ENABLED;
+    else process.env.X9_LINKEDIN_PUBLISHER_ENABLED = prevPublisher;
+  });
+
+  it("lets only one drafted update win, and polls a Mycel run instead of reading the stream as JSON", async () => {
+    resetDraftClaims();
+    const prevBase = process.env.MYCEL_API_BASE;
+    const prevKey = process.env.MYCEL_16X9_API_KEY;
+    const prevPoll = process.env.X9_AGENT_POLL_MS;
+    process.env.MYCEL_API_BASE = "https://mycel.test";
+    process.env.MYCEL_16X9_API_KEY = "test-key";
+    process.env.X9_AGENT_POLL_MS = "1";
+    const urls: string[] = [];
+    const original = globalThis.fetch;
+    globalThis.fetch = (async (url: string, init?: RequestInit) => {
+      const href = String(url);
+      urls.push(`${init?.method || "GET"} ${href}`);
+      if (href.includes("/run/stream")) {
+        const stream = new ReadableStream({
+          start(controller) {
+            controller.enqueue(new TextEncoder().encode('data: {"run_id":"run-1"}\n\n'));
+            controller.close();
+          },
+        });
+        return new Response(stream, { status: 200 });
+      }
+      if (href.includes("/runs/run-1")) {
+        return Response.json({
+          status: "completed",
+          output: { spec: { headline: "Hi" }, post_urn: "urn:li:share:9" },
+        });
+      }
+      return new Response("{}", { status: 200 });
+    }) as typeof fetch;
+    try {
+      const built = buildDecisionPlan({ id: ID, decision: "reject", actor: "a@16x9.ai", at: "t" });
+      if (built.status !== "planned") throw new Error("expected a plan");
+      const first = await submitLinkedInPostPlan(built.plan);
+      const second = await submitLinkedInPostPlan(built.plan);
+      expect(first.status).toBe("received");
+      expect(second.status).toBe("conflict");
+      const patches = urls.filter((line) => line.startsWith("PATCH"));
+      expect(patches).toHaveLength(1);
+      expect(patches[0]).toContain("only_if");
+      expect(decodeURIComponent(patches[0])).toContain('"status":"drafted"');
+
+      const run = await runAgent("x9_linkedin_page_publisher", { mode: "publish", post_id: ID });
+      expect(run.status).toBe("ok");
+      if (run.status === "ok") {
+        expect(run.output.spec).toEqual({ headline: "Hi" });
+        expect(run.output.post_urn).toBe("urn:li:share:9");
+      }
+      expect(urls.some((line) => line.includes("/runs/run-1"))).toBe(true);
+    } finally {
+      globalThis.fetch = original;
+      resetDraftClaims();
+      if (prevBase === undefined) delete process.env.MYCEL_API_BASE;
+      else process.env.MYCEL_API_BASE = prevBase;
+      if (prevKey === undefined) delete process.env.MYCEL_16X9_API_KEY;
+      else process.env.MYCEL_16X9_API_KEY = prevKey;
+      if (prevPoll === undefined) delete process.env.X9_AGENT_POLL_MS;
+      else process.env.X9_AGENT_POLL_MS = prevPoll;
     }
   });
 });

@@ -1,11 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { LoginForm } from "@/components/team/LoginForm";
+import { safeNext } from "@/lib/linkedin/next-url";
+
+const SITE_ORIGIN = "https://16x9.ai";
 
 export const Route = createFileRoute("/login")({
   validateSearch: (search: Record<string, unknown>) => {
     const next = typeof search.next === "string" ? search.next : "/team";
-    const safe = next.startsWith("/") && !next.startsWith("//") ? next : "/team";
-    return { next: safe };
+    return { next: safeNext(next, SITE_ORIGIN) };
   },
   head: () => ({
     meta: [{ title: "Sign in · 16x9" }, { name: "robots", content: "noindex, nofollow, nocache" }],

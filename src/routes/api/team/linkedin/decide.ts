@@ -4,7 +4,7 @@ import { requestCookieStore } from "@/lib/linkedin/http-cookies";
 import { mycelConfigured } from "@/lib/linkedin/company";
 import { submitLinkedInPostPlan, writeTarget } from "@/lib/linkedin/mycel";
 import { publishTargets } from "@/lib/linkedin/publisher";
-import { getPagePost } from "@/lib/linkedin/queue";
+import { currentImageVersion, getPagePost, readExistingTargets } from "@/lib/linkedin/queue";
 import { readSessionToken, SESSION_COOKIE } from "@/lib/linkedin/session-token";
 import { teamFixturesEnabled } from "@/lib/linkedin/fixtures";
 
@@ -27,7 +27,7 @@ export const Route = createFileRoute("/api/team/linkedin/decide")({
             }
             return submitLinkedInPostPlan(built.plan);
           },
-          existingTargets: async () => [],
+          existingTargets: readExistingTargets,
           writeTarget: async (row) => {
             if (!mycelConfigured())
               return teamFixturesEnabled() ? { status: "received" } : { status: "not_configured" };
@@ -36,6 +36,7 @@ export const Route = createFileRoute("/api/team/linkedin/decide")({
           publish: publishTargets,
           notify: notifyTeam,
           now: () => new Date().toISOString(),
+          imageVersion: currentImageVersion,
         }),
     },
   },

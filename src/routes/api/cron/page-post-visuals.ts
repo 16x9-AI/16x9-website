@@ -5,8 +5,8 @@ import { json } from "@/lib/linkedin/decide";
 import { COMPANY } from "@/lib/linkedin/company";
 import { readRows } from "@/lib/linkedin/mycel";
 import { findStored, readChoice, storeFailure, storePng } from "@/lib/linkedin/blob-store";
-import { resolveCurrent, type VisualRow } from "@/lib/linkedin/visuals";
-import { getArticleById } from "@/lib/linkedin/queue";
+import { resolveCurrent } from "@/lib/linkedin/visuals";
+import { getArticleById, toVisual } from "@/lib/linkedin/queue";
 import { defaultDraw } from "@/lib/linkedin/regen";
 
 export const Route = createFileRoute("/api/cron/page-post-visuals")({
@@ -34,15 +34,8 @@ export const Route = createFileRoute("/api/cron/page-post-visuals")({
               const rows = await readRows(COMPANY.visualsTable, "post_id", postId, 1);
               const raw = rows?.[0];
               if (!raw) return { skip: "no visual row yet" };
-              const kind = typeof raw.kind === "string" ? raw.kind : "";
-              if (kind !== "spec") return { skip: kind || "no spec" };
-              const row: VisualRow = {
-                postId,
-                noteId: typeof raw.note_id === "string" ? raw.note_id : "",
-                kind: "spec",
-                spec: raw.spec,
-                reason: typeof raw.reason === "string" ? raw.reason : "",
-              };
+              const row = toVisual(raw);
+              if (row.kind !== "spec") return { skip: row.kind };
               const current = resolveCurrent(row, await readChoice(postId).catch(() => null));
               const stored = await findStored(postId, current.v).catch(() => null);
               const article = await getArticleById(row.noteId);
