@@ -1,7 +1,9 @@
 /**
  * Decision plan for one drafted LinkedIn post.
  * Cloned from frontierdesk `src/app/_lib/linkedin-page-posts.ts`:
- * one update, exact trimmed text, 3,000-character cap, UUID required.
+ * one update, exact trimmed text, 3,000-character cap on approve, UUID required.
+ * Reject ignores the length. FD checks it before the branch, so a long draft
+ * cannot be rejected there.
  * 16x9 adds `destination` on approve only.
  */
 
@@ -98,7 +100,7 @@ export function buildDecisionPlan(
   const text = (d.text ?? "").trim();
   if (d.decision === "approve" && !text)
     return { status: "invalid", reason: "an approved post needs its text" };
-  if (text.length > POST_MAX) {
+  if (d.decision === "approve" && text.length > POST_MAX) {
     return { status: "invalid", reason: `the post is over LinkedIn's ${POST_MAX}-character limit` };
   }
   const destination = d.destination ?? "neither";

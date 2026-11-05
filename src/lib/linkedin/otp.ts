@@ -2,6 +2,12 @@
  * Email OTP challenge. Cloned from frontierdesk `src/app/_lib/otp.ts`:
  * 6-digit code, HMAC in a 10-minute HS256 cookie, 5 attempts, 20s throttle.
  * The raw code is emailed. It is not stored.
+ *
+ * FD keeps `attempts` only inside that cookie and re-signs it after a miss.
+ * Replaying the first cookie resets the count. The ledger below is the
+ * server-side count for the same challenge (email + code hash). An older
+ * cookie cannot lower it. The ledger is process-local, same limit as FD's
+ * send throttle.
  */
 
 import { createHmac, randomInt, timingSafeEqual } from "node:crypto";
@@ -39,6 +45,36 @@ export function generateCode(): string {
 
 const lastSent = new Map<string, number>();
 
+/** Failed tries for one challenge. Keyed by email and the code HMAC, which stays put across re-signs. */
+const attemptLedger = new Map<string, { count: number; expMs: number }>();
+
+function ledgerKey(email: string, hash: string): string {
+  return `${email}\n${hash}`;
+}
+
+function rememberedAttempts(email: string, hash: string, now = Date.now()): number {
+  if (!hash) return 0;
+  const row = attemptLedger.get(ledgerKey(email, hash));
+  if (!row) return 0;
+  if (row.expMs <= now) {
+    attemptLedger.delete(ledgerKey(email, hash));
+    return 0;
+  }
+  return row.count;
+}
+
+function rememberAttempts(email: string, hash: string, count: number, expSeconds: number): void {
+  if (!hash) return;
+  attemptLedger.set(ledgerKey(email, hash), { count, expMs: expSeconds * 1000 });
+}
+
+function forgetEmail(email: string): void {
+  const prefix = `${email}\n`;
+  for (const key of attemptLedger.keys()) {
+    if (key.startsWith(prefix)) attemptLedger.delete(key);
+  }
+}
+
 export function throttled(email: string, now = Date.now()): boolean {
   const key = email.trim().toLowerCase();
   const prev = lastSent.get(key);
@@ -47,9 +83,10 @@ export function throttled(email: string, now = Date.now()): boolean {
   return false;
 }
 
-/** Test hook. The in-memory throttle is process-local, same as FD. */
+/** Test hook. The in-memory throttle and attempt ledger are process-local. */
 export function resetThrottle(): void {
   lastSent.clear();
+  attemptLedger.clear();
 }
 
 export async function createChallenge(
@@ -59,6 +96,7 @@ export async function createChallenge(
   jar: CookieStore,
 ): Promise<void> {
   const normalized = email.trim().toLowerCase();
+  forgetEmail(normalized);
   const token = await new SignJWT({
     email: normalized,
     ch: codeHash(secret, normalized, code),
@@ -99,22 +137,27 @@ export async function verifyChallenge(
 
   const challengeEmail = typeof payload.email === "string" ? payload.email : "";
   const storedHash = typeof payload.ch === "string" ? payload.ch : "";
-  const attempts = typeof payload.attempts === "number" ? payload.attempts : 0;
+  const cookieAttempts = typeof payload.attempts === "number" ? payload.attempts : 0;
+  const attempts = Math.max(cookieAttempts, rememberedAttempts(normalized, storedHash));
   const exp = typeof payload.exp === "number" ? payload.exp : 0;
 
   if (challengeEmail !== normalized) return "invalid_code";
   if (attempts >= MAX_ATTEMPTS) {
+    rememberAttempts(normalized, storedHash, attempts, exp);
     jar.set(CHALLENGE_COOKIE, "", 0);
     return "too_many_attempts";
   }
   if (storedHash.length > 0 && timingSafe(storedHash, codeHash(secret, normalized, code))) {
+    rememberAttempts(normalized, storedHash, MAX_ATTEMPTS, exp);
     jar.set(CHALLENGE_COOKIE, "", 0);
     return "ok";
   }
 
   const remaining = exp - Math.floor(Date.now() / 1000);
+  const nextCount = attempts + 1;
+  rememberAttempts(normalized, storedHash, nextCount, exp);
   if (remaining > 0) {
-    const next = await new SignJWT({ email: normalized, ch: storedHash, attempts: attempts + 1 })
+    const next = await new SignJWT({ email: normalized, ch: storedHash, attempts: nextCount })
       .setProtectedHeader({ alg: "HS256" })
       .setIssuer(COMPANY.issuer)
       .setAudience(COMPANY.otpAudience)

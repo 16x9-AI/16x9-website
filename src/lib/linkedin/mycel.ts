@@ -57,21 +57,21 @@ export async function readRows(
 export type WriteResult =
   { status: "received" } | { status: "error"; detail: string } | { status: "not_configured" };
 
-async function patchRow(
-  table: string,
-  id: string,
+type RowAttempt = WriteResult | { status: "missing" };
+
+async function sendRow(
+  method: "PATCH" | "POST",
+  url: string,
   data: Record<string, string>,
-): Promise<WriteResult> {
-  const base = baseUrl();
-  if (!base) return { status: "not_configured" };
+): Promise<RowAttempt> {
   try {
-    const url = `${base}/api/business-private/${table}/${encodeURIComponent(id)}?ecosystem_id=${encodeURIComponent(ecosystemId())}`;
     const res = await fetch(url, {
-      method: "PATCH",
+      method,
       headers: headers(),
       body: JSON.stringify(data),
       signal: AbortSignal.timeout(20_000),
     });
+    if (res.status === 404) return { status: "missing" };
     if (!res.ok) {
       const detail = await res.text().catch(() => "");
       return { status: "error", detail: detail.slice(0, 300) || `write failed (${res.status})` };
@@ -82,6 +82,44 @@ async function patchRow(
   }
 }
 
+async function patchRow(
+  table: string,
+  id: string,
+  data: Record<string, string>,
+): Promise<RowAttempt> {
+  const base = baseUrl();
+  if (!base) return { status: "not_configured" };
+  const url = `${base}/api/business-private/${table}/${encodeURIComponent(id)}?ecosystem_id=${encodeURIComponent(ecosystemId())}`;
+  return sendRow("PATCH", url, data);
+}
+
+async function postRow(
+  table: string,
+  id: string,
+  data: Record<string, string>,
+): Promise<WriteResult> {
+  const base = baseUrl();
+  if (!base) return { status: "not_configured" };
+  const url = `${base}/api/business-private/${table}?ecosystem_id=${encodeURIComponent(ecosystemId())}`;
+  const wrote = await sendRow("POST", url, { id, ...data });
+  return wrote.status === "missing" ? { status: "error", detail: "insert missed" } : wrote;
+}
+
+/** Update a row, and insert it with the same id when the update finds nothing. */
+export async function upsertRow(
+  table: string,
+  id: string,
+  data: Record<string, string>,
+  io: {
+    update: (table: string, id: string, data: Record<string, string>) => Promise<RowAttempt>;
+    insert: (table: string, id: string, data: Record<string, string>) => Promise<WriteResult>;
+  } = { update: patchRow, insert: postRow },
+): Promise<WriteResult> {
+  const updated = await io.update(table, id, data);
+  if (updated.status === "missing") return io.insert(table, id, data);
+  return updated;
+}
+
 /** Apply a decision plan. The guard runs first. Publisher fields cannot ride along. */
 export async function submitLinkedInPostPlan(plan: Plan): Promise<WriteResult> {
   const guarded = guardPostPlan(plan);
@@ -89,7 +127,9 @@ export async function submitLinkedInPostPlan(plan: Plan): Promise<WriteResult> {
   if (!mycelConfigured()) return { status: "not_configured" };
   for (const op of plan.ops) {
     const wrote = await patchRow(op.table, op.id, op.data);
-    if (wrote.status !== "received") return wrote;
+    if (wrote.status !== "received") {
+      return wrote.status === "missing" ? { status: "error", detail: "no such row" } : wrote;
+    }
   }
   return { status: "received" };
 }
@@ -98,7 +138,7 @@ export async function writeTarget(row: TargetWrite): Promise<WriteResult> {
   const guarded = guardTargetWrite(row);
   if (!guarded.ok) return { status: "error", detail: guarded.reason };
   if (!mycelConfigured()) return { status: "not_configured" };
-  return patchRow(COMPANY.targetsTable, row.id, targetData(row));
+  return upsertRow(COMPANY.targetsTable, row.id, targetData(row));
 }
 
 export type VisualSpecRequest = {

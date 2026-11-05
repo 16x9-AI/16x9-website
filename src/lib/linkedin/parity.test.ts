@@ -14,11 +14,13 @@ import { authorizeCron, sweepPageVisuals } from "./sweep";
 import { selectDailyEpisode } from "./research";
 import {
   createChallenge,
+  CHALLENGE_COOKIE,
   generateCode,
   resetThrottle,
   verifyChallenge,
   type CookieStore,
 } from "./otp";
+import { upsertRow, writeTarget } from "./mycel";
 import { mintSessionToken, readSessionToken } from "./session-token";
 import { fixtureArticles } from "./fixtures";
 import type { PagePost } from "./posts";
@@ -240,6 +242,20 @@ describe("handleDecide", () => {
     );
     expect(calls).toEqual([]);
     process.env.X9_LINKEDIN_PUBLISHER_ENABLED = previous;
+  });
+
+  it("rejects a draft whose text is over 3000 characters", async () => {
+    const huge = "x".repeat(3001);
+    const rejected = deps(draft());
+    const res = await handleDecide(
+      new Request("https://16x9.ai/api", {
+        method: "POST",
+        body: JSON.stringify({ id: ID, decision: "reject", text: huge }),
+      }),
+      rejected.deps,
+    );
+    expect(res.status).toBe(200);
+    expect(rejected.writes).toEqual([]);
   });
 
   it("keeps the publisher disabled and records both targets independently", async () => {
@@ -565,5 +581,132 @@ describe("auth and cron gates", () => {
       { configured: true },
     );
     expect(sweep.outcomes[0].result).toBe("already_stored");
+  });
+
+  it("does not let a replayed OTP cookie reset the attempt count", async () => {
+    resetThrottle();
+    const secret = "test-secret-test-secret-test-secret";
+    const jar = memoryJar();
+    const code = "123456";
+    await createChallenge("nelson.sanmiguel@16x9.ai", code, secret, jar);
+    const original = jar.values.get(CHALLENGE_COOKIE) ?? "";
+    for (let i = 0; i < 5; i++) {
+      jar.set(CHALLENGE_COOKIE, original, 600);
+      expect(await verifyChallenge("nelson.sanmiguel@16x9.ai", "000000", secret, jar)).toBe(
+        "invalid_code",
+      );
+    }
+    jar.set(CHALLENGE_COOKIE, original, 600);
+    expect(await verifyChallenge("nelson.sanmiguel@16x9.ai", code, secret, jar)).toBe(
+      "too_many_attempts",
+    );
+  });
+});
+
+describe("review fixes", () => {
+  it("rejects a draft that is over the 3000-character limit", async () => {
+    const huge = "x".repeat(3001);
+    const planned = buildDecisionPlan({
+      id: ID,
+      decision: "reject",
+      text: huge,
+      actor: "a@16x9.ai",
+      at: "t",
+    });
+    expect(planned.status).toBe("planned");
+    if (planned.status !== "planned") return;
+    expect(planned.plan.ops[0].data.status).toBe("rejected");
+    expect(planned.plan.ops[0].data.final_text).toBeUndefined();
+    expect(
+      buildDecisionPlan({
+        id: ID,
+        decision: "approve",
+        text: huge,
+        actor: "a@16x9.ai",
+        at: "t",
+      }).status,
+    ).toBe("invalid");
+  });
+
+  it("inserts a target row when the update finds nothing, and skips the insert when it lands", async () => {
+    const missed: string[] = [];
+    const inserted = await upsertRow(
+      "x9_linkedin_page_targets",
+      `${ID}:company`,
+      { target: "company", post_id: ID },
+      {
+        update: async () => {
+          missed.push("update");
+          return { status: "missing" };
+        },
+        insert: async (table, id, data) => {
+          missed.push(`insert:${table}:${id}:${data.target}`);
+          return { status: "received" };
+        },
+      },
+    );
+    expect(inserted.status).toBe("received");
+    expect(missed).toEqual(["update", `insert:x9_linkedin_page_targets:${ID}:company:company`]);
+
+    const landed: string[] = [];
+    await upsertRow(
+      "x9_linkedin_page_targets",
+      `${ID}:personal`,
+      { target: "personal" },
+      {
+        update: async () => {
+          landed.push("update");
+          return { status: "received" };
+        },
+        insert: async () => {
+          landed.push("insert");
+          return { status: "received" };
+        },
+      },
+    );
+    expect(landed).toEqual(["update"]);
+  });
+
+  it("writeTarget posts the row after a 404 patch", async () => {
+    const prevBase = process.env.MYCEL_API_BASE;
+    const prevKey = process.env.MYCEL_16X9_API_KEY;
+    const prevPublisher = process.env.X9_LINKEDIN_PUBLISHER_ENABLED;
+    process.env.MYCEL_API_BASE = "https://mycel.test";
+    process.env.MYCEL_16X9_API_KEY = "test-key";
+    delete process.env.X9_LINKEDIN_PUBLISHER_ENABLED;
+    const calls: { method: string; body: Record<string, string> }[] = [];
+    const original = globalThis.fetch;
+    globalThis.fetch = (async (_url: string, init?: RequestInit) => {
+      calls.push({
+        method: init?.method || "GET",
+        body: JSON.parse(String(init?.body || "{}")) as Record<string, string>,
+      });
+      if (init?.method === "PATCH") return new Response("no row", { status: 404 });
+      return new Response("{}", { status: 201 });
+    }) as typeof fetch;
+    try {
+      const result = await writeTarget({
+        id: `${ID}:company`,
+        postId: ID,
+        target: "company",
+        status: "approved",
+        finalText: "Hello there",
+        imageVersion: "",
+        idempotencyKey: "key",
+      });
+      expect(result.status).toBe("received");
+      expect(calls.map((call) => call.method)).toEqual(["PATCH", "POST"]);
+      expect(calls[1].body.id).toBe(`${ID}:company`);
+      expect(calls[1].body.target).toBe("company");
+      expect(calls[1].body.final_text).toBe("Hello there");
+    } finally {
+      globalThis.fetch = original;
+      if (prevBase === undefined) delete process.env.MYCEL_API_BASE;
+      else process.env.MYCEL_API_BASE = prevBase;
+      if (prevKey === undefined) delete process.env.MYCEL_16X9_API_KEY;
+      else process.env.MYCEL_16X9_API_KEY = prevKey;
+      if (prevPublisher === undefined) delete process.env.X9_LINKEDIN_PUBLISHER_ENABLED;
+      else process.env.X9_LINKEDIN_PUBLISHER_ENABLED = prevPublisher;
+    }
   });
 });
