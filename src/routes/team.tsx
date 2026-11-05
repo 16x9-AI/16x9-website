@@ -22,7 +22,7 @@ export const Route = createFileRoute("/team")({
   loader: async () => {
     const data = await loadTeam();
     if (data.kind === "anonymous") {
-      throw redirect({ to: "/login", search: { next: "/team" } });
+      throw redirect({ to: "/login", search: { next: "/team", error: undefined } });
     }
     return data;
   },

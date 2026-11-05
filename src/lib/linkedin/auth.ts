@@ -1,7 +1,8 @@
 /**
- * Sign-in routes. Response shapes match Frontier Desk's OTP routes.
+ * Email-code handlers kept for the parity tests. They are not mounted.
+ * /login signs in with Google (google.ts) and the admin allowlist.
  * X9_OTP_DEV_ECHO=1 may return the code only when NODE_ENV is not production
- * and SES is unset, so a local review can finish without a mail account.
+ * and SES is unset.
  */
 
 import { sendOtpEmail, sesConfigured } from "./email";

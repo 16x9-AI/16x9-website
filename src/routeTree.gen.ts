@@ -26,8 +26,8 @@ import { Route as WorkSlugRouteImport } from './routes/work.$slug'
 import { Route as ApiAuthLogoutRouteImport } from './routes/api/auth/logout'
 import { Route as ApiAuthSessionRouteImport } from './routes/api/auth/session'
 import { Route as ApiCronPagePostVisualsRouteImport } from './routes/api/cron/page-post-visuals'
-import { Route as ApiAuthOtpStartRouteImport } from './routes/api/auth/otp/start'
-import { Route as ApiAuthOtpVerifyRouteImport } from './routes/api/auth/otp/verify'
+import { Route as ApiAuthGoogleCallbackRouteImport } from './routes/api/auth/google/callback'
+import { Route as ApiAuthGoogleStartRouteImport } from './routes/api/auth/google/start'
 import { Route as ApiTeamLinkedinDecideRouteImport } from './routes/api/team/linkedin/decide'
 import { Route as ApiTeamLinkedinVisualRouteImport } from './routes/api/team/linkedin/visual'
 
@@ -116,14 +116,14 @@ const ApiCronPagePostVisualsRoute = ApiCronPagePostVisualsRouteImport.update({
   path: '/api/cron/page-post-visuals',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiAuthOtpStartRoute = ApiAuthOtpStartRouteImport.update({
-  id: '/api/auth/otp/start',
-  path: '/api/auth/otp/start',
+const ApiAuthGoogleCallbackRoute = ApiAuthGoogleCallbackRouteImport.update({
+  id: '/api/auth/google/callback',
+  path: '/api/auth/google/callback',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiAuthOtpVerifyRoute = ApiAuthOtpVerifyRouteImport.update({
-  id: '/api/auth/otp/verify',
-  path: '/api/auth/otp/verify',
+const ApiAuthGoogleStartRoute = ApiAuthGoogleStartRouteImport.update({
+  id: '/api/auth/google/start',
+  path: '/api/auth/google/start',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiTeamLinkedinDecideRoute = ApiTeamLinkedinDecideRouteImport.update({
@@ -155,8 +155,8 @@ export interface FileRoutesByFullPath {
   '/api/auth/logout': typeof ApiAuthLogoutRoute
   '/api/auth/session': typeof ApiAuthSessionRoute
   '/api/cron/page-post-visuals': typeof ApiCronPagePostVisualsRoute
-  '/api/auth/otp/start': typeof ApiAuthOtpStartRoute
-  '/api/auth/otp/verify': typeof ApiAuthOtpVerifyRoute
+  '/api/auth/google/callback': typeof ApiAuthGoogleCallbackRoute
+  '/api/auth/google/start': typeof ApiAuthGoogleStartRoute
   '/api/team/linkedin/decide': typeof ApiTeamLinkedinDecideRoute
   '/api/team/linkedin/visual': typeof ApiTeamLinkedinVisualRoute
 }
@@ -178,8 +178,8 @@ export interface FileRoutesByTo {
   '/api/auth/logout': typeof ApiAuthLogoutRoute
   '/api/auth/session': typeof ApiAuthSessionRoute
   '/api/cron/page-post-visuals': typeof ApiCronPagePostVisualsRoute
-  '/api/auth/otp/start': typeof ApiAuthOtpStartRoute
-  '/api/auth/otp/verify': typeof ApiAuthOtpVerifyRoute
+  '/api/auth/google/callback': typeof ApiAuthGoogleCallbackRoute
+  '/api/auth/google/start': typeof ApiAuthGoogleStartRoute
   '/api/team/linkedin/decide': typeof ApiTeamLinkedinDecideRoute
   '/api/team/linkedin/visual': typeof ApiTeamLinkedinVisualRoute
 }
@@ -202,8 +202,8 @@ export interface FileRoutesById {
   '/api/auth/logout': typeof ApiAuthLogoutRoute
   '/api/auth/session': typeof ApiAuthSessionRoute
   '/api/cron/page-post-visuals': typeof ApiCronPagePostVisualsRoute
-  '/api/auth/otp/start': typeof ApiAuthOtpStartRoute
-  '/api/auth/otp/verify': typeof ApiAuthOtpVerifyRoute
+  '/api/auth/google/callback': typeof ApiAuthGoogleCallbackRoute
+  '/api/auth/google/start': typeof ApiAuthGoogleStartRoute
   '/api/team/linkedin/decide': typeof ApiTeamLinkedinDecideRoute
   '/api/team/linkedin/visual': typeof ApiTeamLinkedinVisualRoute
 }
@@ -227,8 +227,8 @@ export interface FileRouteTypes {
     | '/api/auth/logout'
     | '/api/auth/session'
     | '/api/cron/page-post-visuals'
-    | '/api/auth/otp/start'
-    | '/api/auth/otp/verify'
+    | '/api/auth/google/callback'
+    | '/api/auth/google/start'
     | '/api/team/linkedin/decide'
     | '/api/team/linkedin/visual'
   fileRoutesByTo: FileRoutesByTo
@@ -250,8 +250,8 @@ export interface FileRouteTypes {
     | '/api/auth/logout'
     | '/api/auth/session'
     | '/api/cron/page-post-visuals'
-    | '/api/auth/otp/start'
-    | '/api/auth/otp/verify'
+    | '/api/auth/google/callback'
+    | '/api/auth/google/start'
     | '/api/team/linkedin/decide'
     | '/api/team/linkedin/visual'
   id:
@@ -273,8 +273,8 @@ export interface FileRouteTypes {
     | '/api/auth/logout'
     | '/api/auth/session'
     | '/api/cron/page-post-visuals'
-    | '/api/auth/otp/start'
-    | '/api/auth/otp/verify'
+    | '/api/auth/google/callback'
+    | '/api/auth/google/start'
     | '/api/team/linkedin/decide'
     | '/api/team/linkedin/visual'
   fileRoutesById: FileRoutesById
@@ -297,8 +297,8 @@ export interface RootRouteChildren {
   ApiAuthLogoutRoute: typeof ApiAuthLogoutRoute
   ApiAuthSessionRoute: typeof ApiAuthSessionRoute
   ApiCronPagePostVisualsRoute: typeof ApiCronPagePostVisualsRoute
-  ApiAuthOtpStartRoute: typeof ApiAuthOtpStartRoute
-  ApiAuthOtpVerifyRoute: typeof ApiAuthOtpVerifyRoute
+  ApiAuthGoogleCallbackRoute: typeof ApiAuthGoogleCallbackRoute
+  ApiAuthGoogleStartRoute: typeof ApiAuthGoogleStartRoute
   ApiTeamLinkedinDecideRoute: typeof ApiTeamLinkedinDecideRoute
   ApiTeamLinkedinVisualRoute: typeof ApiTeamLinkedinVisualRoute
 }
@@ -424,18 +424,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiCronPagePostVisualsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/auth/otp/start': {
-      id: '/api/auth/otp/start'
-      path: '/api/auth/otp/start'
-      fullPath: '/api/auth/otp/start'
-      preLoaderRoute: typeof ApiAuthOtpStartRouteImport
+    '/api/auth/google/callback': {
+      id: '/api/auth/google/callback'
+      path: '/api/auth/google/callback'
+      fullPath: '/api/auth/google/callback'
+      preLoaderRoute: typeof ApiAuthGoogleCallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/auth/otp/verify': {
-      id: '/api/auth/otp/verify'
-      path: '/api/auth/otp/verify'
-      fullPath: '/api/auth/otp/verify'
-      preLoaderRoute: typeof ApiAuthOtpVerifyRouteImport
+    '/api/auth/google/start': {
+      id: '/api/auth/google/start'
+      path: '/api/auth/google/start'
+      fullPath: '/api/auth/google/start'
+      preLoaderRoute: typeof ApiAuthGoogleStartRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/team/linkedin/decide': {
@@ -473,8 +473,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAuthLogoutRoute: ApiAuthLogoutRoute,
   ApiAuthSessionRoute: ApiAuthSessionRoute,
   ApiCronPagePostVisualsRoute: ApiCronPagePostVisualsRoute,
-  ApiAuthOtpStartRoute: ApiAuthOtpStartRoute,
-  ApiAuthOtpVerifyRoute: ApiAuthOtpVerifyRoute,
+  ApiAuthGoogleCallbackRoute: ApiAuthGoogleCallbackRoute,
+  ApiAuthGoogleStartRoute: ApiAuthGoogleStartRoute,
   ApiTeamLinkedinDecideRoute: ApiTeamLinkedinDecideRoute,
   ApiTeamLinkedinVisualRoute: ApiTeamLinkedinVisualRoute,
 }
