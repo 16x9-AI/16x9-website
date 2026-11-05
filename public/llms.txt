@@ -43,6 +43,7 @@ Channel partner: [Frontier Desk](https://www.frontierdesk.ai) handles sales, rai
 
 - [What runs in our own companies](https://16x9.ai/#work): systems running, in pilot or being built in 16x9's own businesses, audited Q3 2026.
 - [Daily AI-industry report](https://16x9.ai/intel): about 1,800 stories from 50 sources, ranked and published every morning.
+- [Articles](https://16x9.ai/articles): sourced notes from the research desk. The daily briefing stays on Intel.
 
 ## Contact
 

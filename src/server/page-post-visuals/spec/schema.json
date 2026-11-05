@@ -1,0 +1,5 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$comment": "Permissive stand-in so the cloned validator loads. The figure and date checks in validate.mjs still run after this. Replace with Frontier Desk spec/schema.json before a production render.",
+  "type": "object"
+}
