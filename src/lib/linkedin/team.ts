@@ -1,8 +1,13 @@
 /**
- * Who may open /team. FD's named-person and domain allowlist, with 16x9's own
- * defaults. FD's people are not copied. Extra reviewers come from X9_TEAM_EMAILS.
+ * Who may open /login and /team. An explicit address list, never a domain.
+ * Unset X9_TEAM_EMAILS keeps the two defaults. A non-blank value replaces
+ * them. "@16x9.ai" and a bare domain do not admit anyone.
  * Notices go out only when X9_TEAM_NOTIFY_EMAILS is set. An empty list sends nothing.
  */
+
+const ADDRESS = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+export const DEFAULT_TEAM_EMAILS = ["nelson.sanmiguel@16x9.ai", "info@16x9.ai"] as const;
 
 const list = (v: string | undefined) =>
   (v ?? "")
@@ -10,14 +15,27 @@ const list = (v: string | undefined) =>
     .map((s) => s.trim().toLowerCase())
     .filter(Boolean);
 
-const TEAM_DOMAINS = ["16x9.ai"];
-const TEAM_PEOPLE = ["nelson.sanmiguel@16x9.ai"];
+function addresses(value: string | undefined): string[] {
+  const seen = new Set<string>();
+  for (const part of (value ?? "").split(",")) {
+    const email = part.trim().toLowerCase();
+    if (!ADDRESS.test(email) || email.includes("*") || seen.has(email)) continue;
+    seen.add(email);
+  }
+  return [...seen];
+}
+
+/** The admin allowlist. A blank env keeps the defaults. Any other value replaces them. */
+export function teamAllowlist(): string[] {
+  const raw = process.env.X9_TEAM_EMAILS;
+  if (raw == null || raw.trim() === "") return [...DEFAULT_TEAM_EMAILS];
+  return addresses(raw);
+}
 
 export function isTeamEmail(email: string | null | undefined): boolean {
   const e = (email ?? "").trim().toLowerCase();
-  if (!e.includes("@")) return false;
-  if ([...TEAM_PEOPLE, ...list(process.env.X9_TEAM_EMAILS)].includes(e)) return true;
-  return TEAM_DOMAINS.includes(e.split("@")[1] ?? "");
+  if (!ADDRESS.test(e) || e.includes("*")) return false;
+  return teamAllowlist().includes(e);
 }
 
 export function teamNotifyRecipients(): string[] {

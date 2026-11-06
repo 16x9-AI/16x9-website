@@ -125,12 +125,20 @@ describe("destinations", () => {
 });
 
 describe("team gate", () => {
-  it("allows the 16x9 domain and Nelson, and does not copy Frontier Desk defaults", () => {
-    expect(isTeamEmail("nelson.sanmiguel@16x9.ai")).toBe(true);
-    expect(isTeamEmail("someone@16x9.ai")).toBe(true);
-    expect(isTeamEmail("person@frontierdesk.ai")).toBe(false);
-    expect(isTeamEmail("colton@aeonsyndicate.com")).toBe(false);
-    expect(teamNotifyRecipients()).toEqual([]);
+  it("allows the named admins and does not copy Frontier Desk defaults or the domain", () => {
+    const prev = process.env.X9_TEAM_EMAILS;
+    delete process.env.X9_TEAM_EMAILS;
+    try {
+      expect(isTeamEmail("nelson.sanmiguel@16x9.ai")).toBe(true);
+      expect(isTeamEmail("info@16x9.ai")).toBe(true);
+      expect(isTeamEmail("someone@16x9.ai")).toBe(false);
+      expect(isTeamEmail("person@frontierdesk.ai")).toBe(false);
+      expect(isTeamEmail("colton@aeonsyndicate.com")).toBe(false);
+      expect(teamNotifyRecipients()).toEqual([]);
+    } finally {
+      if (prev === undefined) delete process.env.X9_TEAM_EMAILS;
+      else process.env.X9_TEAM_EMAILS = prev;
+    }
   });
 });
 

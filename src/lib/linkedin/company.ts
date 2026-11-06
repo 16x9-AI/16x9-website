@@ -20,9 +20,11 @@ export const COMPANY = {
   blobPrefix: "x9-page-posts/",
   sessionCookie: "x9_portal_session",
   challengeCookie: "x9_otp_challenge",
+  googleStateCookie: "x9_google_oauth",
   issuer: "16x9",
   sessionAudience: "x9-portal",
   otpAudience: "x9-otp",
+  googleAudience: "x9-google",
   /** Drafter idempotency, same shape as FD's `li-page:<note_id>`. */
   pageKey: (noteId: string) => `li-page:${noteId}`,
   /** Visual idempotency, same shape as FD's `li-visual:<post_id>`. */
