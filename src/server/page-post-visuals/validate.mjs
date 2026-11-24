@@ -68,6 +68,11 @@ export function displayedStrings(spec) {
   return out;
 }
 
+function dateLabelFor(iso) {
+  const [y, m, d] = iso.split("-").map(Number);
+  return `${["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][m - 1]} ${d}, ${y}`;
+}
+
 export function validateSpec(spec, noteText, { date, title } = {}) {
   if (spec && typeof spec === "object" && ("unsupported_type" in spec || "unsupported_layout" in spec)) {
     if (!checkSchema(spec)) return { status: "invalid", errors: schemaErrors(), offending: [] };
@@ -90,10 +95,60 @@ export function validateSpec(spec, noteText, { date, title } = {}) {
     }
   }
 
-  if (date && spec.chrome && spec.chrome.dateLabel) {
-    const [y, m, d] = date.split("-").map(Number);
-    const expected = `${["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][m - 1]} ${d}, ${y}`;
-    if (spec.chrome.dateLabel !== expected) errors.push(`chrome.dateLabel "${spec.chrome.dateLabel}" does not match --date ${date} (expected "${expected}")`);
+  if (date) {
+    if (spec.chrome.dateLabel !== dateLabelFor(date)) errors.push(`chrome.dateLabel "${spec.chrome.dateLabel}" does not match --date ${date} (expected "${dateLabelFor(date)}")`);
+  }
+
+  // Geometry that must agree with displayed figures (never displayed itself).
+  const single = (v) => {
+    const t = extractNumbers(extractDates(v).rest);
+    return t.length === 1 ? parseFloat(t[0].replace("$", "")) : null;
+  };
+  const close = (a, b) => Math.abs(a - b) <= Math.max(1e-9, Math.abs(b) * 0.01);
+  const V = spec.visual;
+  const geo = (cond, msg) => {
+    if (!cond) errors.push(msg);
+  };
+  if (V && V.kind === "tiles") {
+    V.tiles.forEach((t, i) => {
+      const x = single(t.value);
+      if (x !== null && !close(t.n, x)) errors.push(`visual.tiles[${i}].n=${t.n} does not match displayed value "${t.value}"`);
+    });
+  } else if (V && V.kind === "facility") {
+    const x = single(V.drawn.value);
+    if (x !== null && !close(V.drawn.n, x)) errors.push(`visual.drawn.n=${V.drawn.n} does not match displayed value "${V.drawn.value}"`);
+  } else if (V && V.kind === "bars") {
+    V.items.forEach((t, i) => {
+      const x = single(t.value);
+      if (x !== null && !close(t.n, x)) errors.push(`visual.items[${i}].n=${t.n} does not match displayed value "${t.value}"`);
+    });
+  } else if (V && V.kind === "callcard") {
+    const nums = extractNumbers(extractDates(V.base.value).rest).map((t) => parseFloat(t));
+    geo(nums.length === 2 && nums[0] === V.base.hit && nums[1] === V.base.total, `visual.base hit/total (${V.base.hit}/${V.base.total}) must equal the two figures in "${V.base.value}"`);
+  } else if (V && V.kind === "chart") {
+    const last = V.points[V.points.length - 1];
+    if (last.v !== V.threshold) errors.push(`visual.threshold ${V.threshold} must equal the last point value ${last.v}`);
+    const vals = [...note.numbers].map((t) => parseFloat(t.replace("$", "")));
+    if (!vals.some((v) => v === V.threshold)) errors.push(`visual.threshold ${V.threshold} does not appear as a number in the note`);
+    const ax = V.axis;
+    if (ax.endYear < ax.startYear || last.y < ax.startYear || last.y > ax.endYear) errors.push("visual.axis does not cover the plotted points");
+  }
+  if (spec.g && spec.type === "build_out_tracker") {
+    spec.g.rows.forEach((r, i) => {
+      const x = single(r.value);
+      geo(x !== null && close(r.n, x), `g.rows[${i}].n=${r.n} does not match displayed value "${r.value}"`);
+    });
+    spec.g.fuel.forEach((r, i) => {
+      const x = single(r.value);
+      geo(x !== null && close(r.n, x), `g.fuel[${i}].n=${r.n} does not match displayed value "${r.value}"`);
+    });
+    geo(close(spec.g.total, spec.g.rows[0].n), "g.total must equal the first row n (the full queue)");
+  }
+  if (spec.g && spec.type === "owner_explainer") {
+    spec.g.bars.forEach((r, i) => {
+      const x = single(r.value);
+      geo(x !== null && close(r.n, x), `g.bars[${i}].n=${r.n} does not match displayed value "${r.value}"`);
+    });
   }
 
   if (offending.length) errors.unshift(`${offending.length} figure token(s) not found verbatim in the note`);
@@ -106,6 +161,7 @@ function schemaErrors() {
   );
 }
 
+// Schema-only check, used by engine.mjs.
 export function checkSpecSchema(spec) {
   return checkSchema(spec) ? [] : schemaErrors();
 }
