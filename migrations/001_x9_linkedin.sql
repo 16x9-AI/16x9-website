@@ -5,7 +5,7 @@
 -- Ecosystem: 318b5ffd-6706-492f-912b-37ed4bc28a55
 -- Drafter key: li-page:<note_id>
 -- Visual key:  li-visual:<post_id>
--- Target id:   <post_id>:<target>
+-- Target key:  <post_id>:<target>, stored in target_key (id is a server uuid)
 --
 -- This file is the table definition. It does not connect to Mycel and it
 -- contains no credentials. Apply it in the 16x9 ecosystem when that write
@@ -54,7 +54,8 @@ create unique index if not exists x9_linkedin_page_visuals_idempotency
   on x9_linkedin_page_visuals (idempotency_key);
 
 create table if not exists x9_linkedin_page_targets (
-  id text primary key,
+  id uuid primary key default gen_random_uuid(),
+  target_key text not null unique,
   post_id uuid not null references x9_linkedin_page_posts (id),
   target text not null check (target in ('company', 'personal')),
   status text not null default 'approved'

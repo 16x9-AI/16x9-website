@@ -162,7 +162,7 @@ export async function readExistingTargets(
   const rows = await readRows(COMPANY.targetsTable, "post_id", postId, 10);
   return (rows ?? [])
     .map((row) => ({
-      id: str(row.id) || `${postId}:${str(row.target)}`,
+      id: str(row.target_key) || `${postId}:${str(row.target)}`,
       status: str(row.status),
       idempotencyKey: str(row.idempotency_key),
       postUrn: str(row.post_urn),
