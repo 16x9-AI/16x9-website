@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "lint": "eslint .",
     "test": "vitest run",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "x9:fetch": "node scripts/x9-intel-fetch.ts"
   },
   "dependencies": {
     "@aws-sdk/client-ses": "^3.1162.0",
