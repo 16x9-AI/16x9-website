@@ -1,7 +1,7 @@
 /**
  * Read-only selection of one research episode from a dated industry-daily-report JSON.
  * It does not publish, draft, or post. At most one episode per report.
- * Buzz is not called from here.
+ * Slack is not called from here.
  */
 
 export type ResearchSource = { title: string; url: string };

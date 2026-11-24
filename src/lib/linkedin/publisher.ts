@@ -30,6 +30,7 @@ export function publicationKey(
 }
 
 export type ExistingTarget = {
+  /** The logical key "<post_id>:<target>" (target_key), not the row uuid. */
   id: string;
   status: string;
   idempotencyKey: string;
