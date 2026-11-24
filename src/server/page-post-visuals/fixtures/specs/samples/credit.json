@@ -1,0 +1,54 @@
+{
+ "spec_version": "1.0",
+ "type": "lender_watch",
+ "brand": {
+  "wordmark": "Frontier Desk",
+  "tokenSet": "frontier-desk"
+ },
+ "chrome": {
+  "typeLabel": "Credit facility",
+  "dateLabel": "Oct 21, 2026",
+  "source": "ASURE SOFTWARE INC 8-K, 16 October 2026"
+ },
+ "headline": "Asure Software signed a $115 million credit facility with MUFG as agent",
+ "subhead": "On October 15, 2026, Asure Software, Inc. entered into a credit agreement with MUFG Bank, Ltd. as administrative agent.",
+ "visual": {
+  "kind": "facility",
+  "label": "Senior credit facility",
+  "total": "Up to $115 million",
+  "drawn": {
+   "value": "$85.0 million",
+   "name": "Term loan facility, all drawn October 15, 2026",
+   "n": 85
+  },
+  "rest": {
+   "value": "Rest of the facility",
+   "name": "Not itemised in the note",
+   "n": 30
+  }
+ },
+ "rowsHeader": [
+  "Party or term",
+  "Amount"
+ ],
+ "rows": [
+  {
+   "title": "MUFG Bank, Ltd.",
+   "sub": "Administrative agent, with the lenders party to the agreement",
+   "value": "",
+   "meter": null
+  },
+  {
+   "title": "Asure Software, Inc.",
+   "sub": "Borrower, with certain of its subsidiaries as guarantors",
+   "value": "",
+   "meter": null
+  },
+  {
+   "title": "Term loan facility",
+   "sub": "All of it drawn on October 15, 2026",
+   "value": "$85.0 million",
+   "meter": 73.9
+  }
+ ]
+}
