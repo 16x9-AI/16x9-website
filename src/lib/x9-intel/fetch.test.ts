@@ -1,9 +1,14 @@
-import { describe, expect, it, vi } from "vitest";
+import { createHash } from "node:crypto";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { afterAll, describe, expect, it, vi } from "vitest";
 import {
   buildPayload,
   extractParagraphs,
   fetchSources,
   readReport,
+  readReportFile,
   shouldWriteMycel,
   summarizeRun,
   upsertDailyInput,
@@ -381,5 +386,65 @@ describe("shouldWriteMycel", () => {
     expect(shouldWriteMycel({ dryRun: false, enabled: "TRUE" })).toBe(false);
     expect(shouldWriteMycel({ dryRun: false, enabled: "" })).toBe(false);
     expect(shouldWriteMycel({ dryRun: false, enabled: undefined })).toBe(false);
+  });
+});
+
+describe("readReportFile", () => {
+  const dir = mkdtempSync(join(tmpdir(), "x9-report-"));
+  afterAll(() => rmSync(dir, { recursive: true, force: true }));
+  const write = (name: string, content: string) => {
+    const p = join(dir, name);
+    writeFileSync(p, content);
+    return p;
+  };
+  const blobSha = (b: Buffer) => createHash("sha1").update(`blob ${b.length}\0`).update(b).digest("hex");
+  const raw = JSON.stringify({ date: "2026-11-24", episodes: [{ title: "A" }] });
+
+  it("returns the git blob sha, equal to what readReport gives for the same bytes", async () => {
+    const p = write("ok.json", raw);
+    const file = await readReportFile(p, { expectedDate: "2026-11-24" });
+    expect(file.sha).toBe(blobSha(Buffer.from(raw)));
+    const stub = vi.fn(async () => new Response(raw));
+    const api = await readReport("2026-11-24", { token: "t", fetch: stub as unknown as typeof fetch });
+    expect(file.sha).toBe(api.sha);
+    expect(file.report).toEqual(api.report);
+  });
+
+  it("fails with a fixed message that does not quote invalid JSON", async () => {
+    const MARKER = "SECRET-REPORT-TEXT-MARKER";
+    const p = write("bad.json", `{"episodes": ${MARKER}`);
+    const err = await readReportFile(p).catch((e: Error) => e);
+    expect(err).toBeInstanceOf(Error);
+    expect((err as Error).message).toMatch(/not valid JSON/);
+    expect((err as Error).message).not.toContain(MARKER);
+  });
+
+  it("fails when episodes is missing or the file is missing", async () => {
+    const p = write("noep.json", JSON.stringify({ date: "2026-11-24" }));
+    await expect(readReportFile(p)).rejects.toThrow(/no episodes array/);
+    await expect(readReportFile(join(dir, "absent.json"))).rejects.toThrow(/could not be read/);
+  });
+
+  it("fails on a date mismatch without printing either date", async () => {
+    const p = write("mismatch.json", raw);
+    const err = await readReportFile(p, { expectedDate: "2026-11-23" }).catch((e: Error) => e);
+    expect((err as Error).message).toMatch(/does not match --date/);
+    expect((err as Error).message).not.toContain("2026-11-2");
+  });
+
+  it("takes the date from the report when --date is omitted, and requires YYYY-MM-DD", async () => {
+    const out = await readReportFile(write("d.json", raw));
+    expect(out.date).toBe("2026-11-24");
+    expect(out.report.date).toBe("2026-11-24");
+    const bad = write("nodate.json", JSON.stringify({ date: "24/11/2026", episodes: [] }));
+    await expect(readReportFile(bad)).rejects.toThrow(/no valid date/);
+    const none = write("nodate2.json", JSON.stringify({ episodes: [] }));
+    await expect(readReportFile(none)).rejects.toThrow(/no valid date/);
+  });
+
+  it("fills in the date from --date when the report has none", async () => {
+    const p = write("fill.json", JSON.stringify({ episodes: [] }));
+    const out = await readReportFile(p, { expectedDate: "2026-11-24" });
+    expect(out.report.date).toBe("2026-11-24");
   });
 });
