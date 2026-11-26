@@ -7,6 +7,7 @@ import {
   buildPayload,
   extractParagraphs,
   fetchSources,
+  isPublicHttpUrl,
   pickPrimaryLinks,
   readReport,
   readReportFile,
@@ -339,6 +340,300 @@ describe("fetchSources primary-source discovery", () => {
       via: "https://news.example/a",
       error: "HTTP 404",
     });
+  });
+});
+
+describe("isPublicHttpUrl", () => {
+  it("accepts public hosts and public IP literals", () => {
+    for (const u of [
+      "https://corp.example/post",
+      "http://sub.news.example:8080/a?b=1",
+      "https://8.8.8.8/",
+      "https://172.15.0.1/",
+      "https://172.32.0.1/",
+      "https://100.63.0.1/",
+      "https://100.128.0.1/",
+      "https://[2606:4700::1111]/",
+      "https://[::ffff:8.8.8.8]/",
+    ]) {
+      expect(isPublicHttpUrl(u), u).toBe(true);
+    }
+  });
+
+  it("rejects non-http(s), userinfo, single-label and reserved names", () => {
+    for (const u of [
+      "ftp://corp.example/f",
+      "file:///etc/passwd",
+      "javascript:alert(1)",
+      "not a url",
+      "https://user@corp.example/",
+      "https://user:pw@corp.example/",
+      "http://intranet/",
+      "http://localhost/",
+      "http://LOCALHOST:3000/",
+      "http://app.localhost/",
+      "http://printer.local/",
+      "http://db.internal/",
+      "http://metadata.google.internal/computeMetadata/v1/",
+    ]) {
+      expect(isPublicHttpUrl(u), u).toBe(false);
+    }
+  });
+
+  it("rejects private, loopback, link-local, CGNAT and metadata IPv4 literals", () => {
+    for (const u of [
+      "http://127.0.0.1/",
+      "http://127.255.255.254/",
+      "http://10.1.2.3/",
+      "http://172.16.0.1/",
+      "http://172.31.255.255/",
+      "http://192.168.1.1/",
+      "http://169.254.169.254/latest/meta-data/",
+      "http://100.64.0.1/",
+      "http://100.127.255.255/",
+      "http://0.0.0.0/",
+      "http://0.1.2.3/",
+      "http://2130706433/", // decimal form of 127.0.0.1, normalised by URL
+      "http://0x7f.1/",
+    ]) {
+      expect(isPublicHttpUrl(u), u).toBe(false);
+    }
+  });
+
+  it("rejects private IPv6 literals, including IPv4-mapped ones", () => {
+    for (const u of [
+      "http://[::1]/",
+      "http://[::]/",
+      "http://[fc00::1]/",
+      "http://[fd12:3456::1]/",
+      "http://[fe80::1]/",
+      "http://[febf::1]/",
+      "http://[::ffff:127.0.0.1]/",
+      "http://[::ffff:169.254.169.254]/",
+      "http://[::ffff:10.0.0.1]/",
+      "http://[::ffff:c0a8:101]/",
+    ]) {
+      expect(isPublicHttpUrl(u), u).toBe(false);
+    }
+  });
+});
+
+describe("pickPrimaryLinks safety and filters", () => {
+  const page = "https://news.example/story";
+  const l = (url: string, text = "the announcement") => ({ url, text });
+  const pick = (links: { url: string; text: string }[]) => pickPrimaryLinks(page, links, { max: 20 });
+
+  it("drops non-public links", () => {
+    expect(
+      pick([
+        l("http://169.254.169.254/latest"),
+        l("http://localhost:8080/admin"),
+        l("https://user:pw@corp.example/x"),
+        l("http://intranet/wiki"),
+        l("https://corp.example/ok"),
+      ]),
+    ).toEqual(["https://corp.example/ok"]);
+  });
+
+  it("matches DENY_PATH on whole path segments only", () => {
+    const kept = [
+      "https://a.example/shareholder-letter",
+      "https://a.example/investors/shares",
+      "https://a.example/registered-offering",
+      "https://a.example/termsheet",
+      "https://a.example/cookbook",
+    ];
+    const dropped = [
+      "https://a.example/share",
+      "https://a.example/share/1",
+      "https://a.example/login",
+      "https://a.example/privacy",
+      "https://a.example/newsletter/x",
+      "https://a.example/newsletters",
+      "https://a.example/about/terms",
+      "https://a.example/cookie-policy",
+      "https://a.example/privacy.html",
+    ];
+    expect(pick([...kept, ...dropped].map((u) => l(u)))).toEqual(kept);
+  });
+
+  it("drops affiliate and click-tracking redirect links", () => {
+    const dropped = [
+      "https://go.vendor.example/c/123/456",
+      "https://click.vendor.example/c/abc",
+      "https://links.vendor.example/page?subId=9",
+      "https://track.vendor.example/page?u1=abc",
+      "https://redirect.vendor.example/page?clickref=zz",
+      "https://goto.vendor.example/x?subid1=1",
+      "https://shop.sjv.io/abc",
+      "https://x.pxf.io/abc",
+      "https://www.anrdoezrs.net/click-1",
+      "https://www.dpbolvw.net/click-1",
+      "https://www.kqzyfj.net/click-1",
+      "https://www.jdoqocy.com/click-1",
+      "https://www.tkqlhce.com/click-1",
+      "https://www.awin1.com/cread.php?x=1",
+      "https://click.linksynergy.com/deeplink",
+      "https://www.shareasale.com/r.cfm",
+      "https://x.impactradius-event.com/a",
+      "https://go.skimresources.com/?id=1",
+      "https://amzn.to/3abc",
+      "https://www.amazon.com/gp/product/B000?tag=site-20",
+    ];
+    const kept = [
+      "https://go.vendor.example/docs", // "go" host without a tracking path or param
+      "https://www.amazon.com/gp/product/B000", // no tag
+      "https://www.amazon.com/dp/B000?tag=site-20", // not a /gp/ path
+      "https://vendor.example/c/123", // /c/ on a normal host
+    ];
+    expect(pick([...dropped, ...kept].map((u) => l(u)))).toEqual(kept);
+  });
+});
+
+describe("fetchSources hardening", () => {
+  const news = (href: string) => `<p>${LONG} Read the <a href="${href}">official announcement</a>.</p>`;
+  const redirect = (location: string, status = 302) =>
+    new Response(null, { status, headers: { location } });
+  const withUrl = (res: Response, url: string) => {
+    Object.defineProperty(res, "url", { value: url });
+    return res;
+  };
+  const stubWith = (handler: (url: string, init?: RequestInit) => Response | Promise<Response>) =>
+    vi.fn(async (url: RequestInfo | URL, init?: RequestInit) => handler(String(url), init));
+  const run = (stub: ReturnType<typeof stubWith>, links: string[], extra = {}) =>
+    fetchSources([{ links }], { fetch: stub as unknown as typeof fetch, ...extra });
+
+  it("records a linked page redirecting to a metadata IP as 'blocked redirect' without fetching it", async () => {
+    const stub = stubWith((url) => {
+      if (url === "https://news.example/a") return html(news("https://corp.example/p"));
+      if (url === "https://corp.example/p") return redirect("http://169.254.169.254/latest/meta-data/");
+      return new Response("should not be fetched", { status: 200 });
+    });
+    const out = await run(stub, ["https://news.example/a"]);
+    expect(out[1]).toEqual({
+      episode_index: 0,
+      url: "https://corp.example/p",
+      paragraphs: [],
+      via: "https://news.example/a",
+      error: "blocked redirect",
+    });
+    expect(stub.mock.calls.map((c) => String(c[0]))).not.toContain("http://169.254.169.254/latest/meta-data/");
+    expect(stub).toHaveBeenCalledTimes(2);
+  });
+
+  it("fetches linked pages with redirect manual and follows relative Location hops itself", async () => {
+    const stub = stubWith((url) => {
+      if (url === "https://news.example/a") return html(news("https://corp.example/old"));
+      if (url === "https://corp.example/old") return redirect("/new");
+      if (url === "https://corp.example/new") return html(`<p>${LONG} Moved here.</p>`);
+      return new Response("nope", { status: 404 });
+    });
+    const out = await run(stub, ["https://news.example/a"]);
+    expect(out[1]).toMatchObject({ url: "https://corp.example/old", paragraphs: [`${LONG} Moved here.`] });
+    expect(out[1].error).toBeUndefined();
+    const linkedCalls = stub.mock.calls.filter((c) => String(c[0]).startsWith("https://corp.example"));
+    expect(linkedCalls.map((c) => String(c[0]))).toEqual(["https://corp.example/old", "https://corp.example/new"]);
+    expect(linkedCalls.every((c) => c[1]?.redirect === "manual")).toBe(true);
+  });
+
+  it("gives up after 5 redirect hops on a linked page", async () => {
+    let n = 0;
+    const stub = stubWith((url) => {
+      if (url === "https://news.example/a") return html(news("https://corp.example/r0"));
+      n++;
+      return redirect(`https://corp.example/r${n}`);
+    });
+    const out = await run(stub, ["https://news.example/a"]);
+    expect(out[1].error).toBe("too many redirects");
+    // initial request + 5 followed hops
+    expect(stub.mock.calls.filter((c) => String(c[0]).startsWith("https://corp.example"))).toHaveLength(6);
+  });
+
+  it("keeps redirect follow for episode links, but never fetches a non-public one", async () => {
+    const stub = stubWith((url) => html(`<p>${LONG}</p>`));
+    const out = await run(stub, ["https://a.example/1", "http://169.254.169.254/latest", "http://localhost/x"]);
+    expect(stub).toHaveBeenCalledTimes(1);
+    expect(stub.mock.calls[0][1]?.redirect).toBe("follow");
+    expect(out[0].paragraphs).toEqual([LONG]);
+    expect(out[1]).toMatchObject({ paragraphs: [], error: "blocked URL" });
+    expect(out[2]).toMatchObject({ paragraphs: [], error: "blocked URL" });
+  });
+
+  it("uses the final URL of an episode redirect for the domain comparison; via keeps the original", async () => {
+    const stub = stubWith((url) => {
+      if (url === "https://short.example/x") {
+        return withUrl(
+          html(
+            `<p>${LONG} <a href="/more">same site story</a> <a href="https://corp.example/doc">the filing</a></p>`,
+          ),
+          "https://news.example/story",
+        );
+      }
+      if (url === "https://corp.example/doc") return html(`<p>${LONG} Filing text.</p>`);
+      return new Response("nope", { status: 404 });
+    });
+    const out = await run(stub, ["https://short.example/x"]);
+    expect(out.map((s) => s.url)).toEqual(["https://short.example/x", "https://corp.example/doc"]);
+    expect(out[1].via).toBe("https://short.example/x");
+    // /more resolved against the final URL is same-domain, so it is not picked.
+    expect(stub.mock.calls.map((c) => String(c[0]))).not.toContain("https://news.example/more");
+  });
+
+  it("does not pick a link that points at an episode page's final URL", async () => {
+    const stub = stubWith((url) => {
+      if (url === "https://short.example/x") {
+        return withUrl(html(`<p>${LONG} nothing to follow here at all.</p>`), "https://corp.example/doc");
+      }
+      if (url === "https://news.example/a") return html(news("https://corp.example/doc#section"));
+      return new Response("nope", { status: 404 });
+    });
+    const out = await run(stub, ["https://short.example/x", "https://news.example/a"]);
+    expect(out.map((s) => s.url)).toEqual(["https://short.example/x", "https://news.example/a"]);
+    expect(stub).toHaveBeenCalledTimes(2);
+  });
+
+  it("takes links only from kept paragraphs, not boilerplate, duplicates or short blocks", async () => {
+    const page = [
+      `<p>Subscribe to our newsletter: <a href="https://spam.example/sub">sign up here</a> for the daily briefing.</p>`,
+      `<p>Short <a href="https://short.example/s">link text</a></p>`,
+      `<p>${LONG} <a href="https://keep.example/doc">the document</a></p>`,
+      `<p>${LONG} <a href="https://keep.example/doc">the document</a></p>`,
+      `<p>${LONG} but a dupe-text variant? <a href="https://other.example/y">another doc</a></p>`,
+    ].join("");
+    const stub = stubWith((url) => {
+      if (url === "https://news.example/a") return html(page);
+      return html(`<p>${LONG}</p>`);
+    });
+    const out = await run(stub, ["https://news.example/a"], { maxLinkedPerEpisode: 10 });
+    expect(out.map((s) => s.url)).toEqual([
+      "https://news.example/a",
+      "https://keep.example/doc",
+      "https://other.example/y",
+    ]);
+  });
+
+  it("ignores links in paragraphs past the 60-paragraph cap", async () => {
+    const many = Array.from({ length: 60 }, (_, n) => `<p>${LONG} Number ${n}.</p>`).join("");
+    const stub = stubWith((url) =>
+      url === "https://news.example/a"
+        ? html(`${many}<p>${LONG} Number 61. <a href="https://late.example/doc">late doc</a></p>`)
+        : html(`<p>${LONG}</p>`),
+    );
+    const out = await run(stub, ["https://news.example/a"]);
+    expect(out).toHaveLength(1);
+  });
+
+  it("drops affiliate links found on a page", async () => {
+    const stub = stubWith((url) =>
+      url === "https://news.example/a"
+        ? html(
+            `<p>${LONG} <a href="https://go.vendor.example/c/1/2">buy it</a> <a href="https://www.dpbolvw.net/click-1">deal</a> <a href="https://corp.example/real">the source</a></p>`,
+          )
+        : html(`<p>${LONG}</p>`),
+    );
+    const out = await run(stub, ["https://news.example/a"]);
+    expect(out.map((s) => s.url)).toEqual(["https://news.example/a", "https://corp.example/real"]);
+    expect(stub).toHaveBeenCalledTimes(2);
   });
 });
 

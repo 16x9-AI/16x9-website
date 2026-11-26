@@ -192,12 +192,15 @@ const BOILERPLATE =
   /\b(newsletter|subscribe|cookies?|sign up|all rights reserved|privacy policy|terms of (use|service)|accept all|manage preferences|follow us)\b/i;
 const BOILERPLATE_MAX_LENGTH = 240;
 
-export function extractParagraphs(html: string): string[] {
+type Block = { text: string; inner: string };
+
+/** One scan of the <p> blocks: the kept paragraphs, each with its raw inner HTML (for anchors). */
+function scanBlocks(html: string): Block[] {
   const cleaned = html
     .replace(/<!--[\s\S]*?-->/g, " ")
     .replace(/<(script|style|noscript|template)\b[\s\S]*?<\/\1\s*>/gi, " ");
   const seen = new Set<string>();
-  const out: string[] = [];
+  const out: Block[] = [];
   let chars = 0;
   for (const match of cleaned.matchAll(/<p\b[^>]*>([\s\S]*?)<\/p\s*>/gi)) {
     // Inline tags vanish without a gap (so "<b>bo</b>ld" stays one word); <br> and nested <p> become spaces.
@@ -212,11 +215,15 @@ export function extractParagraphs(html: string): string[] {
       text = text.slice(0, room).trimEnd();
     }
     seen.add(text);
-    out.push(text);
+    out.push({ text, inner: match[1] });
     chars += text.length;
     if (out.length >= MAX_PARAGRAPHS || chars >= MAX_CHARS) break;
   }
   return out;
+}
+
+export function extractParagraphs(html: string): string[] {
+  return scanBlocks(html).map((block) => block.text);
 }
 
 /* ---------- sources ---------- */
@@ -254,14 +261,11 @@ async function readCapped(res: Response, maxBytes: number): Promise<string> {
 
 export type PageLink = { url: string; text: string };
 
-/** Anchors inside <p> blocks (same block scan as extractParagraphs), resolved against `baseUrl`. */
-function extractParagraphLinks(html: string, baseUrl: string): PageLink[] {
-  const cleaned = html
-    .replace(/<!--[\s\S]*?-->/g, " ")
-    .replace(/<(script|style|noscript|template)\b[\s\S]*?<\/\1\s*>/gi, " ");
+/** Anchors inside the kept <p> blocks only (same filters as extractParagraphs), resolved against `baseUrl`. */
+function extractParagraphLinks(blocks: Block[], baseUrl: string): PageLink[] {
   const out: PageLink[] = [];
-  for (const block of cleaned.matchAll(/<p\b[^>]*>([\s\S]*?)<\/p\s*>/gi)) {
-    for (const anchor of block[1].matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a\s*>/gi)) {
+  for (const block of blocks) {
+    for (const anchor of block.inner.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a\s*>/gi)) {
       const href = /\bhref\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'>]+))/i.exec(anchor[1]);
       const raw = href ? (href[1] ?? href[2] ?? href[3] ?? "") : "";
       if (!raw.trim()) continue;
@@ -278,7 +282,76 @@ function extractParagraphLinks(html: string, baseUrl: string): PageLink[] {
   return out;
 }
 
-const SECOND_LEVEL_LABELS = new Set(["co", "com", "org", "net", "gov", "ac", "edu"]);
+/* ---------- SSRF guard ---------- */
+
+function isPublicIPv4(a: number, b: number): boolean {
+  if (a === 0 || a === 10 || a === 127) return false;
+  if (a === 172 && b >= 16 && b <= 31) return false;
+  if (a === 192 && b === 168) return false;
+  if (a === 169 && b === 254) return false;
+  if (a === 100 && b >= 64 && b <= 127) return false;
+  return true;
+}
+
+function parseIPv6(host: string): number[] | null {
+  let s = host;
+  const tail4 = /(\d+)\.(\d+)\.(\d+)\.(\d+)$/.exec(s);
+  if (tail4) {
+    const [p0, p1, p2, p3] = tail4.slice(1).map(Number);
+    if ([p0, p1, p2, p3].some((n) => n > 255)) return null;
+    s = `${s.slice(0, tail4.index)}${((p0 << 8) | p1).toString(16)}:${((p2 << 8) | p3).toString(16)}`;
+  }
+  const halves = s.split("::");
+  if (halves.length > 2) return null;
+  const head = halves[0] ? halves[0].split(":") : [];
+  const rest = halves.length === 2 && halves[1] ? halves[1].split(":") : [];
+  let groups: string[];
+  if (halves.length === 1) {
+    groups = head;
+  } else {
+    const fill = 8 - head.length - rest.length;
+    if (fill < 1) return null;
+    groups = [...head, ...Array<string>(fill).fill("0"), ...rest];
+  }
+  if (groups.length !== 8 || !groups.every((g) => /^[0-9a-f]{1,4}$/i.test(g))) return null;
+  return groups.map((g) => parseInt(g, 16));
+}
+
+/**
+ * SSRF guard for URLs taken from third-party HTML. True only for http(s) URLs without userinfo
+ * whose host is a dotted public name or a public IP literal. Out of scope: DNS rebinding (a public
+ * name that resolves to a private address); that needs a resolver-level check at connect time.
+ */
+export function isPublicHttpUrl(url: string): boolean {
+  let u: URL;
+  try {
+    u = new URL(url);
+  } catch {
+    return false;
+  }
+  if (u.protocol !== "http:" && u.protocol !== "https:") return false;
+  if (u.username || u.password) return false;
+  const host = u.hostname.toLowerCase().replace(/\.$/, "");
+  if (!host) return false;
+  if (host.startsWith("[")) {
+    const g = parseIPv6(host.slice(1, -1));
+    if (!g) return false;
+    if (g.every((x) => x === 0)) return false; // ::
+    if (g.slice(0, 7).every((x) => x === 0) && g[7] === 1) return false; // ::1
+    if ((g[0] & 0xfe00) === 0xfc00) return false; // fc00::/7
+    if ((g[0] & 0xffc0) === 0xfe80) return false; // fe80::/10
+    if (g.slice(0, 5).every((x) => x === 0) && g[5] === 0xffff) return isPublicIPv4(g[6] >> 8, g[6] & 0xff);
+    return true;
+  }
+  const v4 = /^(\d+)\.(\d+)\.(\d+)\.(\d+)$/.exec(host);
+  if (v4) return isPublicIPv4(Number(v4[1]), Number(v4[2]));
+  if (!host.includes(".")) return false;
+  if (host === "localhost" || host.endsWith(".localhost")) return false;
+  if (host.endsWith(".local") || host.endsWith(".internal")) return false;
+  return true;
+}
+
+const SECOND_LEVEL_LABELS =new Set(["co", "com", "org", "net", "gov", "ac", "edu"]);
 
 function bareHost(hostname: string): string {
   return hostname.toLowerCase().replace(/\.$/, "").replace(/^www\./, "");
@@ -313,7 +386,42 @@ const DENY_HOSTS = [
   "doubleclick.net",
   "thecube.net",
 ];
-const DENY_PATH = /(sign-?in|log-?in|subscribe|subscription|newsletter|register|share|cookie|privacy|terms)/i;
+// Whole path segments only: /share is out, /shareholder-letter and /investors/shares stay.
+const DENY_PATH = /(^|\/)(sign-?in|log-?in|subscribe|subscription|newsletters?|register|share|cookies?|privacy|terms)(\/|$|[.?-])/i;
+// Affiliate and click-tracking redirects are not primary sources.
+const TRACKING_HOST_LABELS = new Set(["go", "goto", "click", "track", "links", "redirect"]);
+const TRACKING_PARAMS = new Set(["subid", "subid1", "u1", "clickref"]);
+const AFFILIATE_HOSTS = [
+  "sjv.io",
+  "pxf.io",
+  "anrdoezrs.net",
+  "dpbolvw.net",
+  "kqzyfj.net",
+  "jdoqocy.com",
+  "tkqlhce.com",
+  "awin1.com",
+  "linksynergy.com",
+  "shareasale.com",
+  "impactradius-event.com",
+  "skimresources.com",
+  "amzn.to",
+];
+
+function isAffiliateLink(u: URL, host: string): boolean {
+  if (AFFILIATE_HOSTS.some((d) => host === d || host.endsWith(`.${d}`))) return true;
+  if (
+    (host === "amazon.com" || host.endsWith(".amazon.com")) &&
+    u.pathname.startsWith("/gp/") &&
+    u.searchParams.has("tag")
+  ) {
+    return true;
+  }
+  if (TRACKING_HOST_LABELS.has(host.split(".")[0])) {
+    if (/^\/c\//.test(u.pathname)) return true;
+    for (const key of u.searchParams.keys()) if (TRACKING_PARAMS.has(key.toLowerCase())) return true;
+  }
+  return false;
+}
 const SKIP_EXT = /\.(pdf|jpe?g|png|gif|webp|svg|zip|mp3|mp4)$/i;
 
 /** Cross-domain links from a page's body paragraphs that plausibly point at the primary document. */
@@ -338,7 +446,7 @@ export function pickPrimaryLinks(
     } catch {
       continue;
     }
-    if (u.protocol !== "http:" && u.protocol !== "https:") continue;
+    if (!isPublicHttpUrl(link.url)) continue;
     u.hash = "";
     const href = u.href;
     if (link.text.replace(/\s/g, "").length < 3) continue;
@@ -346,6 +454,7 @@ export function pickPrimaryLinks(
     if (registrableDomain(host) === pageDomain) continue;
     if (DENY_HOSTS.some((d) => host === d || host.endsWith(`.${d}`))) continue;
     if (DENY_PATH.test(u.pathname)) continue;
+    if (isAffiliateLink(u, host)) continue;
     if (SKIP_EXT.test(u.pathname)) continue;
     if (opts.exclude?.has(href) || seen.has(href)) continue;
     seen.add(href);
@@ -354,10 +463,18 @@ export function pickPrimaryLinks(
   return out;
 }
 
+const MAX_REDIRECT_HOPS = 5;
+
+/**
+ * redirects "follow": the runtime follows redirects (episode links from the report).
+ * redirects "guarded": we follow up to 5 Location hops ourselves and re-check each with
+ * isPublicHttpUrl (linked pages, whose URLs come from third-party HTML).
+ * Returns the final response URL.
+ */
 async function fetchOne(
   url: string,
-  opts: { fetch: FetchFn; timeoutMs: number; maxBytes: number },
-): Promise<{ paragraphs: string[]; links: PageLink[] }> {
+  opts: { fetch: FetchFn; timeoutMs: number; maxBytes: number; redirects: "follow" | "guarded" },
+): Promise<{ paragraphs: string[]; links: PageLink[]; finalUrl: string }> {
   let parsed: URL;
   try {
     parsed = new URL(url);
@@ -367,6 +484,8 @@ async function fetchOne(
   if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
     throw new Error("unsupported URL scheme");
   }
+  if (!isPublicHttpUrl(parsed.href)) throw new Error("blocked URL");
+  const guarded = opts.redirects === "guarded";
   const ctl = new AbortController();
   let timer: ReturnType<typeof setTimeout> | undefined;
   const deadline = new Promise<never>((_, reject) => {
@@ -377,16 +496,40 @@ async function fetchOne(
   });
   try {
     const work = (async () => {
-      const res = await opts.fetch(parsed.href, {
-        headers: { "User-Agent": USER_AGENT, Accept: "text/html,application/xhtml+xml" },
-        redirect: "follow",
-        signal: ctl.signal,
-      });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const type = res.headers.get("content-type");
-      if (type && !/html|xml/i.test(type)) throw new Error("not HTML");
-      const body = await readCapped(res, opts.maxBytes);
-      return { paragraphs: extractParagraphs(body), links: extractParagraphLinks(body, res.url || parsed.href) };
+      let current = parsed.href;
+      for (let hop = 0; ; hop++) {
+        const res = await opts.fetch(current, {
+          headers: { "User-Agent": USER_AGENT, Accept: "text/html,application/xhtml+xml" },
+          redirect: guarded ? "manual" : "follow",
+          signal: ctl.signal,
+        });
+        if (guarded && res.status >= 300 && res.status < 400) {
+          const location = res.headers.get("location");
+          await res.body?.cancel().catch(() => undefined);
+          if (!location) throw new Error(`HTTP ${res.status}`);
+          if (hop >= MAX_REDIRECT_HOPS) throw new Error("too many redirects");
+          let next: string;
+          try {
+            next = new URL(location, current).href;
+          } catch {
+            throw new Error("blocked redirect");
+          }
+          if (!isPublicHttpUrl(next)) throw new Error("blocked redirect");
+          current = next;
+          continue;
+        }
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const type = res.headers.get("content-type");
+        if (type && !/html|xml/i.test(type)) throw new Error("not HTML");
+        const body = await readCapped(res, opts.maxBytes);
+        const finalUrl = res.url || current;
+        const blocks = scanBlocks(body);
+        return {
+          paragraphs: blocks.map((block) => block.text),
+          links: extractParagraphLinks(blocks, finalUrl),
+          finalUrl,
+        };
+      }
     })();
     work.catch(() => undefined); // a late failure after the timeout is already reported
     return await Promise.race([work, deadline]);
@@ -415,7 +558,8 @@ export async function fetchSources(
   const maxLinkedPerEpisode = opts.maxLinkedPerEpisode ?? 2;
   const maxLinkedTotal = opts.maxLinkedTotal ?? 24;
   const linkedMaxChars = opts.linkedMaxChars ?? 8000;
-  const fetchOpts = { fetch: doFetch, timeoutMs, maxBytes };
+  const ownOpts = { fetch: doFetch, timeoutMs, maxBytes, redirects: "follow" as const };
+  const linkedOpts = { fetch: doFetch, timeoutMs, maxBytes, redirects: "guarded" as const };
   const results: SourceResult[] = [];
   let linkedTotal = 0;
   for (const [index, episode] of episodes.entries()) {
@@ -425,12 +569,15 @@ export async function fetchSources(
       exclude.add(url);
       exclude.add(stripHash(url));
     }
-    const pages: { url: string; links: PageLink[] }[] = [];
+    const pages: { url: string; links: PageLink[]; via: string }[] = [];
     for (const url of ownLinks.slice(0, maxLinks)) {
       try {
-        const { paragraphs, links } = await fetchOne(url, fetchOpts);
+        const { paragraphs, links, finalUrl } = await fetchOne(url, ownOpts);
         results.push({ episode_index: index, url, paragraphs });
-        pages.push({ url, links });
+        // Compare domains against where the page really lives, and never re-fetch it as a "primary" link.
+        exclude.add(finalUrl);
+        exclude.add(stripHash(finalUrl));
+        pages.push({ url: finalUrl, links, via: url });
       } catch (err) {
         results.push({
           episode_index: index,
@@ -448,13 +595,13 @@ export async function fetchSources(
       if (picked.length >= budget) break;
       for (const url of pickPrimaryLinks(page.url, page.links, { exclude, max: budget - picked.length })) {
         exclude.add(url);
-        picked.push({ url, via: page.url });
+        picked.push({ url, via: page.via });
       }
     }
     for (const { url, via } of picked) {
       linkedTotal++;
       try {
-        const { paragraphs } = await fetchOne(url, fetchOpts);
+        const { paragraphs } = await fetchOne(url, linkedOpts);
         results.push({
           episode_index: index,
           url,
