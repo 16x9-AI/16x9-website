@@ -5,6 +5,7 @@ import {
   fetchSources,
   readReport,
   shouldWriteMycel,
+  summarizeRun,
   upsertDailyInput,
   type Payload,
 } from "./fetch";
@@ -203,6 +204,33 @@ describe("readReport", () => {
     ).rejects.toThrow(/report not found.*reports\/2026-11-24\.json/);
   });
 
+  it("keeps response body text out of error messages", async () => {
+    const MARKER = "SECRET-REPORT-TEXT-MARKER";
+    const cases = [
+      async () => new Response(`boom ${MARKER}`, { status: 500 }),
+      async () => new Response(`{"episodes": ${MARKER}`, { status: 200 }),
+      async () => {
+        throw new Error(`failed: ${MARKER}`);
+      },
+    ];
+    for (const failing of cases) {
+      const err = await readReport("2026-11-24", {
+        token: "t",
+        fetch: vi.fn(failing) as unknown as typeof fetch,
+      }).then(
+        () => null,
+        (e: Error) => e,
+      );
+      expect(err).toBeInstanceOf(Error);
+      expect(err?.message).not.toContain(MARKER);
+    }
+    const err500 = await readReport("2026-11-24", {
+      token: "t",
+      fetch: vi.fn(cases[0]) as unknown as typeof fetch,
+    }).catch((e: Error) => e);
+    expect((err500 as Error).message).toMatch(/\(500\)/);
+  });
+
   it("rejects a file without an episodes array", async () => {
     const stub = vi.fn(async () => new Response("{}"));
     await expect(
@@ -301,7 +329,46 @@ describe("upsertDailyInput", () => {
       init?.method === "POST" ? new Response("duplicate key", { status: 409 }) : json({ x9_intel_daily_inputs: [] }),
     );
     const out = await upsertDailyInput(payload, { ...opts, fetch: stub as unknown as typeof fetch });
-    expect(out).toEqual({ status: "error", detail: "duplicate key" });
+    expect(out).toEqual({ status: "error", detail: "write failed (409)" });
+  });
+
+  it("never puts response body text in error details", async () => {
+    const MARKER = "SECRET-REPORT-TEXT-MARKER";
+    const write500 = vi.fn(async (_url: RequestInfo | URL, init?: RequestInit) =>
+      init?.method === "POST"
+        ? new Response(`boom ${MARKER}`, { status: 500 })
+        : json({ x9_intel_daily_inputs: [] }),
+    );
+    const read500 = vi.fn(async () => new Response(`boom ${MARKER}`, { status: 500 }));
+    // A 200 with a non-JSON body makes res.json() throw a SyntaxError that quotes the body.
+    const readBadJson = vi.fn(async () => new Response(`<html>${MARKER}`, { status: 200 }));
+    const throwsWithBody = vi.fn(async () => {
+      throw new Error(`failed: ${MARKER}`);
+    });
+    for (const stub of [write500, read500, readBadJson, throwsWithBody]) {
+      const out = await upsertDailyInput(payload, { ...opts, fetch: stub as unknown as typeof fetch });
+      expect(out.status).toBe("error");
+      expect(JSON.stringify(out)).not.toContain(MARKER);
+    }
+    const out = await upsertDailyInput(payload, { ...opts, fetch: write500 as unknown as typeof fetch });
+    expect(out).toEqual({ status: "error", detail: "write failed (500)" });
+  });
+});
+
+describe("summarizeRun", () => {
+  it("prints only the date and counts", () => {
+    const line = summarizeRun({
+      report_date: "2026-11-24",
+      episodes: [
+        { i: 0, title: "SECRET TITLE", summary: "SECRET SUMMARY", keyData: "", impact: "", stackLayer: "", signalType: "", links: ["https://secret.example/x"] },
+      ],
+      sources: [
+        { episode_index: 0, url: "https://secret.example/x", paragraphs: [LONG] },
+        { episode_index: 0, url: "https://secret.example/y", paragraphs: [], error: "HTTP 500" },
+      ],
+    });
+    expect(line).toBe("x9-intel-fetch 2026-11-24: 1 episodes, sources 1 ok / 1 failed");
+    expect(line).not.toMatch(/SECRET|secret\.example|paragraph/);
   });
 });
 

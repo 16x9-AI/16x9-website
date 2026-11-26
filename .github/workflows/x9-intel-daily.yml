@@ -1,3 +1,4 @@
+# No artifact upload on purpose: this repo is public, so artifacts and logs are public. The private report must never be uploaded or logged; the payload lives only in Mycel.
 # DISABLED until Nelson's go-live OK.
 # Fetch step of the 16x9 Intel daily pipeline (Linear 16X9-1670 / 16X9-1694).
 # It reads the day's report from the private industry-daily-report repo, pulls
@@ -48,16 +49,12 @@ jobs:
       - run: npm ci
       - name: Fetch sources and build payload
         run: |
-          args=(--out x9-intel-input.json)
+          args=(--out "$RUNNER_TEMP/x9-intel-input.json")
           if [ -n "$INPUT_DATE" ]; then args+=(--date "$INPUT_DATE"); fi
           if [ "$X9_INTEL_DAILY_ENABLED" != "true" ] || { [ "$EVENT_NAME" = "workflow_dispatch" ] && [ "$INPUT_DRY_RUN" = "true" ]; }; then
             args+=(--dry-run)
           fi
           node scripts/x9-intel-fetch.ts "${args[@]}"
-      - uses: actions/upload-artifact@v4
+      - name: Remove payload file
         if: always()
-        with:
-          name: x9-intel-input
-          path: x9-intel-input.json
-          if-no-files-found: warn
-          retention-days: 7
+        run: rm -f "$RUNNER_TEMP/x9-intel-input.json"
