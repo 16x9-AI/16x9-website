@@ -284,12 +284,17 @@ function extractParagraphLinks(blocks: Block[], baseUrl: string): PageLink[] {
 
 /* ---------- SSRF guard ---------- */
 
-function isPublicIPv4(a: number, b: number): boolean {
+function isPublicIPv4(a: number, b: number, c: number): boolean {
   if (a === 0 || a === 10 || a === 127) return false;
   if (a === 172 && b >= 16 && b <= 31) return false;
   if (a === 192 && b === 168) return false;
   if (a === 169 && b === 254) return false;
   if (a === 100 && b >= 64 && b <= 127) return false;
+  if (a === 192 && b === 0 && (c === 0 || c === 2)) return false; // 192.0.0.0/24, 192.0.2.0/24
+  if (a === 198 && (b === 18 || b === 19)) return false; // 198.18.0.0/15
+  if (a === 198 && b === 51 && c === 100) return false; // 198.51.100.0/24
+  if (a === 203 && b === 0 && c === 113) return false; // 203.0.113.0/24
+  if (a >= 224) return false; // 224.0.0.0/3: multicast and reserved, incl. 255.255.255.255
   return true;
 }
 
@@ -340,11 +345,20 @@ export function isPublicHttpUrl(url: string): boolean {
     if (g.slice(0, 7).every((x) => x === 0) && g[7] === 1) return false; // ::1
     if ((g[0] & 0xfe00) === 0xfc00) return false; // fc00::/7
     if ((g[0] & 0xffc0) === 0xfe80) return false; // fe80::/10
-    if (g.slice(0, 5).every((x) => x === 0) && g[5] === 0xffff) return isPublicIPv4(g[6] >> 8, g[6] & 0xff);
+    if ((g[0] & 0xffc0) === 0xfec0) return false; // fec0::/10 (site-local)
+    if ((g[0] & 0xff00) === 0xff00) return false; // ff00::/8 (multicast)
+    if (g[0] === 0x2001 && g[1] === 0x0db8) return false; // 2001:db8::/32 (documentation)
+    const embedded = (hi: number, lo: number) => isPublicIPv4(hi >> 8, hi & 0xff, lo >> 8);
+    // ::ffff:0:0/96 (mapped) and ::/96 (IPv4-compatible)
+    if (g.slice(0, 5).every((x) => x === 0) && (g[5] === 0xffff || g[5] === 0)) return embedded(g[6], g[7]);
+    // 64:ff9b::/96 (NAT64)
+    if (g[0] === 0x64 && g[1] === 0xff9b && g.slice(2, 6).every((x) => x === 0)) return embedded(g[6], g[7]);
+    // 2002::/16 (6to4): embedded v4 in bits 16-47
+    if (g[0] === 0x2002) return embedded(g[1], g[2]);
     return true;
   }
   const v4 = /^(\d+)\.(\d+)\.(\d+)\.(\d+)$/.exec(host);
-  if (v4) return isPublicIPv4(Number(v4[1]), Number(v4[2]));
+  if (v4) return isPublicIPv4(Number(v4[1]), Number(v4[2]), Number(v4[3]));
   if (!host.includes(".")) return false;
   if (host === "localhost" || host.endsWith(".localhost")) return false;
   if (host.endsWith(".local") || host.endsWith(".internal")) return false;

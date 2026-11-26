@@ -355,6 +355,13 @@ describe("isPublicHttpUrl", () => {
       "https://100.128.0.1/",
       "https://[2606:4700::1111]/",
       "https://[::ffff:8.8.8.8]/",
+      "https://192.0.1.1/",
+      "https://198.17.0.1/",
+      "https://198.20.0.1/",
+      "https://223.255.255.254/",
+      "https://[64:ff9b::808:808]/",
+      "https://[2002:808:808::1]/",
+      "https://[::808:808]/",
     ]) {
       expect(isPublicHttpUrl(u), u).toBe(true);
     }
@@ -412,6 +419,60 @@ describe("isPublicHttpUrl", () => {
       "http://[::ffff:169.254.169.254]/",
       "http://[::ffff:10.0.0.1]/",
       "http://[::ffff:c0a8:101]/",
+    ]) {
+      expect(isPublicHttpUrl(u), u).toBe(false);
+    }
+  });
+});
+
+describe("isPublicHttpUrl extended reserved ranges", () => {
+  it("rejects IPv4 documentation, benchmarking, IETF, multicast and reserved ranges", () => {
+    for (const u of [
+      "http://192.0.0.1/",
+      "http://192.0.0.255/",
+      "http://192.0.2.1/",
+      "http://198.18.0.1/",
+      "http://198.19.255.254/",
+      "http://198.51.100.7/",
+      "http://203.0.113.9/",
+      "http://224.0.0.1/",
+      "http://239.255.255.250/",
+      "http://240.0.0.1/",
+      "http://255.255.255.255/",
+    ]) {
+      expect(isPublicHttpUrl(u), u).toBe(false);
+    }
+  });
+
+  it("rejects IPv6 site-local, multicast and documentation ranges", () => {
+    for (const u of [
+      "http://[fec0::1]/",
+      "http://[feff::1]/",
+      "http://[ff00::1]/",
+      "http://[ff02::1]/",
+      "http://[2001:db8::1]/",
+      "http://[2001:db8:ffff::1]/",
+    ]) {
+      expect(isPublicHttpUrl(u), u).toBe(false);
+    }
+  });
+
+  it("applies the IPv4 rules to embedded addresses (IPv4-compatible, NAT64, 6to4)", () => {
+    for (const u of [
+      "http://[::127.0.0.1]/",
+      "http://[::10.0.0.1]/",
+      "http://[::192.0.2.1]/",
+      "http://[::ffff:198.18.0.1]/",
+      "http://[::ffff:224.0.0.1]/",
+      "http://[64:ff9b::127.0.0.1]/",
+      "http://[64:ff9b::a00:1]/",
+      "http://[64:ff9b::169.254.169.254]/",
+      "http://[64:ff9b::203.0.113.5]/",
+      "http://[2002:7f00:1::]/",
+      "http://[2002:a9fe:a9fe::1]/",
+      "http://[2002:c0a8:101::1]/",
+      "http://[2002:cb00:7109::1]/",
+      "http://[2002:ffff:ffff::1]/",
     ]) {
       expect(isPublicHttpUrl(u), u).toBe(false);
     }
