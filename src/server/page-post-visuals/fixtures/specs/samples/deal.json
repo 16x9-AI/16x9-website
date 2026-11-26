@@ -1,0 +1,62 @@
+{
+ "spec_version": "1.0",
+ "type": "deal_breakdown",
+ "brand": {
+  "wordmark": "Frontier Desk",
+  "tokenSet": "frontier-desk"
+ },
+ "chrome": {
+  "typeLabel": "Deal",
+  "dateLabel": "Oct 6, 2026",
+  "source": "Onar Holding Corp 8-K, 30 September 2026"
+ },
+ "headline": "Onar Holding bought Advertise Purple for up to $27,825,000",
+ "subhead": "Onar Holding Corp completed its purchase of Advertise Purple, a Santa Monica marketing agency, on September 30, 2026.",
+ "visual": {
+  "kind": "tiles",
+  "label": "Total consideration",
+  "total": "Up to $27,825,000",
+  "tiles": [
+   {
+    "name": "Cash at closing",
+    "value": "$12.825 million",
+    "n": 12.825
+   },
+   {
+    "name": "Seller note",
+    "value": "$7.0 million",
+    "n": 7
+   },
+   {
+    "name": "Earnout payments",
+    "value": "Up to $8.0 million",
+    "n": 8,
+    "hatch": true
+   }
+  ]
+ },
+ "rowsHeader": [
+  "Part",
+  "Amount"
+ ],
+ "rows": [
+  {
+   "title": "Cash at closing",
+   "sub": "Subject to post-closing adjustments",
+   "value": "$12.825 million",
+   "meter": 46.1
+  },
+  {
+   "title": "Seller note",
+   "sub": "Unsecured promissory note from the buyer to the seller",
+   "value": "$7.0 million",
+   "meter": 25.2
+  },
+  {
+   "title": "Earnout payments",
+   "sub": "Paid if the earnout thresholds are met",
+   "value": "Up to $8.0 million",
+   "meter": 28.7
+  }
+ ]
+}

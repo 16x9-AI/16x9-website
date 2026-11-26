@@ -1,0 +1,6 @@
+U.S. professional, scientific and technical services jobs will exceed 10,843.6 thousand in December 2026. The December reading has to land above September's 10,843.6 thousand.
+
+Our probability: 84% that December jobs read above September's 10,843.6 thousand. Employment in professional, scientific and technical services stood at 10,843.6 thousand in September 2026, up 6.4 thousand jobs from August 2026. We counted how often the series was higher three months later across the ten years through 1 September 2026: it was higher in 99 of 118 spans, or 84%. This call resolves 2027-02-10 against the Bureau of Labor Statistics, data.bls.gov.
+
+Sources
+BLS series CES6054000001, observation dated 2026-09-01
