@@ -40,6 +40,8 @@ export type SourceResult = {
   episode_index: number;
   url: string;
   paragraphs: string[];
+  /** Set on a primary source found by following a link inside the page at this URL. */
+  via?: string;
   error?: string;
 };
 
@@ -250,10 +252,112 @@ async function readCapped(res: Response, maxBytes: number): Promise<string> {
   return Buffer.concat(chunks).subarray(0, maxBytes).toString("utf8");
 }
 
+export type PageLink = { url: string; text: string };
+
+/** Anchors inside <p> blocks (same block scan as extractParagraphs), resolved against `baseUrl`. */
+function extractParagraphLinks(html: string, baseUrl: string): PageLink[] {
+  const cleaned = html
+    .replace(/<!--[\s\S]*?-->/g, " ")
+    .replace(/<(script|style|noscript|template)\b[\s\S]*?<\/\1\s*>/gi, " ");
+  const out: PageLink[] = [];
+  for (const block of cleaned.matchAll(/<p\b[^>]*>([\s\S]*?)<\/p\s*>/gi)) {
+    for (const anchor of block[1].matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a\s*>/gi)) {
+      const href = /\bhref\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'>]+))/i.exec(anchor[1]);
+      const raw = href ? (href[1] ?? href[2] ?? href[3] ?? "") : "";
+      if (!raw.trim()) continue;
+      let url: string;
+      try {
+        url = new URL(decodeEntities(raw.trim()), baseUrl).href;
+      } catch {
+        continue;
+      }
+      const text = decodeEntities(anchor[2].replace(/<[^>]*>/g, "")).replace(/\s+/g, " ").trim();
+      out.push({ url, text });
+    }
+  }
+  return out;
+}
+
+const SECOND_LEVEL_LABELS = new Set(["co", "com", "org", "net", "gov", "ac", "edu"]);
+
+function bareHost(hostname: string): string {
+  return hostname.toLowerCase().replace(/\.$/, "").replace(/^www\./, "");
+}
+
+function registrableDomain(hostname: string): string {
+  const labels = bareHost(hostname).split(".");
+  const keep =
+    labels.length >= 3 && labels[labels.length - 1].length === 2 && SECOND_LEVEL_LABELS.has(labels[labels.length - 2])
+      ? 3
+      : 2;
+  return labels.slice(-keep).join(".");
+}
+
+const DENY_HOSTS = [
+  "news.google.com",
+  "google.com",
+  "googleusercontent.com",
+  "twitter.com",
+  "x.com",
+  "t.co",
+  "linkedin.com",
+  "facebook.com",
+  "instagram.com",
+  "threads.net",
+  "youtube.com",
+  "youtu.be",
+  "tiktok.com",
+  "reddit.com",
+  "bit.ly",
+  "wikipedia.org",
+  "doubleclick.net",
+  "thecube.net",
+];
+const DENY_PATH = /(sign-?in|log-?in|subscribe|subscription|newsletter|register|share|cookie|privacy|terms)/i;
+const SKIP_EXT = /\.(pdf|jpe?g|png|gif|webp|svg|zip|mp3|mp4)$/i;
+
+/** Cross-domain links from a page's body paragraphs that plausibly point at the primary document. */
+export function pickPrimaryLinks(
+  pageUrl: string,
+  links: PageLink[],
+  opts: { exclude?: Set<string>; max: number },
+): string[] {
+  let pageDomain: string;
+  try {
+    pageDomain = registrableDomain(new URL(pageUrl).hostname);
+  } catch {
+    return [];
+  }
+  const out: string[] = [];
+  const seen = new Set<string>();
+  for (const link of links) {
+    if (out.length >= opts.max) break;
+    let u: URL;
+    try {
+      u = new URL(link.url);
+    } catch {
+      continue;
+    }
+    if (u.protocol !== "http:" && u.protocol !== "https:") continue;
+    u.hash = "";
+    const href = u.href;
+    if (link.text.replace(/\s/g, "").length < 3) continue;
+    const host = bareHost(u.hostname);
+    if (registrableDomain(host) === pageDomain) continue;
+    if (DENY_HOSTS.some((d) => host === d || host.endsWith(`.${d}`))) continue;
+    if (DENY_PATH.test(u.pathname)) continue;
+    if (SKIP_EXT.test(u.pathname)) continue;
+    if (opts.exclude?.has(href) || seen.has(href)) continue;
+    seen.add(href);
+    out.push(href);
+  }
+  return out;
+}
+
 async function fetchOne(
   url: string,
   opts: { fetch: FetchFn; timeoutMs: number; maxBytes: number },
-): Promise<string[]> {
+): Promise<{ paragraphs: string[]; links: PageLink[] }> {
   let parsed: URL;
   try {
     parsed = new URL(url);
@@ -281,7 +385,8 @@ async function fetchOne(
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const type = res.headers.get("content-type");
       if (type && !/html|xml/i.test(type)) throw new Error("not HTML");
-      return extractParagraphs(await readCapped(res, opts.maxBytes));
+      const body = await readCapped(res, opts.maxBytes);
+      return { paragraphs: extractParagraphs(body), links: extractParagraphLinks(body, res.url || parsed.href) };
     })();
     work.catch(() => undefined); // a late failure after the timeout is already reported
     return await Promise.race([work, deadline]);
@@ -293,18 +398,39 @@ async function fetchOne(
 /** Sequential on purpose: one request at a time keeps the crawl polite. One bad source never throws. */
 export async function fetchSources(
   episodes: ReportEpisode[],
-  opts: { fetch?: FetchFn; maxLinksPerEpisode?: number; timeoutMs?: number; maxBytes?: number } = {},
+  opts: {
+    fetch?: FetchFn;
+    maxLinksPerEpisode?: number;
+    timeoutMs?: number;
+    maxBytes?: number;
+    maxLinkedPerEpisode?: number;
+    maxLinkedTotal?: number;
+    linkedMaxChars?: number;
+  } = {},
 ): Promise<SourceResult[]> {
   const doFetch = opts.fetch ?? fetch;
   const maxLinks = opts.maxLinksPerEpisode ?? 3;
   const timeoutMs = opts.timeoutMs ?? 15_000;
   const maxBytes = opts.maxBytes ?? 2_000_000;
+  const maxLinkedPerEpisode = opts.maxLinkedPerEpisode ?? 2;
+  const maxLinkedTotal = opts.maxLinkedTotal ?? 24;
+  const linkedMaxChars = opts.linkedMaxChars ?? 8000;
+  const fetchOpts = { fetch: doFetch, timeoutMs, maxBytes };
   const results: SourceResult[] = [];
+  let linkedTotal = 0;
   for (const [index, episode] of episodes.entries()) {
-    for (const url of linkUrls(episode).slice(0, maxLinks)) {
+    const ownLinks = linkUrls(episode);
+    const exclude = new Set<string>();
+    for (const url of ownLinks) {
+      exclude.add(url);
+      exclude.add(stripHash(url));
+    }
+    const pages: { url: string; links: PageLink[] }[] = [];
+    for (const url of ownLinks.slice(0, maxLinks)) {
       try {
-        const paragraphs = await fetchOne(url, { fetch: doFetch, timeoutMs, maxBytes });
+        const { paragraphs, links } = await fetchOne(url, fetchOpts);
         results.push({ episode_index: index, url, paragraphs });
+        pages.push({ url, links });
       } catch (err) {
         results.push({
           episode_index: index,
@@ -314,8 +440,66 @@ export async function fetchSources(
         });
       }
     }
+
+    // Primary-source discovery: one hop from this episode's own pages, never from linked pages.
+    const picked: { url: string; via: string }[] = [];
+    const budget = Math.min(maxLinkedPerEpisode, maxLinkedTotal - linkedTotal);
+    for (const page of pages) {
+      if (picked.length >= budget) break;
+      for (const url of pickPrimaryLinks(page.url, page.links, { exclude, max: budget - picked.length })) {
+        exclude.add(url);
+        picked.push({ url, via: page.url });
+      }
+    }
+    for (const { url, via } of picked) {
+      linkedTotal++;
+      try {
+        const { paragraphs } = await fetchOne(url, fetchOpts);
+        results.push({
+          episode_index: index,
+          url,
+          paragraphs: truncateParagraphs(paragraphs, linkedMaxChars),
+          via,
+        });
+      } catch (err) {
+        results.push({
+          episode_index: index,
+          url,
+          paragraphs: [],
+          via,
+          error: err instanceof Error ? err.message : "fetch failed",
+        });
+      }
+    }
   }
   return results;
+}
+
+function stripHash(url: string): string {
+  try {
+    const u = new URL(url);
+    u.hash = "";
+    return u.href;
+  } catch {
+    return url;
+  }
+}
+
+/** Whole paragraphs up to maxChars in total; the last one may be cut. */
+function truncateParagraphs(paragraphs: string[], maxChars: number): string[] {
+  const out: string[] = [];
+  let used = 0;
+  for (const text of paragraphs) {
+    if (used + text.length <= maxChars) {
+      out.push(text);
+      used += text.length;
+      continue;
+    }
+    const cut = text.slice(0, Math.max(0, maxChars - used)).trimEnd();
+    if (cut) out.push(cut);
+    break;
+  }
+  return out;
 }
 
 /* ---------- payload ---------- */
@@ -426,9 +610,13 @@ export async function upsertDailyInput(
 
 /** The one line the runner may print. Date and counts only; never titles, URLs or text. */
 export function summarizeRun(payload: Payload): string {
-  const ok = payload.sources.filter((source) => source.paragraphs.length > 0).length;
+  const own = payload.sources.filter((source) => source.via === undefined);
+  const linked = payload.sources.filter((source) => source.via !== undefined);
+  const ok = own.filter((source) => source.paragraphs.length > 0).length;
+  const linkedOk = linked.filter((source) => source.paragraphs.length > 0).length;
   return (
     `x9-intel-fetch ${payload.report_date}: ${payload.episodes.length} episodes, ` +
-    `sources ${ok} ok / ${payload.sources.length - ok} failed`
+    `sources ${ok} ok / ${own.length - ok} failed` +
+    (linked.length > 0 ? `, linked ${linkedOk} ok / ${linked.length - linkedOk} failed` : "")
   );
 }

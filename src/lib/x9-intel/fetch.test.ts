@@ -7,6 +7,7 @@ import {
   buildPayload,
   extractParagraphs,
   fetchSources,
+  pickPrimaryLinks,
   readReport,
   readReportFile,
   shouldWriteMycel,
@@ -152,6 +153,195 @@ describe("fetchSources", () => {
   });
 });
 
+describe("pickPrimaryLinks", () => {
+  const page = "https://news.example/story";
+  const l = (url: string, text = "the announcement") => ({ url, text });
+  const pick = (links: { url: string; text: string }[], max = 10, exclude?: Set<string>, from = page) =>
+    pickPrimaryLinks(from, links, { max, exclude });
+
+  it("keeps cross-domain links, drops same-domain ones (www and subdomains ignored)", () => {
+    expect(
+      pick([
+        l("https://corp.example/post"),
+        l("https://www.news.example/other"),
+        l("https://blog.news.example/x"),
+      ]),
+    ).toEqual(["https://corp.example/post"]);
+    expect(pick([l("https://www.news.example/a")], 5, undefined, "https://www.corp.example/")).toEqual([
+      "https://www.news.example/a",
+    ]);
+  });
+
+  it("treats co.uk style suffixes as one registrable domain", () => {
+    const from = "https://www.bbc.co.uk/news/1";
+    expect(pick([l("https://news.bbc.co.uk/x"), l("https://other.co.uk/y"), l("https://bbc.com/z")], 10, undefined, from)).toEqual([
+      "https://other.co.uk/y",
+      "https://bbc.com/z",
+    ]);
+  });
+
+  it("drops denied hosts and their subdomains, keeps apple.com and substack.com", () => {
+    expect(
+      pick([
+        l("https://news.google.com/a"),
+        l("https://docs.google.com/b"),
+        l("https://x.com/c"),
+        l("https://mobile.twitter.com/d"),
+        l("https://www.youtube.com/e"),
+        l("https://en.wikipedia.org/f"),
+        l("https://apple.com/g"),
+        l("https://some.substack.com/h"),
+      ]),
+    ).toEqual(["https://apple.com/g", "https://some.substack.com/h"]);
+  });
+
+  it("drops sign-in, subscribe and similar paths, and file downloads (query ignored)", () => {
+    expect(
+      pick([
+        l("https://a.example/sign-in"),
+        l("https://a.example/Login?next=1"),
+        l("https://a.example/subscribe"),
+        l("https://a.example/share/1"),
+        l("https://a.example/report.PDF"),
+        l("https://a.example/report.pdf?dl=1"),
+        l("https://a.example/img.webp"),
+        l("https://a.example/research/paper"),
+      ]),
+    ).toEqual(["https://a.example/research/paper"]);
+  });
+
+  it("drops non-http(s) links and anchors with fewer than 3 non-space characters", () => {
+    expect(
+      pick([
+        l("mailto:a@b.example"),
+        l("ftp://b.example/f"),
+        l("https://a.example/1", " a  b "),
+        l("https://a.example/2", ""),
+        l("https://a.example/3", "abc"),
+      ]),
+    ).toEqual(["https://a.example/3"]);
+  });
+
+  it("strips hashes, honours exclude, dedupes and caps at max in document order", () => {
+    const links = [
+      l("https://a.example/1#top"),
+      l("https://a.example/1#other"),
+      l("https://b.example/2"),
+      l("https://c.example/3"),
+      l("https://d.example/4"),
+    ];
+    expect(pick(links, 10, new Set(["https://b.example/2"]))).toEqual([
+      "https://a.example/1",
+      "https://c.example/3",
+      "https://d.example/4",
+    ]);
+    expect(pick(links, 2)).toEqual(["https://a.example/1", "https://b.example/2"]);
+    expect(pick(links, 0)).toEqual([]);
+  });
+});
+
+describe("fetchSources primary-source discovery", () => {
+  const news = (links: string) => `<p>${LONG} Read the <a href="${links}">official announcement</a>.</p>`;
+  const stubFor = (pages: Record<string, string>) =>
+    vi.fn(async (url: RequestInfo | URL) => {
+      const body = pages[String(url)];
+      return body === undefined ? new Response("nope", { status: 404 }) : html(body);
+    });
+  const run = (stub: ReturnType<typeof stubFor>, episodes: { links: string[] }[], extra = {}) =>
+    fetchSources(episodes, { fetch: stub as unknown as typeof fetch, ...extra });
+
+  it("follows a primary link from a news page and records via", async () => {
+    const stub = stubFor({
+      "https://news.example/a": news("https://corp.example/launch#x"),
+      "https://corp.example/launch": `<p>${LONG} Primary text.</p>`,
+    });
+    const out = await run(stub, [{ links: ["https://news.example/a"] }]);
+    expect(out).toHaveLength(2);
+    expect(out[1]).toEqual({
+      episode_index: 0,
+      url: "https://corp.example/launch",
+      paragraphs: [`${LONG} Primary text.`],
+      via: "https://news.example/a",
+    });
+    expect(out[0].via).toBeUndefined();
+  });
+
+  it("resolves relative links and decodes entities in hrefs", async () => {
+    const stub = stubFor({
+      "https://news.example/a": `<p>${LONG} <a href="https://corp.example/p?a=1&amp;b=2">the paper</a></p>`,
+      "https://corp.example/p?a=1&b=2": `<p>${LONG}</p>`,
+    });
+    const out = await run(stub, [{ links: ["https://news.example/a"] }]);
+    expect(out[1].url).toBe("https://corp.example/p?a=1&b=2");
+  });
+
+  it("skips the episode's own links and does not fetch a URL twice", async () => {
+    const stub = stubFor({
+      "https://news.example/a": news("https://other.example/b"),
+      "https://other.example/b": news("https://news.example/a#frag"),
+    });
+    const out = await run(stub, [{ links: ["https://news.example/a", "https://other.example/b"] }]);
+    expect(out.map((s) => s.url)).toEqual(["https://news.example/a", "https://other.example/b"]);
+    expect(stub).toHaveBeenCalledTimes(2);
+  });
+
+  it("maxLinkedPerEpisode=0 disables discovery; the cap limits it otherwise", async () => {
+    const page = `<p>${LONG} <a href="https://c1.example/">first one</a> <a href="https://c2.example/">second one</a> <a href="https://c3.example/">third one</a></p>`;
+    const pages = { "https://news.example/a": page, "https://c1.example/": `<p>${LONG}</p>`, "https://c2.example/": `<p>${LONG}</p>`, "https://c3.example/": `<p>${LONG}</p>` };
+    const off = await run(stubFor(pages), [{ links: ["https://news.example/a"] }], { maxLinkedPerEpisode: 0 });
+    expect(off).toHaveLength(1);
+    const dflt = await run(stubFor(pages), [{ links: ["https://news.example/a"] }]);
+    expect(dflt.map((s) => s.url)).toEqual(["https://news.example/a", "https://c1.example/", "https://c2.example/"]);
+  });
+
+  it("respects the run-wide maxLinkedTotal", async () => {
+    const pages: Record<string, string> = {};
+    const episodes = [0, 1, 2].map((n) => {
+      pages[`https://news.example/${n}`] = news(`https://corp${n}.example/x`);
+      pages[`https://corp${n}.example/x`] = `<p>${LONG}</p>`;
+      return { links: [`https://news.example/${n}`] };
+    });
+    const out = await run(stubFor(pages), episodes, { maxLinkedTotal: 2 });
+    expect(out.filter((s) => s.via !== undefined).map((s) => s.url)).toEqual([
+      "https://corp0.example/x",
+      "https://corp1.example/x",
+    ]);
+  });
+
+  it("truncates linked paragraphs to linkedMaxChars, whole paragraphs first", async () => {
+    const para = (c: string) => c.repeat(50);
+    const stub = stubFor({
+      "https://news.example/a": news("https://corp.example/long"),
+      "https://corp.example/long": `<p>${para("a")}</p><p>${para("b")}</p><p>${para("c")}</p>`,
+    });
+    const out = await run(stub, [{ links: ["https://news.example/a"] }], { linkedMaxChars: 120 });
+    expect(out[1].paragraphs).toEqual([para("a"), para("b"), "c".repeat(20)]);
+  });
+
+  it("does not recurse from linked pages", async () => {
+    const stub = stubFor({
+      "https://news.example/a": news("https://corp.example/p"),
+      "https://corp.example/p": news("https://deep.example/q"),
+      "https://deep.example/q": `<p>${LONG}</p>`,
+    });
+    const out = await run(stub, [{ links: ["https://news.example/a"] }]);
+    expect(out.map((s) => s.url)).toEqual(["https://news.example/a", "https://corp.example/p"]);
+    expect(stub).toHaveBeenCalledTimes(2);
+  });
+
+  it("records a failing linked fetch with error and via, without throwing", async () => {
+    const stub = stubFor({ "https://news.example/a": news("https://gone.example/x") });
+    const out = await run(stub, [{ links: ["https://news.example/a"] }]);
+    expect(out[1]).toEqual({
+      episode_index: 0,
+      url: "https://gone.example/x",
+      paragraphs: [],
+      via: "https://news.example/a",
+      error: "HTTP 404",
+    });
+  });
+});
+
 describe("buildPayload", () => {
   it("indexes episodes by position and carries the collect shape", () => {
     const report = {
@@ -171,6 +361,13 @@ describe("buildPayload", () => {
       ],
       sources,
     });
+  });
+});
+
+describe("buildPayload via", () => {
+  it("passes via through unchanged", () => {
+    const sources = [{ episode_index: 0, url: "https://c.example", paragraphs: [LONG], via: "https://n.example" }];
+    expect(buildPayload({ date: "2026-11-24", episodes: [{}] }, sources).sources).toEqual(sources);
   });
 });
 
@@ -374,6 +571,22 @@ describe("summarizeRun", () => {
     });
     expect(line).toBe("x9-intel-fetch 2026-11-24: 1 episodes, sources 1 ok / 1 failed");
     expect(line).not.toMatch(/SECRET|secret\.example|paragraph/);
+  });
+});
+
+describe("summarizeRun linked", () => {
+  it("reports linked counts separately, without URLs or text", () => {
+    const line = summarizeRun({
+      report_date: "2026-11-24",
+      episodes: [],
+      sources: [
+        { episode_index: 0, url: "https://secret.example/x", paragraphs: [LONG] },
+        { episode_index: 0, url: "https://secret.example/l1", paragraphs: [LONG], via: "https://secret.example/x" },
+        { episode_index: 0, url: "https://secret.example/l2", paragraphs: [], via: "https://secret.example/x", error: "HTTP 404" },
+      ],
+    });
+    expect(line).toBe("x9-intel-fetch 2026-11-24: 0 episodes, sources 1 ok / 0 failed, linked 1 ok / 1 failed");
+    expect(line).not.toMatch(/secret|paragraph/);
   });
 });
 
