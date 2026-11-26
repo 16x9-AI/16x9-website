@@ -187,11 +187,50 @@ export async function submitLinkedInPostPlan(plan: Plan): Promise<WriteResult> {
   }
 }
 
-export async function writeTarget(row: TargetWrite): Promise<WriteResult> {
+/** Insert a row and let the server generate its uuid. No client id is sent. */
+async function postNewRow(table: string, data: Record<string, string>): Promise<WriteResult> {
+  const base = baseUrl();
+  if (!base) return { status: "not_configured" };
+  const url = `${base}/api/business-private/${table}?ecosystem_id=${encodeURIComponent(ecosystemId())}`;
+  const wrote = await sendRow("POST", url, data);
+  if (wrote.status === "missing") return { status: "error", detail: "insert missed" };
+  if (wrote.status === "conflict") return { status: "error", detail: wrote.detail };
+  return wrote;
+}
+
+/**
+ * Write one per-target delivery row. The logical key "<post_id>:<target>" lives in
+ * target_key; the row id is a server uuid. Find by target_key, PATCH by uuid, else POST
+ * without an id. A failed read never falls through to an insert, so no duplicates.
+ */
+export async function writeTarget(
+  row: TargetWrite,
+  io: {
+    read: (table: string, column: string, value: string, limit?: number) => Promise<Row[] | null>;
+    update: (table: string, id: string, data: Record<string, string>) => Promise<RowAttempt>;
+    insert: (table: string, data: Record<string, string>) => Promise<WriteResult>;
+  } = { read: readRows, update: patchRow, insert: postNewRow },
+): Promise<WriteResult> {
   const guarded = guardTargetWrite(row);
   if (!guarded.ok) return { status: "error", detail: guarded.reason };
   if (!mycelConfigured()) return { status: "not_configured" };
-  return upsertRow(COMPANY.targetsTable, row.id, targetData(row));
+  const found = await io.read(COMPANY.targetsTable, "target_key", row.id, 2);
+  if (found === null) return { status: "error", detail: "target read failed" };
+  const data = targetData(row);
+  if (found.length === 0) {
+    // The publication hash wins so the publisher's skip-if-already-published check keeps
+    // working; the logical key is only a fallback when the hash is empty.
+    return io.insert(COMPANY.targetsTable, {
+      ...data,
+      target_key: row.id,
+      idempotency_key: data.idempotency_key || row.id,
+    });
+  }
+  const uuid = typeof found[0].id === "string" ? found[0].id : "";
+  if (!uuid) return { status: "error", detail: "target row has no id" };
+  const updated = await io.update(COMPANY.targetsTable, uuid, data);
+  if (updated.status === "missing") return { status: "error", detail: "update missed" };
+  return updated;
 }
 
 export type VisualSpecRequest = {

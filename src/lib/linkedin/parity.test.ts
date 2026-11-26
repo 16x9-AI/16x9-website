@@ -692,7 +692,7 @@ describe("review fixes", () => {
     expect(landed).toEqual(["update"]);
   });
 
-  it("writeTarget posts the row after a 404 patch", async () => {
+  it("writeTarget reads by target_key and posts a new row without an id", async () => {
     const prevBase = process.env.MYCEL_API_BASE;
     const prevKey = process.env.MYCEL_16X9_API_KEY;
     const prevPublisher = process.env.X9_LINKEDIN_PUBLISHER_ENABLED;
@@ -706,7 +706,7 @@ describe("review fixes", () => {
         method: init?.method || "GET",
         body: JSON.parse(String(init?.body || "{}")) as Record<string, string>,
       });
-      if (init?.method === "PATCH") return new Response("no row", { status: 404 });
+      if (!init?.method) return Response.json({ x9_linkedin_page_targets: [] });
       return new Response("{}", { status: 201 });
     }) as typeof fetch;
     try {
@@ -720,8 +720,10 @@ describe("review fixes", () => {
         idempotencyKey: "key",
       });
       expect(result.status).toBe("received");
-      expect(calls.map((call) => call.method)).toEqual(["PATCH", "POST"]);
-      expect(calls[1].body.id).toBe(`${ID}:company`);
+      expect(calls.map((call) => call.method)).toEqual(["GET", "POST"]);
+      expect(calls[1].body).not.toHaveProperty("id");
+      expect(calls[1].body.target_key).toBe(`${ID}:company`);
+      expect(calls[1].body.idempotency_key).toBe("key");
       expect(calls[1].body.target).toBe("company");
       expect(calls[1].body.final_text).toBe("Hello there");
     } finally {
@@ -860,7 +862,8 @@ describe("review follow-ups", () => {
         return Response.json({
           x9_linkedin_page_targets: [
             {
-              id: `${ID}:company`,
+              id: "0b6f3c1e-5d0a-4a52-9a53-3f1c2f6f9a11",
+              target_key: `${ID}:company`,
               post_id: ID,
               status: "published",
               idempotency_key: "already",

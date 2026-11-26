@@ -45,6 +45,7 @@ function guardPostOp(op: PlanOp): string | null {
 }
 
 export type TargetWrite = {
+  /** The logical key "<post_id>:<target>", stored in target_key. Not the row uuid. */
   id: string;
   postId: string;
   target: "company" | "personal";
@@ -67,6 +68,7 @@ const TARGET_FIELDS = new Set([
   "published_at",
   "error",
   "idempotency_key",
+  "target_key",
 ]);
 
 /** A target write may touch only that target's row. */
@@ -90,6 +92,7 @@ export function targetData(row: TargetWrite): Record<string, string> {
     final_text: row.finalText,
     image_version: row.imageVersion,
     idempotency_key: row.idempotencyKey,
+    target_key: row.id,
   };
   if (row.postUrn) data.post_urn = row.postUrn;
   if (row.publishedAt) data.published_at = row.publishedAt;
