@@ -7,6 +7,7 @@
  */
 
 import { createHash } from "node:crypto";
+import { readFile } from "node:fs/promises";
 
 export const INPUTS_TABLE = "x9_intel_daily_inputs";
 export const USER_AGENT = "16x9-intel-fetch/1.0 (+https://16x9.ai)";
@@ -92,15 +93,22 @@ export async function readReport(
   }
   if (res.status === 404) throw new Error(`report not found: ${repo}/${path}`);
   if (!res.ok) throw new Error(`report read failed (${res.status}) for ${repo}/${path}`);
-  const bytes = Buffer.from(await res.arrayBuffer());
+  return parseReportBytes(Buffer.from(await res.arrayBuffer()), { label: `${repo}/${path}` });
+}
+
+/**
+ * Shared by the GitHub read and the local-file read: parse, check shape, compute the git blob sha.
+ * Error messages are fixed text plus `label`; they never quote the bytes.
+ */
+export function parseReportBytes(bytes: Buffer, opts: { label: string }): { report: Report; sha: string } {
   let report: Report;
   try {
     report = JSON.parse(bytes.toString("utf8")) as Report;
   } catch {
-    throw new Error(`report is not valid JSON: ${repo}/${path}`);
+    throw new Error(`report is not valid JSON: ${opts.label}`);
   }
-  if (!report || !Array.isArray(report.episodes)) {
-    throw new Error(`report has no episodes array: ${repo}/${path}`);
+  if (!report || typeof report !== "object" || !Array.isArray(report.episodes)) {
+    throw new Error(`report has no episodes array: ${opts.label}`);
   }
   // Git blob sha of the file, so it matches the commit view on GitHub.
   const sha = createHash("sha1")
@@ -108,6 +116,38 @@ export async function readReport(
     .update(bytes)
     .digest("hex");
   return { report, sha };
+}
+
+const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+
+/**
+ * Reads a report someone else already downloaded (no GitHub token needed).
+ * With expectedDate: a report `date` that differs is an error; a missing one is filled in.
+ * Without it: the report's own `date` is required and must be YYYY-MM-DD.
+ */
+export async function readReportFile(
+  path: string,
+  opts: { expectedDate?: string } = {},
+): Promise<{ report: Report; sha: string; date: string }> {
+  let bytes: Buffer;
+  try {
+    bytes = await readFile(path);
+  } catch {
+    throw new Error(`report file could not be read: ${path}`);
+  }
+  const { report, sha } = parseReportBytes(bytes, { label: path });
+  const reportDate: unknown = (report as { date?: unknown }).date;
+  if (opts.expectedDate !== undefined) {
+    if (reportDate !== undefined && reportDate !== opts.expectedDate) {
+      throw new Error(`report date does not match --date: ${path}`);
+    }
+    report.date = opts.expectedDate;
+    return { report, sha, date: opts.expectedDate };
+  }
+  if (typeof reportDate !== "string" || !DATE_RE.test(reportDate)) {
+    throw new Error(`report has no valid date field (YYYY-MM-DD); pass --date: ${path}`);
+  }
+  return { report, sha, date: reportDate };
 }
 
 /* ---------- paragraphs ---------- */

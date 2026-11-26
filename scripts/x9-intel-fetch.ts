@@ -3,6 +3,11 @@
  *   npm run x9:fetch -- --date 2026-11-24 --dry-run
  * Always writes the payload file. Writes to Mycel only when not --dry-run and
  * X9_INTEL_DAILY_ENABLED is the string "true". It never publishes anything.
+ *
+ * --report-file <path>: read the report from a local JSON file instead of the GitHub API
+ * (X9_REPORT_GITHUB_TOKEN is then not needed). Someone with access to the private
+ * industry-daily-report repo downloads reports/<date>.json and hands the file over.
+ * Without --date, the date comes from the report's own `date` field.
  */
 
 import { writeFile } from "node:fs/promises";
@@ -12,9 +17,11 @@ import {
   buildPayload,
   fetchSources,
   readReport,
+  readReportFile,
   shouldWriteMycel,
   summarizeRun,
   upsertDailyInput,
+  type Report,
 } from "../src/lib/x9-intel/fetch.ts";
 
 // Same default as src/lib/linkedin/mycel.ts. An identifier, not a credential.
@@ -30,22 +37,33 @@ async function main(): Promise<void> {
     options: {
       date: { type: "string" },
       out: { type: "string" },
+      "report-file": { type: "string" },
       "dry-run": { type: "boolean", default: false },
     },
   });
-  const date = values.date ?? new Date().toISOString().slice(0, 10);
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) fail("--date must be YYYY-MM-DD");
-  const out = values.out ?? `x9-intel-input-${date}.json`;
+  if (values.date !== undefined && !/^\d{4}-\d{2}-\d{2}$/.test(values.date)) fail("--date must be YYYY-MM-DD");
 
-  const token = process.env.X9_REPORT_GITHUB_TOKEN;
-  if (!token) fail("X9_REPORT_GITHUB_TOKEN is not set");
-
-  let read;
-  try {
-    read = await readReport(date, { token });
-  } catch (err) {
-    fail(err instanceof Error ? err.message : "report read failed");
+  let read: { report: Report; sha: string };
+  let date: string;
+  if (values["report-file"] !== undefined) {
+    try {
+      const file = await readReportFile(values["report-file"], { expectedDate: values.date });
+      read = file;
+      date = file.date;
+    } catch (err) {
+      fail(err instanceof Error ? err.message : "report file read failed");
+    }
+  } else {
+    date = values.date ?? new Date().toISOString().slice(0, 10);
+    const token = process.env.X9_REPORT_GITHUB_TOKEN;
+    if (!token) fail("X9_REPORT_GITHUB_TOKEN is not set");
+    try {
+      read = await readReport(date, { token });
+    } catch (err) {
+      fail(err instanceof Error ? err.message : "report read failed");
+    }
   }
+  const out = values.out ?? `x9-intel-input-${date}.json`;
 
   const sources = await fetchSources(read.report.episodes);
   const payload = buildPayload(read.report, sources);
