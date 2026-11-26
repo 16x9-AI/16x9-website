@@ -13,6 +13,7 @@ import {
   fetchSources,
   readReport,
   shouldWriteMycel,
+  summarizeRun,
   upsertDailyInput,
 } from "../src/lib/x9-intel/fetch.ts";
 
@@ -33,7 +34,7 @@ async function main(): Promise<void> {
     },
   });
   const date = values.date ?? new Date().toISOString().slice(0, 10);
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) fail(`--date must be YYYY-MM-DD, got "${date}"`);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) fail("--date must be YYYY-MM-DD");
   const out = values.out ?? `x9-intel-input-${date}.json`;
 
   const token = process.env.X9_REPORT_GITHUB_TOKEN;
@@ -48,13 +49,9 @@ async function main(): Promise<void> {
 
   const sources = await fetchSources(read.report.episodes);
   const payload = buildPayload(read.report, sources);
-  await writeFile(out, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
+  await writeFile(out, `${JSON.stringify(payload, null, 2)}\n`, { encoding: "utf8", mode: 0o600 });
 
-  const ok = sources.filter((source) => source.paragraphs.length > 0).length;
-  console.log(
-    `x9-intel-fetch ${payload.report_date}: ${payload.episodes.length} episodes, ` +
-      `sources ${ok} ok / ${sources.length - ok} failed, payload ${out}`,
-  );
+  console.log(summarizeRun(payload));
 
   const write = shouldWriteMycel({
     dryRun: values["dry-run"] === true,
@@ -79,4 +76,11 @@ async function main(): Promise<void> {
   console.log(`Mycel row ${result.action} for ${payload.report_date}`);
 }
 
-await main();
+// Logging policy: this runs on a public repo's runner, so logs are public. Print only the
+// date, counts, HTTP status codes, row action and fixed messages. Never titles, summaries,
+// report URLs, paragraphs or response bodies. Unexpected errors print the class name only.
+try {
+  await main();
+} catch (err) {
+  fail(`unexpected failure (${err instanceof Error ? err.name : "unknown"})`);
+}

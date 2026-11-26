@@ -77,14 +77,19 @@ export async function readReport(
   const path = (opts.pathTemplate ?? "reports/{date}.json").replace("{date}", date);
   const url = `https://api.github.com/repos/${repo}/contents/${path}`;
   const doFetch = opts.fetch ?? fetch;
-  const res = await doFetch(url, {
-    headers: {
-      Authorization: `Bearer ${opts.token}`,
-      Accept: "application/vnd.github.raw+json",
-      "X-GitHub-Api-Version": "2022-11-28",
-      "User-Agent": USER_AGENT,
-    },
-  });
+  let res: Response;
+  try {
+    res = await doFetch(url, {
+      headers: {
+        Authorization: `Bearer ${opts.token}`,
+        Accept: "application/vnd.github.raw+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+        "User-Agent": USER_AGENT,
+      },
+    });
+  } catch {
+    throw new Error(`report read failed (network error) for ${repo}/${path}`);
+  }
   if (res.status === 404) throw new Error(`report not found: ${repo}/${path}`);
   if (!res.ok) throw new Error(`report read failed (${res.status}) for ${repo}/${path}`);
   const bytes = Buffer.from(await res.arrayBuffer());
@@ -235,7 +240,7 @@ async function fetchOne(
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const type = res.headers.get("content-type");
-      if (type && !/html|xml/i.test(type)) throw new Error(`not HTML (${type.split(";")[0]})`);
+      if (type && !/html|xml/i.test(type)) throw new Error("not HTML");
       return extractParagraphs(await readCapped(res, opts.maxBytes));
     })();
     work.catch(() => undefined); // a late failure after the timeout is already reported
@@ -336,8 +341,9 @@ export async function upsertDailyInput(
     if (!Array.isArray(rows)) return { status: "error", detail: "read returned no row list" };
     const id = (rows[0] as { id?: unknown } | undefined)?.id;
     if (typeof id === "string" && id) existingId = id;
-  } catch (err) {
-    return { status: "error", detail: err instanceof Error ? err.message : "read failed" };
+  } catch {
+    // Error messages (e.g. JSON parse errors) can quote body text, so keep this fixed.
+    return { status: "error", detail: "read failed (network error, timeout or invalid response)" };
   }
 
   const row = {
@@ -366,11 +372,23 @@ export async function upsertDailyInput(
           signal: AbortSignal.timeout(20_000),
         });
     if (!res.ok) {
-      const detail = await res.text().catch(() => "");
-      return { status: "error", detail: detail.slice(0, 300) || `write failed (${res.status})` };
+      // Never echo the response body: it can repeat the payload (private report text).
+      return { status: "error", detail: `write failed (${res.status})` };
     }
     return { status: "received", action: existingId ? "updated" : "inserted" };
-  } catch (err) {
-    return { status: "error", detail: err instanceof Error ? err.message : "write failed" };
+  } catch {
+    // Error messages (e.g. JSON parse errors) can quote body text, so keep this fixed.
+    return { status: "error", detail: "write failed (network error or timeout)" };
   }
+}
+
+/* ---------- log summary ---------- */
+
+/** The one line the runner may print. Date and counts only; never titles, URLs or text. */
+export function summarizeRun(payload: Payload): string {
+  const ok = payload.sources.filter((source) => source.paragraphs.length > 0).length;
+  return (
+    `x9-intel-fetch ${payload.report_date}: ${payload.episodes.length} episodes, ` +
+    `sources ${ok} ok / ${payload.sources.length - ok} failed`
+  );
 }
