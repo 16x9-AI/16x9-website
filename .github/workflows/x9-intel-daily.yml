@@ -1,0 +1,63 @@
+# DISABLED until Nelson's go-live OK.
+# Fetch step of the 16x9 Intel daily pipeline (Linear 16X9-1670 / 16X9-1694).
+# It reads the day's report from the private industry-daily-report repo, pulls
+# each episode's source paragraphs, and stores one row in Mycel.
+# It never publishes anything. The schedule only runs when the repository
+# variable X9_INTEL_DAILY_ENABLED is the string "true". Manual runs are always
+# allowed and default to a dry run (no Mycel write).
+# Afterwards the Mycel trigger x9_intel_daily_main (09:50 UTC, also disabled)
+# runs the agents on that row.
+
+name: x9 Intel daily fetch (DISABLED until go-live)
+
+on:
+  schedule:
+    - cron: "30 9 * * *"
+  workflow_dispatch:
+    inputs:
+      date:
+        description: "Report date YYYY-MM-DD (default: today UTC)"
+        type: string
+        required: false
+      dry_run:
+        description: "Skip the Mycel write"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  fetch:
+    if: github.event_name == 'workflow_dispatch' || vars.X9_INTEL_DAILY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      X9_REPORT_GITHUB_TOKEN: ${{ secrets.X9_REPORT_GITHUB_TOKEN }}
+      MYCEL_API_BASE: ${{ secrets.MYCEL_API_BASE }}
+      MYCEL_16X9_API_KEY: ${{ secrets.MYCEL_16X9_API_KEY }}
+      X9_INTEL_DAILY_ENABLED: ${{ vars.X9_INTEL_DAILY_ENABLED }}
+      EVENT_NAME: ${{ github.event_name }}
+      INPUT_DATE: ${{ inputs.date }}
+      INPUT_DRY_RUN: ${{ inputs.dry_run }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci
+      - name: Fetch sources and build payload
+        run: |
+          args=(--out x9-intel-input.json)
+          if [ -n "$INPUT_DATE" ]; then args+=(--date "$INPUT_DATE"); fi
+          if [ "$X9_INTEL_DAILY_ENABLED" != "true" ] || { [ "$EVENT_NAME" = "workflow_dispatch" ] && [ "$INPUT_DRY_RUN" = "true" ]; }; then
+            args+=(--dry-run)
+          fi
+          node scripts/x9-intel-fetch.ts "${args[@]}"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: x9-intel-input
+          path: x9-intel-input.json
+          if-no-files-found: warn
+          retention-days: 7
